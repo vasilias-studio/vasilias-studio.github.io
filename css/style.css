@@ -606,6 +606,14 @@ button { font-family: inherit; cursor: pointer; }
   transition: transform 0.5s;
 }
 .case-grid-2 img:hover, .case-grid-3 img:hover { transform: scale(1.05); }
+
+/* Grilles sans zone vide : ratio fixe + object-fit cover */
+.case-grid-fill img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 2; }
+.case-grid-fill.case-grid-land img { aspect-ratio: 16 / 10; }
+.case-grid-fill.case-grid-portrait img { aspect-ratio: 4 / 5; }
+@media (min-width: 768px) {
+  .case-grid-fill img { height: 100%; }
+}
 .case-caption { text-align: center; font-family: 'Josefin Sans', sans-serif; font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem; }
 
 .case-panel {
