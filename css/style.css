@@ -628,6 +628,9 @@ button { font-family: inherit; cursor: pointer; }
 /* Palette */
 .palette-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
 @media (min-width: 640px) { .palette-grid { grid-template-columns: repeat(4, 1fr); } }
+/* Palette à 3 couleurs : 3 colonnes pour éviter la case vide */
+.palette-grid-3 { grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 640px) { .palette-grid-3 { grid-template-columns: repeat(3, 1fr); } }
 .swatch { height: 6rem; border-radius: 2px; border: 1px solid rgba(22,21,19,0.1); }
 @media (min-width: 640px) { .swatch { height: 8rem; } }
 .swatch-name { font-family: 'Josefin Sans', sans-serif; font-weight: 500; font-size: 0.875rem; margin-top: 0.75rem; }
@@ -635,7 +638,7 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Typography specimen */
 .specimen-font { font-family: 'Josefin Sans', sans-serif; font-size: 0.875rem; font-weight: 600; color: var(--accent); }
-.specimen-sample { font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; word-break: break-word; margin-top: 1rem; }
+.specimen-sample { font-family: 'Chillax', sans-serif; font-size: clamp(1.5rem, 4vw, 3rem); font-weight: 700; letter-spacing: -0.02em; word-break: break-word; margin-top: 1rem; }
 .specimen-img { width: 100%; height: auto; border-radius: 2px; }
 
 /* Quote */
