@@ -2,6 +2,7 @@
   <rect width="100%" height="100%" fill="#F4F2ED"/>
   <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#161513" stroke-opacity="0.12" stroke-width="2"/>
   <text x="80" y="240" font-family="sans-serif" font-size="72" font-weight="bold" fill="#161513">VASILÍAS</text>
-  <text x="80" y="320" font-family="sans-serif" font-size="28" fill="#8A857C">Graphic &amp; Digital Designer — Freelance</text>
-  <text x="80" y="420" font-family="monospace" font-size="18" fill="#E14E1D">[À compléter : Image Open Graph finale]</text>
+  <text x="80" y="320" font-family="sans-serif" font-size="28" fill="#4a4740">Graphic &amp; Digital Designer — Freelance</text>
+  <text x="80" y="400" font-family="sans-serif" font-size="24" fill="#8A857C">Identité visuelle · Branding · Packaging · Design digital</text>
+  <text x="80" y="540" font-family="monospace" font-size="18" fill="#BF814B">Toamasina, Madagascar</text>
 </svg>
