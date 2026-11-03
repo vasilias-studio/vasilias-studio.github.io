@@ -16,8 +16,18 @@ document.addEventListener('DOMContentLoaded', function () {
         preloader.classList.add('hide');
         setTimeout(function () { preloader.remove(); }, 750);
         sessionStorage.setItem('vasilias_visited', 'true');
-      }, 1100);
+      }, 500);
     }
+  }
+
+  /* ---------- Reduced motion : figer les tracés SMIL du hero ---------- */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.hero-bg path').forEach(function (p) {
+      p.querySelectorAll('animate').forEach(function (a) { a.remove(); });
+      p.setAttribute('opacity', '0.3');
+      p.removeAttribute('stroke-dasharray');
+      p.setAttribute('stroke-dashoffset', '0');
+    });
   }
 
   /* ---------- Header scrolled state ---------- */
