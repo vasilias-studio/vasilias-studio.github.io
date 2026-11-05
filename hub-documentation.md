@@ -52,7 +52,7 @@ Aucune page n'est vide : tout élément non disponible techniquement (édition W
 | avertissement | `#A97600` (pastille) → badges `#7A5800`/`#FBF3DD` | états | 3,44 : 1 graphique ✓ / 5,88 : 1 texte ✓ *(cahier : `#E5A000` = 2,24 sur blanc → jamais en texte)* |
 | erreur | `#DC4545` → badges `#9B2C2C`/`#FBEAEA` | états | 6,47 : 1 ✓ |
 
-Typographie **Inter**, logo/titres éventuels Josefin Sans (clin d'œil marque). Grille 4/8 px, coins 8 px, ombres discrètes, **aucun glassmorphism**. Icônes : glyphes/SVG inline (aucune dépendance CDN bloquée par le preview sandboxé).
+Typographie **Inter**, logo/titres éventuels Josefin Sans (clin d'œil marque). Grille 4/8 px, coins 8 px, ombres discrètes, **aucun glassmorphism**. Icônes : **Material Symbols (Google Fonts Icons)** — 26 SVG inline officiels (`viewBox="0 -960 960 960"`, héritage `currentColor`), aucune police externe à charger : rendu garanti hors-ligne et dans tout aperçu sandboxé.
 Accessibilité : `:focus-visible` visible partout, `prefers-reduced-motion` respecté, info jamais portée par la couleur seule (points + libellés), contrastes AA vérifiés au calcul (valeurs ci-dessus), navigation clavier (Escape ferme les modales, ordre de tabulation naturel).
 
 ---
@@ -76,7 +76,7 @@ Accessibilité : `:focus-visible` visible partout, `prefers-reduced-motion` resp
 
 ## 6. Fonctions testées vs à connecter
 
-**Testées (34/34 automatisés + syntaxe `node --check` + service HTTP 200)** : empreinte SHA-256 du code actuel, 5 statuts + migration `review→incomplete`, export v3 (meta/seo/checklist), les 10 vues et leurs rendus, session 12 h, afficher/masquer, zéro code en clair, zéro stat fictive.
+**Testées (51/51 automatisés + syntaxe `node --check` + service HTTP 200)** : empreinte SHA-256 du code actuel, 5 statuts + migration `review→incomplete`, export v3 (meta/seo/checklist), les 10 vues et leurs rendus, session 12 h, afficher/masquer, zéro code en clair, zéro stat fictive.
 **À connecter (hors périmètre site statique, documenté)** : comptes serveur/SSO, édition WYSIWYG répercutée dans le HTML sans commit, surveillance continue (cron externe), base de données.
 
 ## 7. Maintenance
