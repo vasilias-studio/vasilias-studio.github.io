@@ -821,7 +821,7 @@ body.home-v2 .wordmark{text-transform:uppercase}
 body.home-v2 .site-header.scrolled{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 1px 0 rgba(22,21,19,.08)}
 body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F0;padding:.6rem 1.15rem;border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:600}
 .h2-sec{padding:clamp(4rem,8vw,6.5rem) 5.5vw;background:#fff;color:#161513}
-.h2-title{font-family:'Archivo','Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.9rem,3.4vw,3.3rem);line-height:1.08;letter-spacing:-0.015em;margin:0}
+.h2-title{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.9rem,3.4vw,3.3rem);line-height:1.08;letter-spacing:-0.015em;margin:0}
 .h2-title-xl{text-transform:uppercase;font-size:clamp(2rem,3.6vw,3.6rem)}
 .h2-btn{display:inline-flex;align-items:center;gap:.5rem;background:#161513;color:#fff;text-decoration:none;text-transform:uppercase;font-size:.72rem;font-weight:600;letter-spacing:.09em;padding:1rem 1.7rem;border-radius:2px;transition:background .2s ease}
 .h2-btn:hover{background:var(--accent);color:#fff}
@@ -829,9 +829,9 @@ body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F
 
 /* --- Hero : statue + nom géant --- */
 .h2-hero{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;background:#fff}
-.h2-word{position:absolute;left:50%;bottom:-0.14em;transform:translateX(-50%);margin:0;font-family:'Archivo','Josefin Sans',sans-serif;font-weight:800;font-size:23vw;line-height:.8;letter-spacing:-0.02em;color:#161513;white-space:nowrap;z-index:1;user-select:none}
+.h2-word{position:absolute;left:50%;bottom:-0.14em;transform:translateX(-50%);margin:0;font-family:'Josefin Sans',sans-serif;font-weight:800;font-size:23vw;line-height:.8;letter-spacing:-0.02em;color:#161513;white-space:nowrap;z-index:1;user-select:none}
 .h2-statue{position:absolute;left:50%;bottom:-13%;transform:translateX(-50%);height:88%;z-index:2;margin:0;display:block}
-.h2-statue img{height:100%;width:auto;display:block}
+.h2-statue img{height:100%;width:auto;max-width:none;max-height:none;display:block}
 @media(max-width:720px){.h2-word{font-size:27vw;bottom:-0.26em}.h2-statue{height:70%;bottom:-5%}}
 
 /* --- Moi --- */
@@ -839,26 +839,32 @@ body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F
 .h2-moi .h2-title{font-size:clamp(1.7rem,3.1vw,3rem)}
 .h2-moi .h2-sub{margin:1.6rem 0 2rem;font-size:clamp(.82rem,1vw,.95rem);line-height:1.65;color:var(--muted);max-width:33rem}
 .h2-moi-media{margin:0;display:block;text-align:center}
-.h2-moi-media img{width:auto;height:auto;max-width:100%;max-height:min(80vh,700px);margin:auto;display:inline-block;align-self:end}
+.h2-moi-media img{width:auto;height:auto;max-width:100%;max-height:min(80vh,700px);margin:auto;display:inline-block;transform:scaleX(-1)}
 @media(max-width:860px){.h2-moi-grid{grid-template-columns:1fr}.h2-moi-media{order:-1;margin-bottom:.5rem}}
 
-/* --- Process : timeline zigzag --- */
-.h2-steps{list-style:none;margin:clamp(2.6rem,5vw,4.5rem) auto 0;max-width:1220px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;position:relative}
-.h2-steps::before{content:"";position:absolute;top:0.45rem;left:0;right:0;height:1px;background:#161513}
-.h2-step{position:relative;padding-top:3.2rem;margin:0}
-.h2-step::before{content:"";position:absolute;top:0.45rem;left:2px;width:1px;height:2.75rem;background:#161513}
-.h2-step:nth-child(2){margin-top:-2.6rem}
-.h2-step:nth-child(2)::before{top:3.3rem;height:2rem}
-.h2-step:nth-child(4){margin-top:3.6rem}
-.h2-step:nth-child(4)::before{top:-3.15rem;height:6.35rem}
-.h2-num{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(1.9rem,2.8vw,2.9rem);color:var(--accent);line-height:1;color:var(--accent);margin-bottom:1.1rem}
-.h2-step-t{font-family:'Archivo',sans-serif;font-size:clamp(1.15rem,1.7vw,1.6rem);font-weight:700;line-height:1.15;margin:0 0 .9rem}
-.h2-step-d{margin:0;font-size:.82rem;line-height:1.6;color:var(--muted);max-width:15rem}
-@media(max-width:960px){
-  .h2-steps{grid-template-columns:1fr;gap:2.4rem;max-width:34rem}
-  .h2-steps::before{top:0;bottom:0;left:3px;right:auto;width:1px;height:auto}
-  .h2-step{margin:0!important;padding:0 0 0 2.2rem}
-  .h2-step::before{top:0.6rem;left:-1.79rem;width:1.8rem;height:1px}
+/* --- Process : reproduction exacte de la maquette (coordonnées 1920x1639) --- */
+.h2-stage{position:relative;width:100%;max-width:1500px;margin:clamp(2rem,4vw,3.5rem) auto 0;aspect-ratio:1920/1639;container-type:size}
+.h2-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.h2-lines path{stroke:#161513;stroke-width:2.5;fill:none;stroke-linecap:square}
+.h2-step{position:absolute;margin:0;width:21.9cqw}
+.h2-step .h2-num{display:block;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:4.55cqw;line-height:1;color:var(--accent)}
+.h2-step-t{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:2.5cqw;line-height:.95;margin:1.9cqw 0 0;width:27cqw}
+.h2-step-d{margin:1.5cqw 0 0;font-size:1.05cqw;line-height:1.35;color:var(--muted)}
+.h2-step.s1{left:10.4%;top:48.7%}
+.h2-step.s2{left:38.9%;top:26.5%}
+.h2-step.s3{left:67.45%;top:48.3%}
+.h2-step.s4{left:38.95%;top:70.8%}
+.h2-process .h2-center{position:absolute;left:50%;top:58.05%;transform:translate(-50%,-50%);margin:0}
+.h2-process .h2-center .h2-btn{font-family:'Josefin Sans',sans-serif;font-size:.92cqw;letter-spacing:.08em;padding:1.23cqw 1.35cqw}
+@media(max-width:900px){
+  .h2-stage{aspect-ratio:auto;max-width:34rem;container-type:normal;display:grid;gap:2.4rem}
+  .h2-lines{display:none}
+  .h2-step{position:relative!important;left:auto!important;top:auto!important;width:auto;padding-left:2.2rem;border-left:1.5px solid #161513}
+  .h2-step .h2-num{font-size:2.4rem}
+  .h2-step-t{font-size:1.35rem}
+  .h2-step-d{font-size:.85rem}
+  .h2-process .h2-center{position:static;transform:none;text-align:left;margin-top:2.4rem;padding-left:2.2rem}
+  .h2-process .h2-center .h2-btn{font-size:.8rem;letter-spacing:.08em;padding:.85rem 1.2rem}
 }
 
 /* --- Projets : ruban horizontal --- */
@@ -872,7 +878,7 @@ body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F
 .h2-card{flex:0 0 min(31rem,76vw);text-decoration:none;color:inherit;display:block}
 .h2-card-media{display:block;aspect-ratio:16/9;background:#0B0B0E;border:1px solid rgba(22,21,19,.12);overflow:hidden}
 .h2-card-media img{width:100%;height:100%;object-fit:contain;display:block}
-.h2-card-t{display:block;font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.2rem,1.8vw,1.7rem);text-transform:uppercase;margin:1.1rem 0 .45rem;letter-spacing:-0.01em}
+.h2-card-t{display:block;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.2rem,1.8vw,1.7rem);text-transform:uppercase;margin:1.1rem 0 .45rem;letter-spacing:-0.01em}
 .h2-card:hover .h2-card-t{text-decoration:underline;text-underline-offset:.18em}
 .h2-card-d{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.8rem;line-height:1.5}
 .h2-tags{display:flex;gap:.55rem;flex-wrap:wrap}
@@ -882,7 +888,7 @@ body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F
 .h2-rows{margin-top:clamp(2.5rem,5vw,4rem)}
 .h2-row{display:grid;grid-template-columns:1.15fr 1fr;gap:2rem;align-items:start;padding:clamp(2.2rem,3.4vw,3.6rem) 0;border-top:1px solid rgba(22,21,19,.25);color:inherit;text-decoration:none;transition:background .2s ease}
 .h2-row:last-child{border-bottom:1px solid rgba(22,21,19,.25)}
-.h2-row-t{font-family:'Archivo',sans-serif;font-weight:700;font-size:clamp(1.35rem,2.6vw,2.5rem);text-transform:uppercase;letter-spacing:-0.01em;line-height:1.05;transition:transform .25s ease}
+.h2-row-t{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.35rem,2.6vw,2.5rem);text-transform:uppercase;letter-spacing:-0.01em;line-height:1.05;transition:transform .25s ease}
 .h2-row-d{font-size:.85rem;line-height:1.6;color:var(--muted);max-width:30rem}
 .h2-row.even{grid-template-columns:1fr 1.15fr}
 .h2-row.even .h2-row-t{order:2;text-align:end;justify-self:end}
