@@ -8,150 +8,207 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Josefin+Sans:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ============================================================
+   DESIGN SYSTEM HUB v3 — palette cahier des charges adaptée WCAG AA
+   (écarts documentés : secondaire #646C76 ≥4.5:1 ; statuts en pastels
+   avec textes foncés AA ; #E5A000 jamais en texte sur blanc)
+============================================================ */
 :root{
-  --bg:#F2E9D8; --ink:#161513; --muted:#6A665C; --line:rgba(22,21,19,.12);
-  --accent:#BF814B; --accent-text:#8F5A22; --surface:#ECE9E2;
-  --ok:#1e7d43; --warn:#b45309; --err:#b91c1c; --info:#1d4ed8;
+  --bg:#F7F8FA; --surface:#FFFFFF; --ink:#17191C; --sub:#646C76;
+  --line:#E8EAED; --accent:#1C2E1F; --accent-soft:#E3EDE4;
+  --ok:#0E6B45; --ok-bg:#E8F5EE; --ok-dot:#16A36A;
+  --warn:#7A5800; --warn-bg:#FBF3DD; --warn-dot:#A97600;
+  --err:#9B2C2C; --err-bg:#FBEAEA; --err-dot:#DC4545;
+  --mut:#4A5560; --mut-bg:#EEF0F3;
+  --r:8px; --shadow:0 1px 2px rgba(23,25,28,.05);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
-body{font-family:'Josefin Sans',sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
-button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
-a{color:var(--accent-text);text-decoration:none}
+body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent);text-decoration:none;font-weight:500}
 a:hover{text-decoration:underline}
-:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:3px}
-h1{font-size:1.35rem;font-weight:700;text-transform:uppercase;letter-spacing:-.02em}
-h2{font-size:.8125rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
-.mono{font-size:.8125rem;color:var(--muted)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .hidden{display:none!important}
+small.mut{color:var(--sub);font-size:.8125rem;display:block}
 
-/* ---------- Verrou ---------- */
-#lock{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;align-items:center;justify-content:center;padding:1.5rem}
-#lock .box{max-width:340px;width:100%;text-align:center}
-#lock input{width:100%;padding:.9rem 1rem;font-size:1.05rem;text-align:center;letter-spacing:.3em;border:1px solid var(--line);border-radius:6px;background:#fff;margin:1.25rem 0}
-#lock .err{color:var(--err);font-size:.8125rem;min-height:1.4em}
+/* ---------- Écran d'accès ---------- */
+#lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:var(--bg)}
+#lock .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);max-width:380px;width:100%;padding:2rem}
+#lock .logo{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.3rem;text-transform:uppercase;letter-spacing:.02em}
+#lock .tag{display:inline-block;margin-top:.35rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);background:var(--accent-soft);padding:.2rem .6rem;border-radius:99px}
+.field{margin-top:1.25rem}
+.field label{display:block;font-size:.8125rem;font-weight:600;margin-bottom:.4rem}
+.field .wrap{position:relative}
+.field input{width:100%;padding:.7rem .9rem;border:1px solid var(--line);border-radius:var(--r);background:var(--bg);font-size:.95rem}
+.field input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+.field .eye{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--sub);padding:.35rem;border-radius:4px}
+.lock-msg{margin-top:.5rem;font-size:.8125rem;min-height:1.5em;color:var(--sub)}
+.lock-msg.err-txt{color:var(--err)}
+#lock .btn-full{width:100%;justify-content:center;margin-top:1rem}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:.4rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
 /* ---------- Layout ---------- */
 #app{display:flex;min-height:100vh}
-.sidebar{width:230px;background:var(--ink);color:var(--bg);padding:1.5rem 1rem;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;gap:2px;z-index:40;transition:transform .25s ease}
-.sidebar .brand{font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem 1.25rem;display:block}
-.sidebar button.nav{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:none;border:none;color:rgba(242,233,216,.75);padding:.6rem .75rem;border-radius:6px;cursor:pointer;font-size:.9rem}
-.sidebar button.nav:hover{background:rgba(255,255,255,.08);color:#fff}
-.sidebar button.nav.active{background:var(--accent);color:var(--ink);font-weight:600}
-.sidebar .foot{margin-top:auto;font-size:.6875rem;color:rgba(242,233,216,.5);padding:.5rem .75rem}
-.main{flex:1;margin-left:230px;min-width:0}
-.topbar{position:sticky;top:0;z-index:30;background:rgba(242,233,216,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;flex-wrap:wrap}
-.topbar .spacer{flex:1}
-.content{padding:1.75rem 1.5rem 4rem;max-width:1100px}
-#burger{display:none;position:fixed;top:.85rem;left:.85rem;z-index:50;background:var(--ink);color:var(--bg);border:none;border-radius:6px;padding:.55rem .8rem;cursor:pointer;font-size:1rem}
+.sidebar{width:228px;background:var(--surface);border-right:1px solid var(--line);position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;padding:1rem .75rem;z-index:40;transition:transform .22s ease}
+.sidebar .brand{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;padding:.4rem .6rem 1.1rem;display:flex;align-items:center;gap:.5rem}
+.sidebar .brand .sq{width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;flex:none}
+.nav-btn{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:none;border:none;color:var(--sub);padding:.5rem .6rem;border-radius:6px;cursor:pointer;font-size:.875rem;font-weight:500;margin:.05rem 0}
+.nav-btn:hover{background:var(--bg);color:var(--ink)}
+.nav-btn.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav-btn .ic{width:16px;text-align:center;flex:none;opacity:.85}
+.sidebar .grow{flex:1}
+.userbox{border-top:1px solid var(--line);padding:.75rem .6rem 0}
+.userbox .dot-on{color:var(--ok-dot);font-size:.7rem}
+.main{flex:1;margin-left:228px;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem}
+.topbar h1{font-size:1.05rem;font-weight:700}
+.topbar .date{color:var(--sub);font-size:.8125rem}
+.content{padding:1.5rem;max-width:1080px;width:100%;margin:0 auto}
+#burger{display:none;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:.4rem .7rem;cursor:pointer;font-size:1rem}
 @media(max-width:860px){
-  #burger{display:block}
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .sidebar{transform:translateX(-102%)}
+  .sidebar.open{transform:none;box-shadow:0 8px 30px rgba(0,0,0,.12)}
   .main{margin-left:0}
-  .content{padding:4rem 1rem 4rem}
+  #burger{display:inline-block}
+  .content{padding:1rem}
 }
 
 /* ---------- Composants ---------- */
-.card{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.25rem}
-.stat{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1rem;cursor:pointer;text-align:left;transition:border-color .2s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:1.25rem;margin-bottom:1.25rem}
+.card h2{font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--sub);margin-bottom:.75rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1.25rem}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem;cursor:pointer;text-align:left;box-shadow:var(--shadow);transition:border-color .15s}
 .stat:hover{border-color:var(--accent)}
-.stat .v{font-size:1.6rem;font-weight:700}
-.stat .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.7rem 1.3rem;border-radius:999px;font-size:.8125rem;text-transform:uppercase;letter-spacing:.06em;border:1px solid transparent;cursor:pointer;font-weight:600;background:none}
-.btn-dark{background:var(--ink);color:var(--bg)}.btn-dark:hover{opacity:.88}
-.btn-outline{border-color:var(--line)}.btn-outline:hover{border-color:var(--ink)}
-.btn-accent{background:var(--accent);color:var(--ink)}.btn-accent:hover{opacity:.88}
-.btn-danger{color:var(--err);border-color:var(--err)}.btn-danger:hover{background:var(--err);color:#fff}
-.btn-sm{padding:.4rem .85rem;font-size:.75rem}
-.pill{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .65rem;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.pill.ok{color:var(--ok);border-color:var(--ok)}.pill.warn{color:var(--warn);border-color:var(--warn)}
-.pill.err{color:var(--err);border-color:var(--err)}.pill.mut{color:var(--muted)}.pill.info{color:var(--info);border-color:var(--info)}
-.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line)}
+.stat .v{font-size:1.7rem;font-weight:700;line-height:1.15}
+.stat .l{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--sub)}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1rem;border-radius:7px;font-size:.875rem;font-weight:600;border:1px solid transparent;cursor:pointer;text-decoration:none;background:none;line-height:1.4}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{opacity:.92;text-decoration:none}
+.btn-ghost{border-color:var(--line);background:var(--surface)}.btn-ghost:hover{border-color:var(--sub);text-decoration:none}
+.btn-danger{color:var(--err);border-color:#EFC2C2;background:var(--surface)}.btn-danger:hover{background:var(--err-bg);text-decoration:none}
+.btn-sm{padding:.32rem .7rem;font-size:.8125rem}
+.pill{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:600;padding:.15rem .6rem;border-radius:99px;border:1px solid;white-space:nowrap}
+.pill.ok{color:var(--ok);background:var(--ok-bg);border-color:#BFE3D2}
+.pill.warn{color:var(--warn);background:var(--warn-bg);border-color:#EBD9A8}
+.pill.err{color:var(--err);background:var(--err-bg);border-color:#EFC2C2}
+.pill.neut{color:var(--mut);background:var(--mut-bg);border-color:var(--line)}
+.pill.info{color:var(--accent);background:var(--accent-soft);border-color:#C9D8CB}
+.dot{width:7px;height:7px;border-radius:50%;flex:none}
+.dot.ok{background:var(--ok-dot)}.dot.warn{background:var(--warn-dot)}.dot.err{background:var(--err-dot)}.dot.neut{background:#9AA3AC}
+table{width:100%;border-collapse:collapse;font-size:.875rem}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);font-weight:600}
 td{padding:.6rem;border-bottom:1px solid var(--line);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-input[type=text],input[type=url],input[type=password],input[type=number],select,textarea{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:6px;background:#fff}
-textarea{min-height:90px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--ink);outline-offset:1px}
-label.lbl{display:block;font-size:.8125rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:.9rem 0 .35rem}
-.help{font-size:.8125rem;color:var(--muted);margin-top:.25rem}
+tbody tr:last-child td{border-bottom:none}
+input[type=text],input[type=url],input[type=password],input[type=number],select,textarea{width:100%;padding:.55rem .75rem;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-size:.875rem}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+label.lbl{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--sub);margin:.85rem 0 .3rem}
 .req::after{content:" *";color:var(--err)}
-.toolbar{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
-.toolbar input,.toolbar select{width:auto;min-width:160px}
+.help{font-size:.8125rem;color:var(--sub);margin-top:.3rem}
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.toolbar input,.toolbar select{width:auto;min-width:150px}
 .spacer{flex:1}
-.check{display:flex;align-items:flex-start;gap:.7rem;padding:.5rem 0;cursor:pointer}
-.check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent-text);flex:none}
-.check input:checked ~ span.txt{text-decoration:line-through;color:var(--muted)}
-.progress{height:8px;background:var(--surface);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
-.progress > div{height:100%;background:var(--accent);width:0;transition:width .3s}
-.alert-item{display:flex;gap:.7rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
-.alert-item:last-child{border-bottom:none}
-.chip{font-size:.75rem;padding:.15rem .55rem;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.55)}
-/* toasts */
-#toasts{position:fixed;bottom:1.25rem;right:1.25rem;z-index:80;display:flex;flex-direction:column;gap:.5rem;max-width:320px}
-.toast{background:var(--ink);color:var(--bg);padding:.8rem 1.1rem;border-radius:6px;font-size:.875rem;box-shadow:0 6px 20px rgba(0,0,0,.18)}
-.toast.ok{border-left:4px solid var(--ok)}.toast.err{border-left:4px solid var(--err)}.toast.warn{border-left:4px solid var(--warn)}
-/* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(22,21,19,.45);z-index:70;display:flex;align-items:flex-start;justify-content:center;padding:3rem 1rem;overflow:auto}
-.modal{background:var(--bg);border-radius:8px;max-width:640px;width:100%;padding:1.5rem;border:1px solid var(--line)}
+.check{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem 0;cursor:pointer}
+.check input{width:17px;height:17px;margin-top:2px;accent-color:var(--accent);flex:none}
+.check input:checked ~ .txt{text-decoration:line-through;color:var(--sub)}
+.progress{height:8px;background:var(--mut-bg);border-radius:99px;overflow:hidden}
+.progress > div{height:100%;background:var(--accent);width:0;transition:width .25s}
+.item{display:flex;gap:.7rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.875rem}
+.item:last-child{border-bottom:none}
+.empty{padding:1.75rem;text-align:center;color:var(--sub);font-size:.875rem;border:1px dashed var(--line);border-radius:var(--r)}
+.grid2{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 1fr}}
+#toasts{position:fixed;bottom:1rem;right:1rem;z-index:80;display:flex;flex-direction:column;gap:.5rem;max-width:330px}
+.toast{background:var(--ink);color:#fff;padding:.7rem 1rem;border-radius:8px;font-size:.85rem;box-shadow:0 6px 20px rgba(0,0,0,.18);border-left:4px solid var(--mut)}
+.toast.ok{border-left-color:var(--ok-dot)}.toast.err{border-left-color:var(--err-dot)}.toast.warn{border-left-color:var(--warn-dot)}
+.modal-bg{position:fixed;inset:0;background:rgba(23,25,28,.4);z-index:70;display:flex;align-items:flex-start;justify-content:center;padding:2.5rem 1rem;overflow:auto}
+.modal{background:var(--surface);border-radius:10px;max-width:660px;width:100%;padding:1.4rem;border:1px solid var(--line);box-shadow:0 10px 40px rgba(0,0,0,.15)}
 .modal h3{font-size:1.05rem;margin-bottom:.5rem}
-.modal .foot{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.modal .foot{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
 .modal img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px}
-.empty{padding:2rem;text-align:center;color:var(--muted);font-size:.9rem}
-.logout{color:inherit;background:none;border:1px solid rgba(242,233,216,.35);border-radius:999px;padding:.35rem .8rem;font-size:.75rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
-.logout:hover{background:rgba(255,255,255,.1)}
-.dirty-pill{background:var(--warn);color:#fff}
-pre.export{background:var(--ink);color:var(--bg);padding:1rem;border-radius:6px;overflow:auto;font-size:.78rem;max-height:260px;white-space:pre-wrap;word-break:break-word}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.75rem}
+.mtile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;text-align:left;padding:0;box-shadow:var(--shadow)}
+.mtile:hover{border-color:var(--accent)}
+.mtile .thumb{height:110px;background:var(--bg) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.7rem;font-weight:600;border-bottom:1px solid var(--line)}
+.mtile .inf{padding:.5rem .6rem}
+.mtile .nm{font-size:.75rem;font-weight:600;word-break:break-all}
+.mtile .pz{font-size:.7rem;color:var(--sub)}
+details.technical{margin-top:.5rem}
+details.technical summary{cursor:pointer;font-size:.8125rem;color:var(--sub);font-weight:600}
+pre.exp{background:#101418;color:#C9D4C2;padding:.9rem;border-radius:8px;overflow:auto;font-size:.75rem;max-height:230px;white-space:pre-wrap;word-break:break-word}
+.social-card{border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:420px}
+.social-card .img{height:180px;background:var(--accent-soft) center/cover;display:flex;align-items:center;justify-content:center;color:var(--sub);font-size:.75rem}
+.social-card .body{padding:.8rem .9rem;background:var(--surface)}
+.social-card .t{font-weight:700;font-size:.9rem}
+.social-card .d{font-size:.8rem;color:var(--sub)}
+.social-card .u{font-size:.72rem;color:var(--sub);margin-top:.3rem;text-transform:uppercase;letter-spacing:.04em}
+.sessionexp{font-size:.75rem;color:var(--sub)}
 </style>
 </head>
 <body>
 
+<!-- ============ ÉCRAN D'ACCÈS ============ -->
 <div id="lock">
-  <div class="box">
-    <h1 style="font-size:1.5rem">Vasilías Studio</h1>
-    <p class="mono" style="margin-top:.5rem">Hub d'administration — accès restreint</p>
-    <input type="password" id="code" inputmode="numeric" autocomplete="off" placeholder="Code" aria-label="Code d'accès">
-    <button class="btn btn-dark" id="unlock" style="width:100%;justify-content:center">Entrer</button>
-    <p class="err" id="lockerr" role="alert"></p>
-    <p class="mono" style="margin-top:1rem;font-size:.75rem">Le code est vérifié par empreinte SHA-256 (jamais stocké en clair). Verrou de confort : il décourage les curieux, ce n'est pas une sécurité serveur.</p>
+  <div class="panel">
+    <span class="logo">Vasilías <span style="color:var(--sub)">·</span> Hub</span>
+    <span class="tag">Espace privé</span>
+    <p class="small mut" style="font-size:.875rem;color:var(--sub);margin-top:.75rem">Espace de gestion du portfolio. Accès réservé à l'administrateur.</p>
+    <div class="field">
+      <label for="code">Code d'accès</label>
+      <div class="wrap">
+        <input type="password" id="code" inputmode="numeric" autocomplete="off" placeholder="••••" aria-describedby="lockmsg">
+        <button type="button" class="eye" id="toggleEye" aria-label="Afficher le code">👁</button>
+      </div>
+      <p class="lock-msg" id="lockmsg" role="status"></p>
+    </div>
+    <button class="btn btn-primary btn-full" id="unlock"><span id="unlockLbl">Déverrouiller</span></button>
+    <p class="small mut" style="font-size:.72rem;color:var(--sub);margin-top:1rem;line-height:1.6">
+      Vérifié par empreinte SHA-256 — le code n'est jamais stocké.
+      Verrou de confort côté navigateur, <strong>pas une sécurité serveur</strong> (détail : Paramètres → Architecture).
+    </p>
   </div>
 </div>
 
-<button id="burger" aria-label="Ouvrir le menu">☰</button>
-
+<!-- ============ APPLICATION ============ -->
 <div id="app" class="hidden">
   <nav class="sidebar" id="sidebar" aria-label="Navigation du hub">
-    <span class="brand">Vasilías — Hub</span>
-    <button class="nav" data-view="dashboard">▦ Tableau de bord</button>
-    <button class="nav" data-view="projects">◈ Projets</button>
-    <button class="nav" data-view="content">✎ Contenu des pages</button>
-    <button class="nav" data-view="media">▤ Bibliothèque média</button>
-    <button class="nav" data-view="seo">◎ SEO & partage</button>
-    <button class="nav" data-view="watch">♥ Surveillance</button>
-    <button class="nav" data-view="checklist">☑ Checklist</button>
-    <button class="nav" data-view="history">↺ Historique</button>
-    <button class="nav" data-view="profiles">☰ Profils & liens</button>
-    <button class="nav" data-view="settings">⚙ Paramètres</button>
-    <div class="foot">
-      Hub v2.0 · données réelles<br>
-      <button class="logout" id="btnLogout" style="margin-top:.6rem">Se déconnecter</button>
+    <span class="brand"><span class="sq">V</span> Vasilías · Hub</span>
+    <button class="nav-btn" data-view="dashboard"><span class="ic">▦</span> Vue d'ensemble</button>
+    <button class="nav-btn" data-view="projects"><span class="ic">◈</span> Projets</button>
+    <button class="nav-btn" data-view="content"><span class="ic">✎</span> Contenus</button>
+    <button class="nav-btn" data-view="media"><span class="ic">▤</span> Médiathèque</button>
+    <button class="nav-btn" data-view="skills"><span class="ic">✦</span> Compétences</button>
+    <button class="nav-btn" data-view="seo"><span class="ic">◎</span> SEO &amp; partage</button>
+    <button class="nav-btn" data-view="watch"><span class="ic">♥</span> Surveillance</button>
+    <button class="nav-btn" data-view="publish"><span class="ic">↑</span> Publication</button>
+    <button class="nav-btn" data-view="history"><span class="ic">↺</span> Historique &amp; sauvegardes</button>
+    <button class="nav-btn" data-view="settings"><span class="ic">⚙</span> Paramètres</button>
+    <div class="grow"></div>
+    <div class="userbox">
+      <div style="font-size:.85rem;font-weight:600"><span class="dot-on">●</span> Session active</div>
+      <div class="sessionexp" id="sessionExp"></div>
+      <button class="btn btn-ghost btn-sm" id="btnLogout" style="margin-top:.5rem;width:100%;justify-content:center">Se déconnecter</button>
+      <small class="mut" style="font-size:.68rem;margin-top:.5rem">Hub v3 · GitHub Pages</small>
     </div>
   </nav>
 
   <div class="main">
     <div class="topbar">
-      <h1 id="viewTitle">Tableau de bord</h1>
+      <button id="burger" aria-label="Ouvrir le menu">☰</button>
+      <h1 id="viewTitle">Vue d'ensemble</h1>
+      <span class="date" id="today"></span>
       <div class="spacer"></div>
-      <span class="pill warn hidden" id="dirtyPill"><span class="dot"></span>Modifs non exportées</span>
-      <button class="btn btn-outline btn-sm" id="quickExport">Exporter les données</button>
-      <span class="pill mut" id="notifPill" title="Notifications">🔔 0</span>
+      <span class="pill warn hidden" id="dirtyPill"><span class="dot warn"></span>Non exporté</span>
+      <button class="pill neut" id="notifPill" style="cursor:pointer;border:none;background:var(--mut-bg)">🔔 <span id="notifN">0</span></button>
+      <button class="btn btn-primary btn-sm" id="quickExport">Exporter</button>
     </div>
-    <div class="content" id="view"><p class="mono">Chargement des données réelles…</p></div>
+    <div class="content" id="view" aria-live="polite"><p>Chargement des données réelles…</p></div>
   </div>
 </div>
 
@@ -160,116 +217,70 @@ pre.export{background:var(--ink);color:var(--bg);padding:1rem;border-radius:6px;
 <script>
 'use strict';
 /* ============================================================
-   HUB VASILÍAS STUDIO v2 — local-first, zéro secret côté client.
-   Données : hub-data.json (dépôt) + modifications en localStorage.
-   Publication sur le site public = export JSON + commit Git (voir Paramètres).
-   ============================================================ */
+   HUB v3 — local-first, données réelles, zéro secret côté client.
+   Publication sur le site public : export + commit Git (documenté).
+============================================================ */
+var ACCESS_SHA256='158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab'; // empreinte SHA-256 du code — jamais le code
+var SESSION_HOURS=12;
+var LS={data:'hub2_data',journal:'hub2_journal',checklist:'hub2_checklist',watch:'hub2_watch',alerts:'hub2_alerts',session:'hub2_ok',att:'hub2_attempts',hist:'hub2_watchhist',alts:'hub2_alts',seo:'hub2_seo',view:'hub2_viewmode',snaps:'hub2_snaps'};
+var CATEGORIES=['Branding','Identité visuelle','Design graphique','Réseaux sociaux','Packaging','UI/UX','3D','Éditorial','Autre'];
+var NATURES=['Projet client','Projet personnel','Concept fictif','Exercice','Collaboration','À confirmer'];
+var STATUSES={draft:'Brouillon',incomplete:'À compléter',ready:'Prêt à publier',published:'Publié',archived:'Archivé'};
+var STATUS_PILL={draft:'neut',incomplete:'warn',ready:'info',published:'ok',archived:'neut'};
 
-var ACCESS_SHA256 = '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab'; // empreinte du code — pas le code
-var LS = {
-  data:'hub2_data', journal:'hub2_journal', checklist:'hub2_checklist',
-  watch:'hub2_watch', alerts:'hub2_alerts', session:'hub2_ok', attempts:'hub2_attempts'
-};
-var CATEGORIES = ['Branding','Identité visuelle','Design graphique','Réseaux sociaux','Packaging','UI/UX','3D','Éditorial','Autre'];
-var NATURES = ['Projet client','Projet personnel','Concept fictif','Exercice','Collaboration','À confirmer'];
-var STATUSES = {published:'Publié', draft:'Brouillon', review:'En révision', archived:'Archivé'};
+var store={data:null,dirty:false,journal:[],checklist:[],watchCfg:[],watchHist:{},alerts:[],seo:{}};
 
-var store = {
-  data:null, // données fusionnées (json + delta local)
-  dirty:false,
-  journal:[], checklist:[], watchCfg:[], watchHist:{}, alerts:[]
-};
-
-/* ---------- utilitaires ---------- */
+/* ---------- utils ---------- */
 function $(s,c){return (c||document).querySelector(s)}
 function $all(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function slugify(t){return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
 function fmtBytes(b){if(b<1024)return b+' o';if(b<1048576)return (b/1024).toFixed(1)+' Ko';return (b/1048576).toFixed(1)+' Mo'}
-function today(){return new Date().toISOString().slice(0,10)}
-function toast(msg,type){var t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;$('#toasts').appendChild(t);setTimeout(function(){t.remove()},4200)}
-function lsGet(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function toast(m,t){var d=document.createElement('div');d.className='toast '+(t||'');d.textContent=m;$('#toasts').appendChild(d);setTimeout(function(){d.remove()},4200)}
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function lsSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
-
-/* ---------- notifications internes ---------- */
-function notify(msg,type,view){
-  store.alerts.unshift({ts:new Date().toISOString(),msg:msg,type:type||'info',view:view||null});
-  if(store.alerts.length>80)store.alerts.length=80;
-  lsSet(LS.alerts,store.alerts); renderNotifPill();
-}
-function renderNotifPill(){
-  var unread=store.alerts.filter(function(a){return !a.read}).length;
-  $('#notifPill').textContent='🔔 '+unread;
-}
-function markAlertsRead(){store.alerts.forEach(function(a){a.read=true});lsSet(LS.alerts,store.alerts);renderNotifPill()}
-
-/* ---------- journal d'actions ---------- */
-function log(action,target){
-  store.journal.unshift({ts:new Date().toISOString(),action:action,target:target||''});
-  if(store.journal.length>300)store.journal.length=300;
-  lsSet(LS.journal,store.journal);
-}
-
-/* ---------- persistance ---------- */
-function save(){
-  lsSet(LS.data,store.data);
-  store.dirty=true; $('#dirtyPill').classList.remove('hidden');
-}
+function log(action,target){store.journal.unshift({ts:new Date().toISOString(),action:action,target:target||''});if(store.journal.length>400)store.journal.length=400;lsSet(LS.journal,store.journal)}
+function notify(msg,type,view){store.alerts.unshift({ts:new Date().toISOString(),msg:msg,type:type||'info',view:view||null,read:false});if(store.alerts.length>80)store.alerts.length=80;lsSet(LS.alerts,store.alerts);renderNotif()}
+function renderNotif(){$('#notifN').textContent=store.alerts.filter(function(a){return !a.read}).length}
+function save(){lsSet(LS.data,store.data);store.dirty=true;$('#dirtyPill').classList.remove('hidden')}
 function markClean(){store.dirty=false;$('#dirtyPill').classList.add('hidden')}
+function pillFor(kind){var m={ok:'ok',warn:'warn',err:'err',neut:'neut',info:'info'};return m[kind]||'neut'}
 
-/* ---------- chargement ---------- */
-function loadAll(cb){
-  fetch('hub-data.json',{cache:'no-store'}).then(function(r){
-    if(!r.ok) throw new Error('hub-data.json introuvable ('+r.status+')');
-    return r.json();
-  }).then(function(base){
-    var delta = lsGet(LS.data,null);
-    store.data = delta || base;
-    store.journal = lsGet(LS.journal,[]);
-    store.checklist = lsGet(LS.checklist,[
-      {label:'Texte relu (orthographe, années, noms)',done:false,required:true},
-      {label:'Statut honnête du projet confirmé (concept / client)',done:false,required:true},
-      {label:'Images optimisées et textes alt renseignés',done:false,required:false},
-      {label:'Liens internes testés',done:false,required:true},
-      {label:'Contrôle mobile (menu, boutons, images)',done:false,required:false},
-      {label:'SEO : title + meta description renseignés',done:false,required:true},
-      {label:'Formulaire contact : message test envoyé et reçu',done:false,required:false}
-    ]);
-    store.watchCfg = lsGet(LS.watch,null) || base.watch.slice();
-    store.watchHist = lsGet('hub2_watchhist',{});
-    store.alerts = lsGet(LS.alerts,[]);
-    cb(null);
-  }).catch(function(e){ cb(e) });
+/* ---------- session (12 h, stockée en sessionStorage) ---------- */
+function sessionAlive(){
+  var s=lsGet(LS.session,null); /* sessionStorage stringify via helper? utilisons brut */
+  try{s=JSON.parse(sessionStorage.getItem('hub2_ok')||'null')}catch(e){s=null}
+  return !!(s&&s.ok&&Date.now()-s.ts<SESSION_HOURS*3600000);
 }
+function sessionStart(){sessionStorage.setItem('hub2_ok',JSON.stringify({ok:true,ts:Date.now()}))}
+function sessionEnd(){sessionStorage.removeItem('hub2_ok')}
 
-/* ---------- verrou (hash SHA-256 + limitation d'essais) ---------- */
-function sha256(t){
-  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){
-    return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('');
-  });
-}
+/* ---------- verrou ---------- */
+function sha256(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return('0'+x.toString(16)).slice(-2)}).join('')})}
 (function initLock(){
-  if(sessionStorage.getItem(LS.session)==='1'){enter();return}
-  var att=lsGet(LS.attempts,{n:0,until:0});
-  var input=$('#code');
-  function blocked(){
-    if(Date.now()<att.until){
-      $('#lockerr').textContent='Trop de tentatives. Réessayez dans '+Math.ceil((att.until-Date.now())/1000)+' s.';
-      return true;
-    } return false;
-  }
+  if(sessionAlive()){enter();return}
+  var att=lsGet(LS.att,{n:0,until:0}),input=$('#code');
+  $('#toggleEye').addEventListener('click',function(){
+    input.type=input.type==='password'?'text':'password';
+    $('#toggleEye').textContent=input.type==='password'?'👁':'🙈';
+    $('#toggleEye').setAttribute('aria-label',input.type==='password'?'Afficher le code':'Masquer le code');
+  });
   function tryUnlock(){
-    if(blocked())return;
+    var msg=$('#lockmsg');
+    if(Date.now()<att.until){msg.textContent='Trop de tentatives — réessayez dans '+Math.ceil((att.until-Date.now())/1000)+' s.';msg.className='lock-msg err-txt';return}
+    msg.textContent='Vérification…';msg.className='lock-msg';
+    $('#unlockLbl').innerHTML='<span class="spin"></span>Vérification';
+    $('#unlock').disabled=true;
     sha256(input.value.trim()).then(function(h){
-      if(h===ACCESS_SHA256){
-        sessionStorage.setItem(LS.session,'1');lsSet(LS.attempts,{n:0,until:0});enter();
-      }else{
-        att.n=(att.n||0)+1;
-        if(att.n>=5){att.until=Date.now()+60000;att.n=0;toast('Verrou temporaire : 1 minute','warn')}
-        lsSet(LS.attempts,att);
-        $('#lockerr').textContent='Code incorrect.';input.value='';input.focus();
+      if(h===ACCESS_SHA256){sessionStart();lsSet(LS.att,{n:0,until:0});enter()}
+      else{
+        att.n++;var left=5-att.n;
+        if(att.n>=5){att.until=Date.now()+60000;att.n=0;msg.textContent='Trop de tentatives — blocage 60 secondes.'}
+        else msg.textContent='Code incorrect.'+(left>0?' '+left+' essai(s) restant(s).':'');
+        msg.className='lock-msg err-txt';input.value='';input.focus();
       }
-    }).catch(function(){$('#lockerr').textContent='Navigateur trop ancien pour la vérification sécurisée.'});
+    }).catch(function(){$('#lockmsg').textContent='Votre navigateur ne supporte pas la vérification sécurisée (WebCrypto).';$('#lockmsg').className='lock-msg err-txt'})
+    .finally(function(){$('#unlockLbl').textContent='Déverrouiller';$('#unlock').disabled=false});
   }
   $('#unlock').addEventListener('click',tryUnlock);
   input.addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock()});
@@ -277,592 +288,547 @@ function sha256(t){
 
 function enter(){
   $('#lock').classList.add('hidden');$('#app').classList.remove('hidden');
+  $('#today').textContent=new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('#sessionExp').textContent='expire dans '+SESSION_HOURS+' h ou à la fermeture de l\'onglet';
   loadAll(function(err){
-    if(err){
-      $('#view').innerHTML='<div class="card"><p class="pill err">Erreur</p><p>'+esc(err.message)+'</p><p class="help">Le fichier hub-data.json doit être présent à la racine du site.</p></div>';
-      return;
-    }
-    renderNotifPill();
-    if(lsGet(LS.data,null)) $('#dirtyPill').classList.remove('hidden');
-    scanProjectAlerts();
-    bindNav();go('dashboard');
+    if(err){$('#view').innerHTML='<div class="card"><p class="pill err">Erreur de chargement</p><p style="margin-top:.5rem">'+esc(err.message)+'</p><p class="help">Vérifiez que hub-data.json est présent à la racine du site et que vous êtes connecté à internet.</p></div>';return}
+    renderNotif();
+    if(lsGet(LS.data,null))$('#dirtyPill').classList.remove('hidden');
+    migrateStatuses();scanAlerts();bindNav();go('dashboard');
   });
 }
-function scanProjectAlerts(){
+function migrateStatuses(){
+  var changed=false;
   store.data.projects.forEach(function(p){
-    if(p.status==='archived' && (!p.year || p.nature==='À confirmer')){
-      notify('Projet « '+p.title+' » archivé : informations manquantes (année, nature).','warn','projects');
-    }
+    if(p.status==='review'){p.status='incomplete';changed=true}
+    if(!STATUSES[p.status]){p.status='draft';changed=true}
   });
-  var missing=store.data.projects.filter(function(p){return p.status==='published'&&(!p.year||!p.nature)});
-  if(missing.length)notify(missing.length+' projet(s) publié(s) sans année ou nature.','warn','projects');
+  if(changed)save();
+}
+function scanAlerts(){
+  store.data.projects.forEach(function(p){
+    if((p.status==='incomplete')&&(!p.year||p.nature==='À confirmer'||!p.category||!p.category.length))
+      notify('Projet « '+p.title+' » à compléter : année, nature ou catégories manquantes.','warn','projects');
+  });
+}
+function bindNav(){
+  $all('.nav-btn').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.view);$('#sidebar').classList.remove('open')})});
+  $('#burger').addEventListener('click',function(){$('#sidebar').classList.toggle('open')});
+  $('#btnLogout').addEventListener('click',function(){sessionEnd();location.reload()});
+  $('#quickExport').addEventListener('click',exportData);
+  $('#notifPill').addEventListener('click',function(){go('dashboard');store.alerts.forEach(function(a){a.read=true});lsSet(LS.alerts,store.alerts);renderNotif()});
+}
+
+/* ---------- chargement des données ---------- */
+function loadAll(cb){
+  fetch('hub-data.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json();
+  }).then(function(base){
+    store.data=lsGet(LS.data,null)||base;
+    store.journal=lsGet(LS.journal,[]);
+    store.checklist=lsGet(LS.checklist,[
+      {label:'Texte relu (orthographe, années, noms)',done:false,required:true},
+      {label:'Type client / concept confirmé',done:false,required:true},
+      {label:'Année et rôle vérifiés',done:false,required:true},
+      {label:'Images définitives présentes, optimisées, avec texte alt',done:false,required:false},
+      {label:'Liens testés',done:false,required:true},
+      {label:'Affichage mobile vérifié (menu, boutons, images)',done:false,required:false},
+      {label:'SEO renseigné (title + meta description)',done:false,required:true},
+      {label:'Prévisualisation approuvée',done:false,required:false},
+      {label:'Déploiement terminé et page publique contrôlée',done:false,required:false}
+    ]);
+    store.watchCfg=lsGet(LS.watch,null)||base.watch.slice();
+    store.watchHist=lsGet(LS.hist,{});
+    store.alerts=lsGet(LS.alerts,[]);
+    store.seo=lsGet(LS.seo,{});
+    cb(null);
+  }).catch(cb);
 }
 
 /* ---------- navigation ---------- */
-var VIEWS={dashboard:'Tableau de bord',projects:'Projets',content:'Contenu des pages',media:'Bibliothèque média',seo:'SEO & partage',watch:'Surveillance',checklist:'Checklist',history:'Historique',profiles:'Profils & liens',settings:'Paramètres'};
-function bindNav(){
-  $all('.nav').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.view);$('#sidebar').classList.remove('open')})});
-  $('#burger').addEventListener('click',function(){$('#sidebar').classList.toggle('open')});
-  $('#btnLogout').addEventListener('click',function(){sessionStorage.removeItem(LS.session);location.reload()});
-  $('#quickExport').addEventListener('click',exportData);
-  $('#notifPill').addEventListener('click',function(){go('dashboard');markAlertsRead()});
-  $('#notifPill').style.cursor='pointer';
-}
-function go(view){
-  $all('.nav').forEach(function(b){b.classList.toggle('active',b.dataset.view===view)});
-  $('#viewTitle').textContent=VIEWS[view];
-  ({dashboard:viewDashboard,projects:viewProjects,content:viewContent,media:viewMedia,seo:viewSeo,watch:viewWatch,checklist:viewChecklist,history:viewHistory,profiles:viewProfiles,settings:viewSettings})[view]();
+var VIEWS={dashboard:'Vue d\'ensemble',projects:'Projets',content:'Contenus',media:'Médiathèque',skills:'Compétences & outils',seo:'SEO & partage',watch:'Surveillance',publish:'Publication',history:'Historique & sauvegardes',settings:'Paramètres'};
+function go(v){
+  $all('.nav-btn').forEach(function(b){b.classList.toggle('active',b.dataset.view===v)});
+  $('#viewTitle').textContent=VIEWS[v];
+  ({dashboard:viewDashboard,projects:viewProjects,content:viewContent,media:viewMedia,skills:viewSkills,seo:viewSeo,watch:viewWatch,publish:viewPublish,history:viewHistory,settings:viewSettings})[v]();
 }
 
-/* ---------- modal générique ---------- */
-function modal(title,bodyHTML,buttons){
+/* ---------- modal ---------- */
+function modal(title,body,buttons){
   var bg=document.createElement('div');bg.className='modal-bg';
-  bg.innerHTML='<div class="modal" role="dialog" aria-modal="true"><h3>'+esc(title)+'</h3><div>'+bodyHTML+'</div><div class="foot"></div></div>';
+  bg.innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><h3>'+esc(title)+'</h3><div>'+body+'</div><div class="foot"></div></div>';
   var foot=$('.foot',bg);
-  (buttons||[{label:'Fermer',cls:'btn-outline'}]).forEach(function(b){
+  (buttons||[{label:'Fermer',cls:'btn-ghost'}]).forEach(function(b){
     var btn=document.createElement('button');btn.className='btn '+b.cls;btn.textContent=b.label;
-    btn.addEventListener('click',function(){if(b.onClick)b.onClick(bg);else bg.remove()});
-    foot.appendChild(btn);
+    btn.addEventListener('click',function(){if(b.onClick)b.onClick(bg);else bg.remove()});foot.appendChild(btn);
   });
   bg.addEventListener('click',function(e){if(e.target===bg)bg.remove()});
+  document.addEventListener('keydown',function esc2(e){if(e.key==='Escape'&&document.body.contains(bg)){bg.remove();document.removeEventListener('keydown',esc2)}});
   document.body.appendChild(bg);
   var f=bg.querySelector('input,select,textarea,button');if(f)f.focus();
   return bg;
 }
-function confirmModal(title,text,onYes){
-  modal(title,'<p>'+esc(text)+'</p>',[
-    {label:'Annuler',cls:'btn-outline'},
-    {label:'Confirmer',cls:'btn-danger',onClick:function(bg){bg.remove();onYes()}}
+function confirmModal(title,text,yes){
+  modal(title,'<p>'+text+'</p>',[
+    {label:'Annuler',cls:'btn-ghost'},
+    {label:'Confirmer',cls:'btn-danger',onClick:function(bg){bg.remove();yes()}}
   ]);
 }
 
-/* ============================================================
-   VUE : TABLEAU DE BORD
-============================================================ */
+/* ==================== VUE D'ENSEMBLE ==================== */
 function viewDashboard(){
-  var d=store.data;
-  var counts={published:0,draft:0,review:0,archived:0};
-  d.projects.forEach(function(p){counts[p.status]=(counts[p.status]||0)+1});
-  var totalMb=(d.media.reduce(function(s,m){return s+m.bytes},0)/1048576).toFixed(1);
-  var doneC=store.checklist.filter(function(c){return c.done}).length, totC=store.checklist.length;
-  var histKeys=Object.keys(store.watchHist);
-  var lastCheck=histKeys.length?Math.max.apply(null,histKeys.map(function(k){return store.watchHist[k].ts})) : null;
-  var incSignals=histKeys.reduce(function(n,k){var h=store.watchHist[k];return n+(h.ok===false?1:0)},0);
-
-  $('#view').innerHTML=
-   '<div class="stats">'
-  +'<button class="stat" data-go="projects"><span class="v">'+d.projects.length+'</span><span class="l">Projets au total</span></button>'
-  +'<button class="stat" data-go="projects"><span class="v" style="color:var(--ok)">'+counts.published+'</span><span class="l">Publiés</span></button>'
-  +'<button class="stat" data-go="projects"><span class="v" style="color:var(--warn)">'+(counts.draft+counts.review)+'</span><span class="l">Brouillons / révision</span></button>'
-  +'<button class="stat" data-go="projects"><span class="v">'+counts.archived+'</span><span class="l">Archivés</span></button>'
-  +'<button class="stat" data-go="watch"><span class="v">'+store.watchCfg.length+'</span><span class="l">Pages surveillées</span></button>'
-  +'<button class="stat" data-go="history"><span class="v">'+store.journal.length+'</span><span class="l">Actions journalisées</span></button>'
-  +'</div>'
-  +'<div class="card"><h2>Alertes & notifications</h2><div id="dashAlerts"></div></div>'
-  +'<div class="card"><h2>Surveillance — dernier contrôle</h2><div id="dashWatch"></div></div>'
-  +'<div class="card"><h2>Checklist de publication</h2><div class="progress"><div style="width:'+(totC?Math.round(doneC/totC*100):0)+'%"></div></div><p class="mono" style="margin-top:.5rem">'+doneC+'/'+totC+' étapes validées</p></div>'
-  +'<div class="card"><h2>Données</h2><p class="mono">Source : hub-data.json'+ (store.dirty?' + modifications locales non exportées':'') +' · '+d.media.length+' médias · '+totalMb+' Mo · générées le '+esc(d.meta.generated)+'. Les statistiques sont calculées à partir de vos données réelles ; toute donnée indisponible est signalée.</p></div>';
-
-  $all('.stat').forEach(function(s){s.addEventListener('click',function(){go(s.dataset.go)})});
-
-  var al=$('#dashAlerts');
-  if(!store.alerts.length){al.innerHTML='<div class="empty">Aucune alerte — tout est en ordre.</div>'}
-  else{
-    al.innerHTML=store.alerts.slice(0,8).map(function(a){
-      return '<div class="alert-item"><span class="pill '+(a.type==='warn'?'warn':a.type==='err'?'err':'info')+'">'+a.type+'</span><div><div>'+esc(a.msg)+'</div><div class="mono">'+new Date(a.ts).toLocaleString('fr-FR')+'</div></div>'+(a.view?'<button class="btn btn-outline btn-sm" data-go="'+a.view+'" style="margin-left:auto">Ouvrir</button>':'')+'</div>';
-    }).join('');
-    $all('[data-go]',al).forEach(function(b){b.addEventListener('click',function(){go(b.dataset.go)})});
-  }
-
-  var dw=$('#dashWatch');
-  if(!lastCheck){dw.innerHTML='<div class="empty">Aucun contrôle effectué. Ouvrez « Surveillance » et lancez un test.</div>'}
-  else{
-    dw.innerHTML='<p class="mono">Dernier contrôle : '+new Date(lastCheck).toLocaleString('fr-FR')+' · '+incSignals+' incident(s) récent(s)</p>'
-      +histKeys.map(function(k){var h=store.watchHist[k];return '<div class="alert-item"><span>'+esc(k)+'</span><span class="pill '+(h.ok?'ok':'err')+'" style="margin-left:auto">'+(h.ok?h.status+' · '+h.ms+' ms':esc(h.error||('HTTP '+h.status)))+'</span></div>'}).join('');
-  }
+  var d=store.data,h='';
+  var pub=d.projects.filter(function(p){return p.status==='published'}).length;
+  var todo=d.projects.filter(function(p){return p.status==='incomplete'||p.status==='draft'});
+  var ready=d.projects.filter(function(p){return p.status==='ready'}).length;
+  h+='<div class="stats">'
+    +'<button class="stat" data-goto="projects"><span class="v">'+d.projects.length+'</span><span class="l">Projets</span></button>'
+    +'<button class="stat" data-goto="projects"><span class="v">'+pub+'</span><span class="l">Publiés</span></button>'
+    +'<button class="stat" data-goto="projects"><span class="v">'+(ready||'0')+'</span><span class="l">Prêts</span></button>'
+    +'<button class="stat" data-goto="media"><span class="v">'+(d.media?d.media.length:0)+'</span><span class="l">Médias</span></button>'
+    +'<button class="stat" data-goto="content"><span class="v">'+d.pages.length+'</span><span class="l">Pages</span></button></div>';
+  /* À traiter */
+  h+='<div class="card"><h2>À traiter</h2>';
+  if(!todo.length&&!ready)h+='<div class="empty">Rien à signaler — tout est publié ou archivé. ✓</div>';
+  todo.forEach(function(p){
+    var lacks=[];if(!p.year||p.nature==='À confirmer')lacks.push('année/nature');
+    if(!p.category||!p.category.length)lacks.push('catégorie');
+    if(!hasImage(p))lacks.push('visuels');
+    h+='<div class="item"><span class="dot warn" style="margin-top:6px"></span><div style="flex:1"><strong>'+esc(p.title)+'</strong>'
+      +'<small class="mut">'+(lacks.length?'Manque : '+lacks.join(', '):'À compléter')+' — statut « '+esc(STATUSES[p.status])+' »</small></div>'
+      +'<button class="btn btn-ghost btn-sm" data-open="'+p.slug+'">Ouvrir</button></div>';
+  });
+  if(ready)h+='<div class="item"><span class="dot ok" style="margin-top:6px"></span><div style="flex:1"><strong>'+ready+' projet(s) prêt(s)</strong><small class="mut">Passez par Publication pour les mettre en ligne.</small></div><button class="btn btn-primary btn-sm" data-goto="publish">Publier</button></div>';
+  h+='</div>';
+  /* Activité récente + dernier contrôle */
+  h+='<div class="grid2">'
+    +'<div class="card"><h2>Activité récente</h2>';
+  if(!store.journal.length)h+='<div class="empty">Aucune activité enregistrée pour l\'instant.</div>';
+  store.journal.slice(0,7).forEach(function(j){
+    h+='<div class="item"><span class="dot neut" style="margin-top:6px"></span><div><strong>'+esc(j.action)+'</strong>'+(j.target?' <span style="color:var(--sub)">'+esc(j.target)+'</span>':'')+'<small class="mut">'+new Date(j.ts).toLocaleString('fr-FR')+'</small></div></div>';
+  });
+  h+='<button class="btn btn-ghost btn-sm" data-goto="history" style="margin-top:.6rem">Voir l\'historique complet</button></div>';
+  var last=Object.keys(store.watchHist).map(function(u){return {u:u,r:store.watchHist[u]}}).filter(function(x){return x.r&&x.r.length}).map(function(x){return x.r[x.r.length-1]}).sort(function(a,b){return b.ts.localeCompare(a.ts)})[0];
+  h+='<div class="card"><h2>Dernier contrôle</h2>';
+  if(last){var kind=last.state==='accessible'?'ok':(last.state==='injoignable'?'err':'warn');
+    h+='<p><span class="pill '+pillFor(kind)+'"><span class="dot '+kind+'"></span>'+esc(last.state)+'</span></p>'
+      +'<p style="margin-top:.5rem;font-size:.875rem;word-break:break-all">'+esc(last.url)+'</p>'
+      +'<small class="mut">'+new Date(last.ts).toLocaleString('fr-FR')+' — HTTP '+(last.http||'—')+' · '+(last.ms||'?')+' ms</small>'
+      +'<div style="margin-top:.8rem"><button class="btn btn-ghost btn-sm" data-goto="watch">Ouvrir la surveillance</button></div>';
+  }else h+='<div class="empty">Aucun contrôle effectué.<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-goto="watch">Lancer le premier contrôle</button></div></div>';
+  h+='</div></div>';
+  /* Notifications */
+  h+='<div class="card"><h2>Notifications</h2>';
+  if(!store.alerts.length)h+='<div class="empty">Aucune notification.</div>';
+  store.alerts.slice(0,6).forEach(function(a){
+    h+='<div class="item"><span class="dot '+(a.type==='warn'?'warn':a.type==='err'?'err':'neut')+'" style="margin-top:6px"></span><div>'+esc(a.msg)+'<small class="mut">'+new Date(a.ts).toLocaleString('fr-FR')+'</small></div></div>';
+  });
+  h+='</div>';
+  $('#view').innerHTML=h;
+  $('#view').onclick=function(e){var g=e.target.closest('[data-goto]');if(g){go(g.dataset.goto);return}var o=e.target.closest('[data-open]');if(o){sessionStorage.setItem('hub2_open',o.dataset.open);go('projects')}};
 }
+function hasImage(p){var m=store.data.media||[];return m.some(function(x){return (x.used||'').indexOf(p.slug)>=0||!x.used})&&m.length>0||(p.cover&&p.cover!=='none')}
 
-/* ============================================================
-   VUE : PROJETS (CRUD complet)
-============================================================ */
+/* ==================== PROJETS ==================== */
 function viewProjects(){
-  var html='<div class="toolbar">'
-    +'<input type="text" id="pjSearch" placeholder="Rechercher…" aria-label="Rechercher un projet">'
-    +'<select id="pjFilter" aria-label="Filtrer par statut"><option value="">Tous statuts</option>'
-    +Object.keys(STATUSES).map(function(s){return '<option value="'+s+'">'+STATUSES[s]+'</option>'}).join('')+'</select>'
-    +'<select id="pjSort" aria-label="Tri"><option value="title">Tri : titre</option><option value="year">Tri : année</option><option value="status">Tri : statut</option></select>'
-    +'<span class="spacer"></span><button class="btn btn-dark" id="pjNew">+ Nouveau projet</button></div>'
-    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>Projet</th><th>Nature</th><th>Année</th><th>Statut</th><th style="text-align:right">Actions</th></tr></thead><tbody id="pjRows"></tbody></table></div>'
-    +'<p class="mono">La publication réelle sur le site s\'effectue via « Paramètres → Exporter ». Toute modification est journalisée.</p>';
-  $('#view').innerHTML=html;
-  $('#pjNew').addEventListener('click',function(){projectForm(null)});
-  ['pjSearch','pjFilter','pjSort'].forEach(function(id){$('#'+id).addEventListener('input',renderProjectRows)});
-  renderProjectRows();
-}
-function renderProjectRows(){
-  var q=($('#pjSearch').value||'').toLowerCase(), f=$('#pjFilter').value, s=$('#pjSort').value;
-  var list=store.data.projects.filter(function(p){
-    return (!f||p.status===f) && (!q||(p.title+p.slug+(p.tagline||'')).toLowerCase().indexOf(q)>=0);
-  });
-  list.sort(function(a,b){return String(a[s]||'').localeCompare(String(b[s]||''))});
-  var tb=$('#pjRows');
-  if(!list.length){tb.innerHTML='<tr><td colspan="5"><div class="empty">Aucun projet ne correspond.</div></td></tr>';return}
-  tb.innerHTML=list.map(function(p,i){
-    var pill={published:'ok',draft:'mut',review:'info',archived:'warn'}[p.status]||'mut';
-    return '<tr><td><strong>'+esc(p.title)+'</strong><div class="mono">'+esc(p.slug)+'</div></td>'
-      +'<td>'+esc(p.nature||'—')+(p.nature==='Projet client'&&p.client?' · '+esc(p.client):'')+'</td>'
-      +'<td>'+esc(p.year||'—')+'</td>'
-      +'<td><span class="pill '+pill+'">'+STATUSES[p.status]+'</span></td>'
-      +'<td style="text-align:right;white-space:nowrap">'
-      +'<button class="btn btn-outline btn-sm" data-act="view" data-i="'+store.data.projects.indexOf(p)+'">Voir</button> '
-      +'<button class="btn btn-outline btn-sm" data-act="edit" data-i="'+store.data.projects.indexOf(p)+'">Modifier</button> '
-      +'<button class="btn btn-outline btn-sm" data-act="dup" data-i="'+store.data.projects.indexOf(p)+'">Dupliquer</button> '
-      +'<button class="btn btn-danger btn-sm" data-act="del" data-i="'+store.data.projects.indexOf(p)+'">Suppr.</button></td></tr>';
-  }).join('');
-  $all('[data-act]',tb).forEach(function(b){b.addEventListener('click',function(){projectAction(b.dataset.act,+b.dataset.i)})});
-}
-function projectAction(act,i){
-  var p=store.data.projects[i];
-  if(act==='view'){
-    var deps = p.page ? 'Page publique : <a href="'+esc(p.page)+'" target="_blank" rel="noopener">'+esc(p.page)+'</a>' : 'Aucune page publique associée.';
-    modal(p.title,
-      '<p class="mono">'+esc(p.slug)+' · '+esc(p.year||'année non renseignée')+' · '+esc(p.nature||'')+'</p>'
-      +'<p style="margin:.75rem 0">'+esc(p.tagline||'')+'</p>'
-      +'<p>'+esc(p.description||'')+'</p>'
-      +'<div style="margin:.75rem 0">'+(p.category||[]).map(function(c){return '<span class="chip">'+esc(c)+'</span>'}).join(' ')+'</div>'
-      +'<p class="mono">'+deps+' · Statut : '+STATUSES[p.status]+'</p>'
-      +'<p class="help">Prévisualisation résumée ; le rendu public exact est la page liée ci-dessus.</p>',
-      (p.status==='archived'
-        ?[{label:'Fermer',cls:'btn-outline'},{label:'Passer en brouillon',cls:'btn-accent',onClick:function(bg){p.status='draft';save();log('Désarchivage',p.title);bg.remove();renderProjectRows();toast('Projet passé en brouillon','ok')}}]
-        :[{label:'Fermer',cls:'btn-outline'},{label:'Archiver',cls:'btn-danger',onClick:function(bg){confirmModal('Archiver ce projet ?','Le projet sera retiré des listes actives (rien n\'est supprimé).',function(){p.status='archived';save();log('Archivage',p.title);renderProjectRows();notify('Projet « '+p.title+' » archivé.','info','projects');bg.remove();toast('Projet archivé','ok')})}}]
-      ));
+  var d=store.data;
+  var mode=lsGet(LS.view,'grid');
+  var h='<div class="toolbar">'
+    +'<input type="text" id="pf" placeholder="Rechercher un projet…" aria-label="Rechercher">'
+    +'<select id="pst" aria-label="Filtrer par statut"><option value="">Tous les statuts</option>'+Object.keys(STATUSES).map(function(s){return '<option value="'+s+'">'+STATUSES[s]+'</option>'}).join('')+'</select>'
+    +'<select id="pcat" aria-label="Filtrer par catégorie"><option value="">Toutes catégories</option>'+CATEGORIES.map(function(c){return '<option>'+c+'</option>'}).join('')+'</select>'
+    +'<div class="spacer"></div>'
+    +'<button class="btn btn-ghost btn-sm" id="vToggle">'+(mode==='grid'?'☰ Liste':'▦ Grille')+'</button>'
+    +'<button class="btn btn-primary btn-sm" id="pAdd">+ Nouveau projet</button></div>';
+  h+='<div id="plist"></div>';
+  $('#view').innerHTML=h;
+  function draw(){
+    var f=($('#pf').value||'').toLowerCase(),st=$('#pst').value,cat=$('#pcat').value;
+    var list=d.projects.filter(function(p){
+      if(st&&p.status!==st)return false;
+      if(cat&&!(p.category||[]).includes(cat))return false;
+      if(f&&(p.title+' '+p.slug+' '+(p.client||'')).toLowerCase().indexOf(f)<0)return false;
+      return true;
+    });
+    var m=lsGet(LS.view,'grid');
+    if(!list.length){$('#plist').innerHTML='<div class="empty">Aucun projet ne correspond aux filtres.</div>';return}
+    if(m==='grid'){
+      var g='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.9rem">';
+      list.forEach(function(p){
+        var cov=p.cover&&p.cover!=='none'?'assets/'+p.cover:'';
+        g+='<button class="mtile" data-slug="'+p.slug+'" style="text-align:left">'
+          +'<span class="thumb" style="'+(cov?'background-image:url(\''+encodeURI(cov)+'\')':'')+'">'+(cov?'':'Pas de visuel')+'</span>'
+          +'<span class="inf" style="display:block"><span class="nm">'+esc(p.title)+'</span><br>'
+          +'<span class="pz">'+((p.category||[]).join(' · ')||'Sans catégorie')+'</span><br>'
+          +'<span class="pill '+STATUS_PILL[p.status]+'" style="margin-top:.4rem"><span class="dot '+(STATUS_PILL[p.status]==='ok'?'ok':STATUS_PILL[p.status]==='warn'?'warn':'neut')+'"></span>'+STATUSES[p.status]+'</span></span></button>';
+      });
+      $('#plist').innerHTML=g+'</div>';
+    }else{
+      var t='<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Projet</th><th>Catégorie</th><th>Année</th><th>Statut</th><th></th></tr></thead><tbody>';
+      list.forEach(function(p){
+        t+='<tr><td><strong>'+esc(p.title)+'</strong><br><small class="mut">'+esc(p.slug)+'</small></td><td>'+(p.category||[]).join(', ')||'—'+'</td><td>'+(p.year||'—')+'</td>'
+          +'<td><span class="pill '+STATUS_PILL[p.status]+'">'+STATUSES[p.status]+'</span></td>'
+          +'<td><button class="btn btn-ghost btn-sm" data-slug="'+p.slug+'">Modifier</button></td></tr>';
+      });
+      $('#plist').innerHTML=t+'</tbody></table></div>';
+    }
+    $all('[data-slug]','#plist').forEach(function(b){b.addEventListener('click',function(){projectModal(b.dataset.slug)})});
   }
-  if(act==='edit')projectForm(i);
-  if(act==='dup'){
-    var copy=JSON.parse(JSON.stringify(p));copy.id='';copy.title=p.title+' (copie)';copy.slug=uniqueSlug(slugify(p.title+'-copie'));copy.status='draft';
-    store.data.projects.push(copy);save();log('Duplication',p.title);renderProjectRows();toast('Projet dupliqué en brouillon','ok');
-  }
-  if(act==='del'){
-    confirmModal('Supprimer « '+p.title+' » ?',
-      p.page
-       ? 'Attention : ce projet est lié à la page publique '+p.page+'. Supprimez d\'abord la page du site, sinon vous créerez un lien cassé. La suppression est définitive (exportez avant si besoin).'
-       : 'Ce projet n\'est lié à aucune page publique. La suppression est définitive (exportez avant si besoin).',
-      function(){var t=p.title;store.data.projects.splice(i,1);save();log('Suppression',t);renderProjectRows();notify('Projet « '+t+' » supprimé du hub.','warn','projects');toast('Projet supprimé','ok')});
-  }
+  $('#pf').addEventListener('input',draw);$('#pst').addEventListener('change',draw);$('#pcat').addEventListener('change',draw);
+  $('#vToggle').addEventListener('click',function(){var m=lsGet(LS.view,'grid')==='grid'?'list':'grid';lsSet(LS.view,m);viewProjects()});
+  $('#pAdd').addEventListener('click',function(){projectModal(null)});
+  draw();
+  var openSlug=sessionStorage.getItem('hub2_open');if(openSlug){sessionStorage.removeItem('hub2_open');projectModal(openSlug)}
 }
-function uniqueSlug(base){
-  var s=base||'projet',n=2;
-  while(store.data.projects.some(function(p){return p.slug===s})){s=base+'-'+(n++)}
-  return s;
-}
-function projectForm(i){
-  var p=i==null?{title:'',slug:'',tagline:'',description:'',category:[],year:'',nature:'',client:'',role:'',scope:'',credits:'',services:'',tools:'',links:'',seoTitle:'',seoDesc:'',cover:'',page:'',status:'draft'}:store.data.projects[i];
-  var isNew=i==null;
-  var body=
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
-    +'<div><label class="lbl req">Titre</label><input type="text" id="fTitle" value="'+esc(p.title)+'"></div>'
-    +'<div><label class="lbl req">Slug (URL)</label><input type="text" id="fSlug" value="'+esc(p.slug)+'" placeholder="auto si vide"><div class="help">Lettres minuscules, chiffres et tirets.</div></div>'
-    +'</div>'
-    +'<label class="lbl">Résumé (tagline)</label><input type="text" id="fTag" value="'+esc(p.tagline)+'">'
-    +'<label class="lbl">Description longue</label><textarea id="fDesc">'+esc(p.description)+'</textarea>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 1rem">'
-    +'<div><label class="lbl">Année / date</label><input type="text" id="fYear" value="'+esc(p.year)+'" placeholder="Mai 2026"></div>'
-    +'<div><label class="lbl req">Nature</label><select id="fNature"><option value="">— Choisir —</option>'+NATURES.map(function(n){return '<option '+(p.nature===n?'selected':'')+'>'+n+'</option>'}).join('')+'</select><div class="help">Jamais un concept présenté comme client.</div></div>'
-    +'<div><label class="lbl">Client / marque (publiable)</label><input type="text" id="fClient" value="'+esc(p.client)+'"></div>'
-    +'</div>'
-    +'<label class="lbl">Catégories</label><div id="fCats">'+CATEGORIES.map(function(c){return '<label class="check" style="padding:2px 0"><input type="checkbox" value="'+c+'" '+((p.category||[]).indexOf(c)>=0?'checked':'')+'><span class="txt" style="font-size:.875rem">'+c+'</span></label>'}).join('')+'</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
-    +'<div><label class="lbl">Mon rôle exact</label><input type="text" id="fRole" value="'+esc(p.role)+'"></div>'
-    +'<div><label class="lbl">Périmètre de contribution</label><input type="text" id="fScope" value="'+esc(p.scope)+'"></div>'
-    +'<div><label class="lbl">Crédits</label><input type="text" id="fCredits" value="'+esc(p.credits)+'"></div>'
-    +'<div><label class="lbl">Services liés</label><input type="text" id="fServices" value="'+esc(p.services)+'"></div>'
-    +'<div><label class="lbl">Logiciels utilisés</label><input type="text" id="fTools" value="'+esc(p.tools)+'"></div>'
-    +'<div><label class="lbl">Liens externes (un par ligne)</label><textarea id="fLinks" style="min-height:56px">'+esc(p.links)+'</textarea></div>'
-    +'</div>'
-    +'<h2 style="margin:1rem 0 .25rem">SEO du projet</h2>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
-    +'<div><label class="lbl">Title SEO</label><input type="text" id="fSeoT" value="'+esc(p.seoTitle)+'"></div>'
-    +'<div><label class="lbl">Image de couverture (chemin)</label><input type="text" id="fCover" value="'+esc(p.cover)+'" placeholder="assets/projects/…/cover.jpg"></div>'
-    +'</div>'
-    +'<label class="lbl">Meta description SEO</label><textarea id="fSeoD" style="min-height:56px">'+esc(p.seoDesc)+'</textarea>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
-    +'<div><label class="lbl">Page publique liée</label><input type="text" id="fPage" value="'+esc(p.page)+'" placeholder="work-xxx.html (si existante)"></div>'
-    +'<div><label class="lbl req">Statut</label><select id="fStatus">'+Object.keys(STATUSES).map(function(s){return '<option value="'+s+'" '+(p.status===s?'selected':'')+'>'+STATUSES[s]+'</option>'}).join('')+'</select></div>'
-    +'</div>';
-  modal(isNew?'Nouveau projet':'Modifier « '+p.title+' »',body,[
-    {label:'Annuler',cls:'btn-outline'},
-    {label:isNew?'Créer le projet':'Enregistrer',cls:'btn-dark',onClick:function(bg){
-      var title=$('#fTitle',bg).value.trim();
-      var nature=$('#fNature',bg).value;
-      var slug=slugify($('#fSlug',bg).value.trim()||title);
-      if(!title){toast('Le titre est requis.','err');return}
-      if(!nature){toast('La nature du projet est obligatoire (client / personnel / concept…).','err');return}
-      if(!slug){toast('Slug invalide.','err');return}
-      var clash=store.data.projects.some(function(o,x){return o.slug===slug&&x!==i});
-      if(clash){toast('Slug déjà utilisé — choisissez-en un autre.','err');return}
-      var client=$('#fClient',bg).value.trim();
-      if((nature==='Concept fictif'||nature==='Exercice')&&client){toast('Un concept/exercice ne peut pas afficher un client. Retirez le client ou changez la nature.','err');return}
-      var cats=$all('#fCats input:checked',bg).map(function(c){return c.value});
-      var obj={title:title,slug:slug,tagline:$('#fTag',bg).value.trim(),description:$('#fDesc',bg).value.trim(),
-        category:cats,year:$('#fYear',bg).value.trim(),nature:nature,client:client,
-        role:$('#fRole',bg).value.trim(),scope:$('#fScope',bg).value.trim(),credits:$('#fCredits',bg).value.trim(),
-        services:$('#fServices',bg).value.trim(),tools:$('#fTools',bg).value.trim(),links:$('#fLinks',bg).value.trim(),
-        seoTitle:$('#fSeoT',bg).value.trim(),seoDesc:$('#fSeoD',bg).value.trim(),cover:$('#fCover',bg).value.trim(),
-        page:$('#fPage',bg).value.trim(),status:$('#fStatus',bg).value};
-      if(isNew){obj.id='p'+Date.now();store.data.projects.push(obj);log('Création',title);notify('Projet « '+title+' » créé (statut : '+STATUSES[obj.status]+').','info','projects')}
-      else{obj.id=p.id;store.data.projects[i]=obj;log('Modification',title)}
-      save();bg.remove();renderProjectRows();toast('Enregistré dans le hub','ok');
-    }}
-  ]);
+function projectModal(slug){
+  var p=slug?store.data.projects.find(function(x){return x.slug===slug}):null;
+  var cats=(p&&p.category)||[];
+  var body='<label class="lbl req">Titre</label><input type="text" id="fmT" value="'+esc(p?p.title:'')+'">'
+    +'<div class="grid2"><div><label class="lbl req">Statut</label><select id="fmS">'+Object.keys(STATUSES).map(function(s){return '<option value="'+s+'"'+(p&&p.status===s?' selected':'')+'>'+STATUSES[s]+'</option>'}).join('')+'</select></div>'
+    +'<div><label class="lbl req">Année</label><input type="number" id="fmY" value="'+esc(p?p.year:'')+'" min="2000" max="2100"></div></div>'
+    +'<div class="grid2"><div><label class="lbl req">Nature</label><select id="fmN">'+NATURES.map(function(n){return '<option'+(p&&p.nature===n?' selected':'')+'>'+n+'</option>'}).join('')+'</select></div>'
+    +'<div><label class="lbl">Client / contexte</label><input type="text" id="fmC" value="'+esc(p?(p.client||''):'')+'"></div></div>'
+    +'<label class="lbl req">Catégories</label><div style="display:flex;flex-wrap:wrap;gap:.35rem">'
+    +CATEGORIES.map(function(c){var on=cats.includes(c);return '<button type="button" class="pill '+(on?'info':'neut')+'" data-cat="'+c+'" aria-pressed="'+on+'">'+(on?'✓ ':'')+c+'</button>'}).join('')+'</div>'
+    +'<label class="lbl">Visuel de couverture (chemin dans assets/ ou « none »)</label><input type="text" id="fmCover" value="'+esc(p?(p.cover||'none'):'none')+'" placeholder="images/projet/cover.webp">'
+    +'<p class="help">Les projets « Brouillon » et « À compléter » ne doivent pas apparaître sur le site public. « Prêt à publier » passe par la checklist de Publication.</p>';
+  var pBtns=[{label:'Annuler',cls:'btn-ghost'}];
+  if(p)pBtns.push({label:'Archiver',cls:'btn-danger',onClick:function(bg){bg.remove();confirmModal('Archiver '+p.title+' ?','Le projet restera dans le hub mais sera marqué archivé (retiré du site au prochain export).',function(){p.status='archived';log('Projet archivé',p.title);save();viewProjects();toast('Projet archivé','warn')})}});
+  pBtns.push({label:p?'Enregistrer':'Créer',cls:'btn-primary',onClick:function(bg){
+      var t=$('#fmT',bg).value.trim();
+      if(!t){toast('Le titre est obligatoire.','err');return}
+      var cc=$all('[data-cat]',bg).filter(function(x){return x.getAttribute('aria-pressed')==='true'}).map(function(x){return x.dataset.cat});
+      if(!cc.length){toast('Sélectionnez au moins une catégorie.','err');return}
+      var y=parseInt($('#fmY',bg).value,10);
+      if(!y){toast('L\'année est obligatoire.','err');return}
+      var created=false;if(!p){created=true;p={slug:slugify(t)};store.data.projects.unshift(p);log('Projet créé',t)}
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value.trim()||'none';
+      if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — pensez à exporter.','ok');
+    }});
+  modal(p?'Modifier « '+p.title+' »':'Nouveau projet',body,pBtns);
+  $all('[data-cat]').forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.className='pill '+(!on?'info':'neut');b.textContent=(!on?'✓ ':'')+b.dataset.cat})});
 }
 
-/* ============================================================
-   VUE : CONTENU DES PAGES
-============================================================ */
+/* ==================== CONTENUS ==================== */
 function viewContent(){
-  var c=store.data.content||{};
-  $('#view').innerHTML=
-    '<div class="card"><h2>Textes éditables</h2><p class="mono">Ces textes sont gérés ici en suivant vos informations officielles. Ils s\'appliquent au site via l\'export (Paramètres) suivi d\'une mise à jour des pages.</p>'
-    +'<label class="lbl">Accroche hero (accueil)</label><textarea id="cHero">'+esc(c.hero||'Designer graphique & digital freelance, fondateur de Vasilías Studio — basé à Toamasina, Madagascar. Spécialisation : branding & identité visuelle.')+'</textarea>'
-    +'<label class="lbl">Phrase de positionnement</label><textarea id="cPos">'+esc(c.pos||'Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.')+'</textarea>'
-    +'<label class="lbl">Présentation courte (accueil)</label><textarea id="cShort" style="min-height:110px">'+esc(c.short||'Je suis designer graphique et digital freelance, fondateur de Vasilías Studio, basé à Toamasina, Madagascar. Depuis deux ans, je développe ma pratique du design en autodidacte, avec une attention particulière portée au branding et à la création d\'identités visuelles. J\'accompagne les marques dans la construction d\'une image cohérente, distinctive et adaptée à leur univers.')+'</textarea>'
-    +'<label class="lbl">Localisation affichée</label><input type="text" id="cLoc" value="'+esc(c.loc||'Toamasina, Madagascar')+'">'
-    +'<label class="lbl">Email public</label><input type="text" id="cMail" value="'+esc(c.mail||'ericotlauranto34@gmail.com')+'">'
-    +'<div style="margin-top:1rem"><button class="btn btn-dark" id="cSave">Enregistrer</button></div></div>'
-    +'<div class="card"><h2>Compétences & logiciels</h2><p class="mono">Séparés, sans niveau ni pourcentage — conformément à vos règles.</p>'
-    +'<label class="lbl">Compétences (une par ligne)</label><textarea id="cSkills">'+esc((store.data.skills||[]).join('\n'))+'</textarea>'
-    +'<label class="lbl">Logiciels (un par ligne)</label><textarea id="cTools2">'+esc((store.data.tools||[]).join('\n'))+'</textarea>'
-    +'<div style="margin-top:1rem"><button class="btn btn-dark" id="cSave2">Enregistrer</button></div></div>';
-  $('#cSave').addEventListener('click',function(){
-    store.data.content={hero:$('#cHero').value.trim(),pos:$('#cPos').value.trim(),short:$('#cShort').value.trim(),loc:$('#cLoc').value.trim(),mail:$('#cMail').value.trim()};
-    save();log('Contenu','Textes principaux');toast('Textes enregistrés','ok');
+  var d=store.data,h='';
+  h+='<div class="card"><h2>Pitched deck — promesse</h2>'
+    +'<label class="lbl">Accroche principale (index)</label><textarea id="ctTag">'+esc(d.pitch.tagline)+'</textarea>'
+    +'<label class="lbl">Phrase de présentation</label><textarea id="ctIntro">'+esc(d.pitch.intro)+'</textarea>'
+    +'<button class="btn btn-primary btn-sm" id="ctSave" style="margin-top:.7rem">Enregistrer</button></div>';
+  h+='<div class="card"><h2>Services ('+d.services.length+')</h2>';
+  d.services.forEach(function(s,i){
+    h+='<div class="item"><div style="flex:1"><strong>'+esc(s.title)+'</strong><small class="mut">'+esc(s.desc)+'</small></div><button class="btn btn-ghost btn-sm" data-sv="'+i+'">Modifier</button><button class="btn btn-danger btn-sm" data-svdel="'+i+'" aria-label="Retirer">✕</button></div>';
   });
-  $('#cSave2').addEventListener('click',function(){
-    store.data.skills=$('#cSkills').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
-    store.data.tools=$('#cTools2').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
-    save();log('Contenu','Compétences & logiciels');toast('Listes enregistrées','ok');
+  h+='<button class="btn btn-ghost btn-sm" id="svAdd" style="margin-top:.6rem">+ Ajouter un service</button></div>';
+  h+='<div class="card"><h2>Pages du site ('+d.pages.length+')</h2><div style="overflow-x:auto"><table><thead><tr><th>Page</th><th>Fichier</th><th>Menu</th><th>SEO</th></tr></thead><tbody>';
+  d.pages.forEach(function(pg){
+    var seo=store.seo[pg.file];var flag=seo&&seo.title&&seo.desc;
+    h+='<tr><td><strong>'+esc(pg.name)+'</strong></td><td><code style="font-size:.8rem">'+esc(pg.file)+'</code></td><td>'+(pg.inMenu?'<span class="pill ok">Oui</span>':'<span class="pill neut">Non</span>')+'</td><td>'+(flag?'<span class="pill ok">Renseigné</span>':'<span class="pill warn">À vérifier</span>')+'</td></tr>';
   });
+  h+='</tbody></table></div><button class="btn btn-ghost btn-sm" data-goto="seo" style="margin-top:.6rem">Gérer le SEO de ces pages →</button></div>';
+  $('#view').innerHTML=h;
+  $('#ctSave').addEventListener('click',function(){d.pitch.tagline=$('#ctTag').value.trim();d.pitch.intro=$('#ctIntro').value.trim();log('Pitch mis à jour');save();toast('Textes d\'accroche enregistrés.','ok')});
+  $('#svAdd').addEventListener('click',function(){serviceModal(null)});
+  $all('[data-sv]').forEach(function(b){b.addEventListener('click',function(){serviceModal(+b.dataset.sv)})});
+  $all('[data-svdel]').forEach(function(b){b.addEventListener('click',function(){var s=d.services[+b.dataset.svdel];confirmModal('Retirer « '+s.title+' » ?','Il disparaîtra de la liste au prochain export.',function(){d.services.splice(+b.dataset.svdel,1);log('Service retiré',s.title);save();viewContent()})})});
+  var gg=$('[data-goto]');if(gg)gg.addEventListener('click',function(){go('seo')});
+}
+function serviceModal(i){
+  var s=i==null?null:store.data.services[i];
+  modal(s?'Modifier le service':'Nouveau service',
+    '<label class="lbl req">Titre</label><input type="text" id="svT" value="'+esc(s?s.title:'')+'"><label class="lbl req">Description</label><textarea id="svD">'+esc(s?s.desc:'')+'</textarea>',
+    [{label:'Annuler',cls:'btn-ghost'},{label:s?'Enregistrer':'Ajouter',cls:'btn-primary',onClick:function(bg){
+      var t=$('#svT',bg).value.trim(),de=$('#svD',bg).value.trim();
+      if(!t||!de){toast('Titre et description obligatoires.','err');return}
+      if(s){s.title=t;s.desc=de}else store.data.services.push({title:t,desc:de});
+      log(s?'Service modifié':'Service ajouté',t);save();bg.remove();viewContent();toast('Enregistré.','ok');
+    }}]);
 }
 
-/* ============================================================
-   VUE : MÉDIAS
-============================================================ */
+/* ==================== MÉDIATHÈQUE ==================== */
 function viewMedia(){
-  $('#view').innerHTML=
-    '<div class="toolbar"><input type="text" id="mSearch" placeholder="Rechercher un fichier…" aria-label="Rechercher">'
-    +'<span class="spacer"></span><label class="btn btn-outline btn-sm" style="cursor:pointer">＋ Importer (validation locale)<input type="file" id="mFile" class="hidden" accept="image/*"></label></div>'
-    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>Fichier</th><th>Poids</th><th>Alt / légende</th><th style="text-align:right">Actions</th></tr></thead><tbody id="mRows"></tbody></table></div>'
-    +'<p class="mono">Inventaire réel du dépôt (hub-data.json). L\'import valide le fichier dans votre navigateur (type, taille, dimensions) puis vous indique où le déposer dans le dépôt — GitHub Pages ne permet pas d\'envoi direct sans backend.</p>';
-  $('#mSearch').addEventListener('input',renderMediaRows);
-  $('#mFile').addEventListener('change',mediaImport);
-  renderMediaRows();
-}
-function mediaAltKey(p){return 'alt:'+p}
-function renderMediaRows(){
-  var q=($('#mSearch').value||'').toLowerCase();
-  var list=store.data.media.filter(function(m){return !q||m.path.toLowerCase().indexOf(q)>=0});
-  var tb=$('#mRows');
-  if(!list.length){tb.innerHTML='<tr><td colspan="4"><div class="empty">Aucun fichier.</div></td></tr>';return}
-  tb.innerHTML=list.map(function(m){
-    var i=store.data.media.indexOf(m);
-    var alt=lsGet('hub2_alts',{})[m.path]||'';
-    return '<tr><td style="word-break:break-all">'+esc(m.path)+'</td><td>'+fmtBytes(m.bytes)+'</td>'
-     +'<td><input type="text" value="'+esc(alt)+'" data-alt="'+i+'" placeholder="Texte alt…" style="min-width:140px"></td>'
-     +'<td style="text-align:right;white-space:nowrap"><button class="btn btn-outline btn-sm" data-ma="prev" data-mi="'+i+'">Aperçu</button> '
-     +'<button class="btn btn-outline btn-sm" data-ma="copy" data-mi="'+i+'">Copier le chemin</button> '
-     +'<button class="btn btn-outline btn-sm" data-ma="use" data-mi="'+i+'">Usages</button></td></tr>';
-  }).join('');
-  $all('[data-ma]',tb).forEach(function(b){b.addEventListener('click',function(){mediaAction(b.dataset.ma,+b.dataset.mi)})});
-  $all('[data-alt]',tb).forEach(function(inp){inp.addEventListener('change',function(){
-    var alts=lsGet('hub2_alts',{});alts[store.data.media[+inp.dataset.alt].path]=inp.value.trim();lsSet('hub2_alts',alts);
-    log('Média','alt : '+store.data.media[+inp.dataset.alt].path);toast('Alt enregistré (local)','ok');
-  })});
-}
-function mediaAction(act,i){
-  var m=store.data.media[i];
-  if(act==='prev'){
-    var isImg=/\.(jpe?g|png|svg|webp|gif)$/i.test(m.path);
-    modal(m.path,
-      (isImg?'<img src="'+esc(m.path)+'" alt="Aperçu"><p class="mono" style="margin-top:.5rem">'+fmtBytes(m.bytes)+'</p>':'<p>Fichier non prévisualisable.</p>'),
-      [{label:'Fermer',cls:'btn-outline'}]);
+  var d=store.data,alts=lsGet(LS.alts,{});
+  var h='<div class="toolbar"><input type="text" id="mf" placeholder="Rechercher un fichier…" aria-label="Rechercher"><span class="pill neut">'+(d.media||[]).length+' fichiers · '+fmtBytes((d.media||[]).reduce(function(a,m){return a+m.bytes},0))+'</span><div class="spacer"></div><span class="pill warn"><span class="dot warn"></span>Ajout/suppression : via commit Git (voir Publication)</span></div><div id="mgrid"></div>';
+  $('#view').innerHTML=h;
+  function draw(){
+    var f=($('#mf').value||'').toLowerCase();
+    var list=(d.media||[]).filter(function(m){return !f||m.file.toLowerCase().indexOf(f)>=0||(m.used||'').toLowerCase().indexOf(f)>=0});
+    if(!list.length){$('#mgrid').innerHTML='<div class="empty">Aucun média ne correspond.</div>';return}
+    var g='<div class="mgrid">';
+    list.forEach(function(m,i){
+      var img=/\.(webp|png|jpe?g|gif|svg|avif)$/i.test(m.file);
+      var withAlt=alts[m.file]?'✓ alt renseigné':'⚠ alt manquant';
+      g+='<button class="mtile" data-mi="'+d.media.indexOf(m)+'"><span class="thumb" style="'+(img?'background-image:url(\'assets/'+encodeURI(m.file)+'\')':'')+'">'+(img?'':'📄')+'</span><span class="inf" style="display:block"><span class="nm">'+esc(m.file.split('/').pop())+'</span><br><span class="pz">'+fmtBytes(m.bytes)+' · '+(m.used||'libre')+'</span><br><span class="pz" style="color:'+(alts[m.file]?'var(--ok)':'var(--warn)')+'">'+withAlt+'</span></span></button>';
+    });
+    $('#mgrid').innerHTML=g+'</div>';
+    $all('[data-mi]').forEach(function(b){b.addEventListener('click',function(){mediaModal(+b.dataset.mi)})});
   }
-  if(act==='copy'){
-    navigator.clipboard.writeText(m.path).then(function(){toast('Chemin copié','ok')}).catch(function(){toast('Copie impossible (permissions navigateur)','err')});
+  $('#mf').addEventListener('input',draw);
+  draw();
+}
+function mediaModal(i){
+  var m=store.data.media[i],alts=lsGet(LS.alts,{});
+  var img=/\.(webp|png|jpe?g|gif|svg|avif)$/i.test(m.file);
+  var body=(img?'<img src="assets/'+encodeURI(m.file)+'" alt="'+esc(alts[m.file]||m.file)+'" loading="lazy">':'<div class="empty">Aperçu non disponible pour ce format.</div>')
+    +'<table style="margin-top:.8rem"><tbody><tr><td><strong>Fichier</strong></td><td><code style="font-size:.78rem;word-break:break-all">'+esc(m.file)+'</code></td></tr>'
+    +'<tr><td><strong>Poids</strong></td><td>'+fmtBytes(m.bytes)+'</td></tr>'
+    +'<tr><td><strong>Usage</strong></td><td>'+esc(m.used||'non référencé')+'</td></tr></tbody></table>'
+    +'<label class="lbl">Texte alternatif (accessibilité + SEO)</label><input type="text" id="altIn" value="'+esc(alts[m.file]||'')+'" placeholder="Décrivez l\'image en une phrase">'
+    +'<p class="help">Ce texte est conservé ici et rappelé lors de l\'export ; l\'attribut alt se pose dans le HTML concerné.</p>';
+  modal(m.file.split('/').pop(),body,[{label:'Fermer',cls:'btn-ghost'},{label:'Enregistrer l\'alt',cls:'btn-primary',onClick:function(bg){
+    alts[m.file]=$('#altIn',bg).value.trim();lsSet(LS.alts,alts);log('Alt mis à jour',m.file);store.dirty=true;$('#dirtyPill').classList.remove('hidden');bg.remove();viewMedia();toast('Texte alternatif enregistré.','ok');
+  }}]);
+}
+
+/* ==================== COMPÉTENCES & OUTILS ==================== */
+function viewSkills(){
+  var d=store.data,h='';
+  h+='<div class="card"><h2>Compétences ('+d.skills.length+')</h2><p class="help" style="margin-bottom:.5rem">Affichage texte uniquement — aucune note ni pourcentage (conforme au positionnement débutant autodidacte).</p>';
+  d.skills.forEach(function(s,i){h+='<div class="item"><div style="flex:1"><strong>'+esc(s)+'</strong></div><button class="btn btn-ghost btn-sm" data-sk="'+i+'">Modifier</button><button class="btn btn-danger btn-sm" data-skdel="'+i+'">✕</button></div>'});
+  h+='<button class="btn btn-ghost btn-sm" id="skAdd" style="margin-top:.5rem">+ Ajouter</button></div>';
+  h+='<div class="card"><h2>Outils ('+d.tools.length+')</h2>';
+  d.tools.forEach(function(s,i){h+='<div class="item"><div style="flex:1"><strong>'+esc(s)+'</strong></div><button class="btn btn-ghost btn-sm" data-tl="'+i+'">Modifier</button><button class="btn btn-danger btn-sm" data-tldel="'+i+'">✕</button></div>'});
+  h+='<button class="btn btn-ghost btn-sm" id="tlAdd" style="margin-top:.5rem">+ Ajouter</button></div>';
+  $('#view').innerHTML=h;
+  function editList(key,delPref,editPref,addId,label){
+    $('#'+addId).addEventListener('click',function(){
+      modal('Ajouter — '+label,'<label class="lbl req">Nom</label><input type="text" id="nm">',[{label:'Annuler',cls:'btn-ghost'},{label:'Ajouter',cls:'btn-primary',onClick:function(bg){var v=$('#nm',bg).value.trim();if(!v){toast('Nom obligatoire.','err');return}store.data[key].push(v);log(label+' ajouté',v);save();bg.remove();viewSkills()}}]);
+    });
+    $all('['+editPref+']').forEach(function(b){b.addEventListener('click',function(){var i=+b.getAttribute(editPref);
+      modal('Modifier — '+label,'<label class="lbl req">Nom</label><input type="text" id="nm" value="'+esc(store.data[key][i])+'">',[{label:'Annuler',cls:'btn-ghost'},{label:'Enregistrer',cls:'btn-primary',onClick:function(bg){var v=$('#nm',bg).value.trim();if(!v)return;log(label+' modifié',store.data[key][i]+' → '+v);store.data[key][i]=v;save();bg.remove();viewSkills()}}]);
+    })});
+    $all('['+delPref+']').forEach(function(b){b.addEventListener('click',function(){var i=+b.getAttribute(delPref);confirmModal('Retirer « '+store.data[key][i]+' » ?','Il sera retiré de la liste au prochain export.',function(){log(label+' retiré',store.data[key][i]);store.data[key].splice(i,1);save();viewSkills()})})});
   }
-  if(act==='use'){
-    var fname=m.path.split('/').pop();
-    toast('Recherche des usages…');
-    var pages=store.data.pages.map(function(p){return p.file});
-    Promise.all(pages.map(function(pg){return fetch(pg,{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){return t.indexOf(fname)>=0?pg:null}).catch(function(){return null})}))
-    .then(function(res){
-      var used=res.filter(Boolean);
-      modal('Usages de '+fname, used.length
-        ?'<p>Ce fichier est référencé dans :</p><ul>'+used.map(function(u){return '<li><a href="'+u+'" target="_blank" rel="noopener">'+u+'</a></li>'}).join('')+'</ul><p class="help">Le supprimer du dépôt créerait une image cassée sur ces pages.</p>'
-        :'<p>Aucune page publique ne référence ce fichier (fichier potentiellement orphelin).</p>',
-        [{label:'Fermer',cls:'btn-outline'}]);
+  editList('skills','data-skdel','data-sk','skAdd','Compétence');
+  editList('tools','data-tldel','data-tl','tlAdd','Outil');
+}
+
+/* ==================== SEO & PARTAGE ==================== */
+function viewSeo(){
+  var d=store.data;
+  var h='<div class="card"><h2>SEO par page</h2><p class="help" style="margin-bottom:.8rem">Les champs pré-remplis proviennent de l\'analyse réelle des pages en ligne. Vos modifications sont locales : elles prennent effet sur le site après export → commit (voir Publication).</p>'
+    +'<div class="toolbar" style="margin-bottom:0"><select id="seoPage" aria-label="Choisir une page">'+d.pages.map(function(pg){return '<option value="'+esc(pg.file)+'">'+esc(pg.name)+' ('+esc(pg.file)+')</option>'}).join('')+'</select>'
+    +'<button class="btn btn-ghost btn-sm" id="seoFetch">↻ Relire la page en ligne</button></div></div>'
+    +'<div id="seoForm"></div>';
+  $('#view').innerHTML=h;
+  function load(file){
+    var cur=store.seo[file]||{};
+    var f='<div class="card"><h2>Édition — <code style="text-transform:none">'+esc(file)+'</code></h2>'
+      +'<label class="lbl req">Titre (50–60 caractères) <span id="ctT" class="mut" style="text-transform:none;font-weight:400"></span></label>'
+      +'<input type="text" id="sfT" maxlength="70" value="'+esc(cur.title||'')+'">'
+      +'<label class="lbl req">Description (150–160 caractères) <span id="ctD" class="mut" style="text-transform:none;font-weight:400"></span></label>'
+      +'<textarea id="sfD" maxlength="170">'+esc(cur.desc||'')+'</textarea>'
+      +'<label class="lbl">Image de partage (Open Graph)</label><input type="text" id="sfImg" value="'+esc(cur.img||'')+'" placeholder="assets/og/'+file.replace('.html','')+'.webp">'
+      +'<label class="lbl">URL canonique</label><input type="text" id="sfC" value="'+esc(cur.canonical||('https://vasilias-studio.github.io/'+file))+'">'
+      +'<p class="help">robots.txt et sitemap.xml : déjà présents à la racine et servis réellement par le site (vérifiés). Sitemap régénérable depuis Publication → Export.</p>'
+      +'<button class="btn btn-primary btn-sm" id="seoSave">Enregistrer pour cette page</button></div>'
+      +'<div class="grid2">'
+      +'<div class="card"><h2>Aperçu Google</h2><div style="max-width:420px"><div style="color:#1a0dab;font-size:1.05rem;font-weight:500;line-height:1.3" id="pvT">—</div><div style="color:#006621;font-size:.75rem;margin:.15rem 0" id="pvU">—</div><div style="color:#545454;font-size:.8rem;line-height:1.45" id="pvD">—</div></div></div>'
+      +'<div class="card"><h2>Aperçu réseaux sociaux (réel — rendu côté hub)</h2><div class="social-card"><div class="img" id="pvImgBG">Pas d\'image OG</div><div class="body"><div class="u" id="pvU2">vasilias-studio.github.io</div><div class="t" id="pvT2">—</div><div class="d" id="pvD2">—</div></div></div></div>'
+      +'</div>';
+    $('#seoForm').innerHTML=f;
+    function sync(){
+      var t=$('#sfT').value,dd=$('#sfD').value,im=$('#sfImg').value.trim(),ca=$('#sfC').value.trim();
+      $('#ctT').textContent='('+t.length+' car.)';$('#ctT').style.color=t.length<50?'var(--warn)':(t.length>60?'var(--err)':'var(--ok)');
+      $('#ctD').textContent='('+dd.length+' car.)';$('#ctD').style.color=dd.length<150?'var(--warn)':(dd.length>160?'var(--err)':'var(--ok)');
+      $('#pvT').textContent=t||'Titre…';$('#pvT2').textContent=t||'Titre…';
+      $('#pvD').textContent=dd||'Description…';$('#pvD2').textContent=dd||'Description…';
+      $('#pvU').textContent=ca||'…';$('#pvU2').textContent=(ca||'vasilias-studio.github.io').replace(/^https?:\/\//,'');
+      var bg=$('#pvImgBG');
+      if(im){bg.style.backgroundImage='url(\''+encodeURI(im)+'\')';bg.textContent=''}else{bg.style.backgroundImage='none';bg.textContent='Pas d\'image OG'}
+    }
+    ['sfT','sfD','sfImg','sfC'].forEach(function(id){$('#'+id).addEventListener('input',sync)});sync();
+    $('#seoSave').addEventListener('click',function(){
+      var t=$('#sfT').value.trim(),dd=$('#sfD').value.trim();
+      if(!t||!dd){toast('Titre et description obligatoires.','err');return}
+      store.seo[file]={title:t,desc:dd,img:$('#sfImg').value.trim(),canonical:$('#sfC').value.trim(),updated:new Date().toISOString()};
+      lsSet(LS.seo,store.seo);store.dirty=true;$('#dirtyPill').classList.remove('hidden');
+      log('SEO mis à jour',file);toast('SEO enregistré pour '+file+'.','ok');
     });
   }
-}
-function mediaImport(e){
-  var f=e.target.files[0];e.target.value='';
-  if(!f)return;
-  var okTypes=['image/jpeg','image/png','image/webp','image/svg+xml','image/gif'];
-  if(okTypes.indexOf(f.type)<0){toast('Type rejeté : '+f.type+' (images uniquement — les exécutables sont refusés)','err');return}
-  if(f.size>8*1048576){toast('Fichier trop lourd ('+fmtBytes(f.size)+') — visez < 2 Mo pour le web.','err');return}
-  var rd=new FileReader();
-  rd.onload=function(){
-    var img=new Image();
-    img.onload=function(){
-      modal('Import validé : '+f.name,
-        '<img src="'+rd.result+'" alt="Aperçu import"><p class="mono" style="margin:.5rem 0">'+fmtBytes(f.size)+' · '+img.width+'×'+img.height+' px · '+f.type+'</p>'
-        +'<p>Déposez ce fichier dans <code>assets/</code> (sous-dossier du projet concerné), référencez-le dans la page, puis publiez via Git. Le hub ne peut pas écrire dans le dépôt sans backend (limite GitHub Pages, documentée).</p>',
-        [{label:'Compris',cls:'btn-dark'}]);
-      log('Média','import validé : '+f.name);notify('Média « '+f.name+' » validé localement — à déposer dans le dépôt.','info','media');
-    };
-    img.onerror=function(){toast('Fichier image illisible.','err')};
-    img.src=rd.result;
-  };
-  rd.readAsDataURL(f);
-}
-
-/* ============================================================
-   VUE : SEO (audit réel)
-============================================================ */
-function viewSeo(){
-  $('#view').innerHTML=
-    '<div class="card"><h2>Audit SEO réel par page</h2><p class="mono">Le hub télécharge chaque page et mesure : balise title, meta description, nombre de H1, images sans alt, liens internes cassés. Aucun score inventé — seuls des contrôles factuels.</p><div style="margin-top:1rem"><button class="btn btn-dark" id="seoRun">Lancer l\'audit</button> <span class="mono" id="seoStatus"></span></div></div>'
-    +'<div id="seoOut"></div>'
-    +'<div class="card"><h2>Sitemap & robots</h2><div class="mono">Fichiers présents : <a href="robots.txt" target="_blank" rel="noopener">robots.txt</a> · <a href="sitemap.xml" target="_blank" rel="noopener">sitemap.xml</a> (hub.html est volontairement exclu et en noindex).</div></div>';
-  $('#seoRun').addEventListener('click',runSeo);
-}
-function runSeo(){
-  var out=$('#seoOut');out.innerHTML='';var st=$('#seoStatus');st.textContent=' — audit en cours…';
-  var pages=store.data.pages.map(function(p){return p.file});var done=0;
-  pages.forEach(function(pg){
-    fetch(pg,{cache:'no-store'}).then(function(r){
-      if(!r.ok)throw new Error('HTTP '+r.status);return r.text();
-    }).then(function(html){
+  function fetchLive(){
+    var file=$('#seoPage').value;
+    fetch(file,{cache:'no-store'}).then(function(r){return r.text()}).then(function(html){
       var doc=new DOMParser().parseFromString(html,'text/html');
-      var title=(doc.querySelector('title')||{}).textContent||'';
-      var desc=doc.querySelector('meta[name="description"]');
-      var h1s=doc.querySelectorAll('h1').length;
-      var imgs=Array.prototype.slice.call(doc.querySelectorAll('img'));
-      var noAlt=imgs.filter(function(im){return !im.hasAttribute('alt')}).length;
-      var links=Array.prototype.slice.call(doc.querySelectorAll('a[href]'))
-        .map(function(a){return a.getAttribute('href')})
-        .filter(function(h){return h&&/^[a-z0-9\-]+\.html/.test(h)})
-        .map(function(h){return h.split('#')[0]});
-      var uniq=Array.prototype.slice.call(new Set(links));
-      return Promise.all(uniq.map(function(l){return fetch(l,{cache:'no-store'}).then(function(r2){return r2.ok?null:l}).catch(function(){return l})}))
-        .then(function(broken){return {pg:pg,title:title,desc:desc?desc.getAttribute('content'):'',h1:h1s,noAlt:noAlt,broken:broken.filter(Boolean)}});
-    }).then(function(res){
-      var issues=[];
-      if(!res.title)issues.push('title absent');if(!res.desc)issues.push('meta description absente');
-      if(res.h1!==1)issues.push(res.h1+' balises H1 (1 attendu)');
-      if(res.noAlt)issues.push(res.noAlt+' image(s) sans alt');
-      if(res.broken.length)issues.push('liens cassés : '+res.broken.join(', '));
-      var card=document.createElement('div');card.className='card';
-      card.innerHTML='<h2 style="margin-bottom:.5rem"><a href="'+res.pg+'" target="_blank" rel="noopener">'+res.pg+'</a></h2>'
-        +'<div class="mono">Title : '+(res.title?'✓ '+esc(res.title.slice(0,70)):'✗')+'</div>'
-        +'<div class="mono">Description : '+(res.desc?'✓ '+esc(res.desc.slice(0,90))+'…':'✗')+'</div>'
-        +'<div class="mono">H1 : '+res.h1+' · images sans alt : '+res.noAlt+' · liens internes cassés : '+res.broken.length+'</div>'
-        +(issues.length?'<p style="margin-top:.5rem"><span class="pill err">'+issues.length+' problème(s)</span> '+esc(issues.join(' · '))+'</p>'
-                      :'<p style="margin-top:.5rem"><span class="pill ok">Conforme</span></p>');
-      out.appendChild(card);
-    }).catch(function(e){
-      var card=document.createElement('div');card.className='card';
-      card.innerHTML='<h2>'+esc(pg)+'</h2><p><span class="pill err">Inaccessible</span> '+esc(e.message)+'</p>';
-      out.appendChild(card);
-    }).finally(function(){if(++done===pages.length){st.textContent=' — terminé ✓';log('SEO','audit lancé');toast('Audit SEO terminé','ok')}});
-  });
+      var cur=store.seo[file]||{};
+      cur.title=cur.title||(doc.querySelector('title')||{}).textContent||'';
+      var md=doc.querySelector('meta[name=description]');if(!cur.desc&&md)cur.desc=md.getAttribute('content')||'';
+      var og=doc.querySelector('meta[property="og:image"]');if(!cur.img&&og)cur.img=og.getAttribute('content')||'';
+      var cn=doc.querySelector('link[rel=canonical]');if(!cur.canonical&&cn)cur.canonical=cn.getAttribute('href')||'';
+      store.seo[file]=cur;lsSet(LS.seo,store.seo);load(file);toast('Page relue depuis le site en ligne.','ok');
+    }).catch(function(){toast('Lecture impossible (hors ligne ou page absente).','err')});
+  }
+  $('#seoPage').addEventListener('change',function(){load($('#seoPage').value)});
+  $('#seoFetch').addEventListener('click',fetchLive);
+  load($('#seoPage').value);
 }
 
-/* ============================================================
-   VUE : SURVEILLANCE
-============================================================ */
+/* ==================== SURVEILLANCE ==================== */
 function viewWatch(){
-  $('#view').innerHTML=
-    '<div class="card"><h2>URLs surveillées</h2><p class="mono">Une par ligne. Contrôle manuel uniquement — un onglet navigateur ne surveille pas en continu (pour une surveillance 24/7 : service externe gratuit type UptimeRobot, voir Paramètres → documentation).</p>'
-    +'<textarea id="wList" style="margin-top:.5rem">'+esc(store.watchCfg.join('\n'))+'</textarea>'
-    +'<div style="margin-top:.75rem"><button class="btn btn-outline btn-sm" id="wSave">Enregistrer la liste</button> <button class="btn btn-dark" id="wRun">Contrôler maintenant</button> <span class="mono" id="wStatus"></span></div></div>'
-    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>URL</th><th>Dernier état</th><th>Temps</th><th>Quand</th></tr></thead><tbody id="wRows"></tbody></table></div>';
-  $('#wSave').addEventListener('click',function(){
-    store.watchCfg=$('#wList').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
-    lsSet(LS.watch,store.watchCfg);log('Surveillance','liste mise à jour');renderWatch();toast('Liste enregistrée','ok');
-  });
+  var d=store.data;
+  var h='<div class="card"><h2>Contrôle des pages</h2><p class="help" style="margin-bottom:.8rem">Contrôles réels effectués depuis votre navigateur : code HTTP + temps de réponse mesuré au moment du clic. Pas de surveillance continue (site statique sans serveur).</p>'
+    +'<div class="toolbar"><button class="btn btn-primary" id="wRun">▶ Tout contrôler maintenant</button><span class="pill neut" id="wLast">Dernier passage : '+(lastWatchTs()?new Date(lastWatchTs()).toLocaleString('fr-FR'):'jamais')+'</span></div>'
+    +'<div id="wTable" style="overflow-x:auto"></div></div>';
+  $('#view').innerHTML=h;
+  drawWatch();
   $('#wRun').addEventListener('click',runWatch);
-  renderWatch();
 }
-function renderWatch(){
-  var tb=$('#wRows');
-  tb.innerHTML=store.watchCfg.map(function(u){
-    var h=store.watchHist[u];
-    var state=h?(h.ok?'<span class="pill ok">'+h.status+'</span>':'<span class="pill err">'+esc(h.error||('HTTP '+h.status))+'</span>'):'<span class="pill mut">jamais testé</span>';
-    return '<tr><td>'+esc(u)+'</td><td>'+state+'</td><td>'+(h?h.ms+' ms':'—')+'</td><td class="mono">'+(h?new Date(h.ts).toLocaleString('fr-FR'):'—')+'</td></tr>';
-  }).join('');
+function lastWatchTs(){var ts=null;Object.keys(store.watchHist).forEach(function(u){var r=store.watchHist[u];if(r&&r.length){var t=r[r.length-1].ts;if(!ts||t>ts)ts=t}});return ts}
+function drawWatch(){
+  var t='<table><thead><tr><th>État</th><th>URL</th><th>HTTP</th><th>Temps</th><th>Dernier contrôle</th></tr></thead><tbody>';
+  store.watchCfg.forEach(function(u){
+    var r=(store.watchHist[u]||[]).slice(-1)[0];
+    var pill='<span class="pill neut"><span class="dot neut"></span>jamais contrôlé</span>';
+    if(r){var k=r.state==='accessible'?'ok':(r.state==='injoignable'?'err':'warn');pill='<span class="pill '+pillFor(k)+'"><span class="dot '+k+'"></span>'+esc(r.state)+'</span>'}
+    t+='<tr><td>'+pill+'</td><td style="word-break:break-all"><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u.replace(/^https?:\/\/[^/]+/,'')||'/')+'</a></td>'
+      +'<td>'+(r?(r.http||'—'):'—')+'</td><td>'+(r&&r.ms?r.ms+' ms':'—')+'</td><td><small class="mut">'+(r?new Date(r.ts).toLocaleString('fr-FR'):'—')+'</small></td></tr>';
+  });
+  $('#wTable').innerHTML=t+'</tbody></table>';
 }
 function runWatch(){
-  var st=$('#wStatus');st.textContent=' — contrôle en cours…';var done=0;var incidents=0;
-  store.watchCfg.forEach(function(u){
-    var t0=performance.now();
-    var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},12000);
-    fetch(u,{cache:'no-store',signal:ctrl.signal}).then(function(r){
-      store.watchHist[u]={ts:Date.now(),ok:r.ok,status:r.status,ms:Math.round(performance.now()-t0)};
-      if(!r.ok){incidents++;notify('Page en erreur : '+u+' (HTTP '+r.status+')','err','watch')}
-    }).catch(function(e){
-      var kind=(e.name==='AbortError')?'délai dépassé (pas de réponse)':'panne réseau ou blocage';
-      store.watchHist[u]={ts:Date.now(),ok:false,error:kind,ms:Math.round(performance.now()-t0)};
-      incidents++;notify('Surveillance : '+u+' — '+kind,'err','watch');
-    }).finally(function(){
-      clearTimeout(to);lsSet('hub2_watchhist',store.watchHist);
-      if(++done===store.watchCfg.length){st.textContent=' — terminé ✓';renderWatch();log('Surveillance','contrôle manuel ('+incidents+' incident(s))');toast(incidents?incidents+' incident(s) détecté(s)':'Tout est accessible','ok')}
-    });
+  var btn=$('#wRun');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Contrôle en cours…';
+  var i=0;
+  function next(){
+    if(i>=store.watchCfg.length){btn.disabled=false;btn.textContent='▶ Tout contrôler maintenant';$('#wLast').textContent='Dernier passage : '+new Date().toLocaleString('fr-FR');lsSet(LS.hist,store.watchHist);drawWatch();toast('Contrôle terminé.','ok');log('Surveillance lancée');return}
+    var u=store.watchCfg[i++],t0=performance.now();
+    fetch(u,{cache:'no-store',redirect:'follow'}).then(function(r){
+      var ms=Math.round(performance.now()-t0);
+      var state=r.redirected?'redirection':(r.ok?'accessible':'erreur HTTP');
+      pushWatch(u,{ts:new Date().toISOString(),url:u,state:state,http:r.status,ms:ms});
+      if(!r.ok)notify('Surveillance : '+u+' → HTTP '+r.status,'warn','watch');
+    }).catch(function(){
+      pushWatch(u,{ts:new Date().toISOString(),url:u,state:'injoignable',http:0,ms:0});
+      notify('Surveillance : '+u+' injoignable (réseau ou hébergement).','err','watch');
+    }).finally(function(){drawWatch();next()});
+  }
+  next();
+}
+function pushWatch(u,r){var h=store.watchHist[u]||[];h.push(r);if(h.length>50)h.length=50;store.watchHist[u]=h}
+
+/* ==================== PUBLICATION ==================== */
+function viewPublish(){
+  var d=store.data;
+  var doneN=store.checklist.filter(function(c){return c.done}).length;
+  var reqN=store.checklist.filter(function(c){return c.required&&!c.done});
+  var ready=d.projects.filter(function(p){return p.status==='ready'}).length;
+  var alts=lsGet(LS.alts,{});
+  var missingAlt=(d.media||[]).filter(function(m){return /\.(webp|png|jpe?g|gif|svg|avif)$/i.test(m.file)&&!alts[m.file]}).length;
+  var h='<div class="card"><h2>Workflow de publication (réel et journalisé)</h2>'
+    +'<ol style="margin:.4rem 0 0 1.2rem;font-size:.875rem;line-height:2">'
+    +'<li>Finaliser les contenus et projets dans le hub.</li>'
+    +'<li><strong>Exporter</strong> les données (fichier <code>hub-data.json</code> régénéré ci-dessous).</li>'
+    +'<li>Remplacer le fichier dans le dépôt, adapter les pages concernées, puis <code>git commit && git push</code> — GitHub Pages redéploie automatiquement.</li>'
+    +'<li>Revenir ici, cocher « page publique contrôlée », et lancer la Surveillance.</li></ol></div>';
+  h+='<div class="grid2"><div class="card"><h2>Checklist avant publication</h2><div class="progress" style="margin:.4rem 0 .8rem" role="progressbar" aria-valuenow="'+doneN+'" aria-valuemin="0" aria-valuemax="'+store.checklist.length+'"><div style="width:'+Math.round(doneN/store.checklist.length*100)+'%"></div></div>';
+  store.checklist.forEach(function(c,i){
+    h+='<label class="check"><input type="checkbox" data-ci="'+i+'" '+(c.done?'checked':'')+'><span class="txt">'+esc(c.label)+(c.required?' <span style="color:var(--err)">*</span>':' <small class="mut">(recommandé)</small>')+'</span></label>';
   });
-}
-
-/* ============================================================
-   VUE : CHECKLIST (CRUD)
-============================================================ */
-function viewChecklist(){
-  var done=store.checklist.filter(function(c){return c.done}).length;
-  $('#view').innerHTML=
-    '<div class="card"><div class="progress"><div style="width:'+(store.checklist.length?Math.round(done/store.checklist.length*100):0)+'%"></div></div>'
-    +'<p class="mono" style="margin:.5rem 0 1rem">'+done+'/'+store.checklist.length+' étapes</p><div id="clList"></div>'
-    +'<div class="toolbar" style="margin-top:.75rem"><input type="text" id="clNew" placeholder="Nouvelle étape…" aria-label="Nouvelle étape"><label class="check" style="padding:0"><input type="checkbox" id="clReq"><span class="txt mono">obligatoire</span></label><button class="btn btn-dark btn-sm" id="clAdd">Ajouter</button></div></div>';
-  $('#clAdd').addEventListener('click',function(){
-    var v=$('#clNew').value.trim();if(!v){toast('Étape vide.','err');return}
-    store.checklist.push({label:v,done:false,required:$('#clReq').checked});
-    lsSet(LS.checklist,store.checklist);log('Checklist','ajout : '+v);viewChecklist();
-  });
-  var box=$('#clList');
-  box.innerHTML=store.checklist.map(function(c,i){
-    return '<div class="check"><input type="checkbox" data-ci="'+i+'" '+(c.done?'checked':'')+'>'
-     +'<span class="txt">'+esc(c.label)+(c.required?' <span class="pill err" style="margin-left:.35rem">obligatoire</span>':'')
-     +(c.doneAt?'<div class="mono">validée le '+new Date(c.doneAt).toLocaleString('fr-FR')+'</div>':'')+'</span>'
-     +'<button class="btn btn-danger btn-sm" data-cd="'+i+'" style="margin-left:auto">Retirer</button></div>';
-  }).join('');
-  $all('[data-ci]',box).forEach(function(cb){cb.addEventListener('change',function(){
-    var i=+cb.dataset.ci;store.checklist[i].done=cb.checked;store.checklist[i].doneAt=cb.checked?new Date().toISOString():null;
-    lsSet(LS.checklist,store.checklist);log('Checklist',(cb.checked?'validée : ':'dévalidée : ')+store.checklist[i].label);viewChecklist();
-  })});
-  $all('[data-cd]',box).forEach(function(b){b.addEventListener('click',function(){
-    var i=+b.dataset.cd;confirmModal('Retirer cette étape ?',store.checklist[i].label,function(){log('Checklist','retrait : '+store.checklist[i].label);store.checklist.splice(i,1);lsSet(LS.checklist,store.checklist);viewChecklist()});
-  })});
-}
-
-/* ============================================================
-   VUE : HISTORIQUE
-============================================================ */
-function viewHistory(){
-  $('#view').innerHTML=
-    '<div class="card"><h2>Journal local des actions (ce navigateur)</h2><div class="toolbar"><select id="hFilter"><option value="">Toutes actions</option></select><button class="btn btn-outline btn-sm" id="hExport">Exporter le journal (JSON)</button><button class="btn btn-danger btn-sm" id="hClear">Vider</button></div><div id="hRows"></div></div>'
-    +'<div class="card"><h2>Commits GitHub réels</h2><div id="ghCommits"><p class="mono">Chargement…</p></div></div>';
-  var acts=Array.prototype.slice.call(new Set(store.journal.map(function(j){return j.action.split(' : ')[0]})));
-  $('#hFilter').innerHTML='<option value="">Toutes actions</option>'+acts.map(function(a){return '<option>'+esc(a)+'</option>'}).join('');
-  $('#hFilter').addEventListener('change',renderHist);
-  $('#hExport').addEventListener('click',function(){download('journal-hub.json',JSON.stringify(store.journal,null,2));toast('Journal exporté','ok')});
-  $('#hClear').addEventListener('click',function(){confirmModal('Vider le journal local ?','Cette action est définitive.',function(){store.journal=[];lsSet(LS.journal,[]);renderHist()})});
-  renderHist();
-  fetch('https://api.github.com/repos/vasilias-studio/vasilias-studio.github.io/commits?per_page=8&sha=main')
-    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
-    .then(function(list){
-      $('#ghCommits').innerHTML=list.map(function(c){
-        var d=new Date(c.commit.author.date);
-        return '<div class="alert-item"><div style="flex:1"><div>'+esc(c.commit.message.split('\n')[0])+'</div><div class="mono">'+d.toLocaleString('fr-FR')+' · '+c.sha.slice(0,7)+'</div></div><a class="btn btn-outline btn-sm" href="'+c.html_url+'" target="_blank" rel="noopener">Voir</a></div>';
-      }).join('')||'<div class="empty">Aucun commit.</div>';
-    })
-    .catch(function(e){$('#ghCommits').innerHTML='<p class="mono">API GitHub indisponible ('+esc(e.message)+') — <a href="https://github.com/vasilias-studio/vasilias-studio.github.io/commits/main" target="_blank" rel="noopener">voir l\'historique sur GitHub</a>.</p>'});
-}
-function renderHist(){
-  var f=$('#hFilter').value;
-  var list=store.journal.filter(function(j){return !f||j.action.indexOf(f)===0});
-  $('#hRows').innerHTML=list.length?list.slice(0,60).map(function(j){
-    return '<div class="alert-item"><span class="chip">'+esc(j.action)+'</span><div><div>'+esc(j.target)+'</div><div class="mono">'+new Date(j.ts).toLocaleString('fr-FR')+'</div></div></div>';
-  }).join(''):'<div class="empty">Journal vide.</div>';
-}
-
-/* ============================================================
-   VUE : PROFILS & LIENS (CRUD + validation)
-============================================================ */
-function viewProfiles(){
-  $('#view').innerHTML=
-    '<div class="card"><h2>Profils réels du studio</h2><p class="mono">Aucun profil inventé : seuls ceux que vous configurez ici.</p><div id="pRows"></div>'
-    +'<div class="toolbar" style="margin-top:.75rem"><input type="text" id="pName" placeholder="Nom (ex : Behance)" aria-label="Nom du profil"><input type="url" id="pUrl" placeholder="https://… ou mailto:…" aria-label="URL du profil"><button class="btn btn-dark btn-sm" id="pAdd">Ajouter</button></div></div>';
-  $('#pAdd').addEventListener('click',function(){
-    var n=$('#pName').value.trim(),u=$('#pUrl').value.trim();
-    if(!n||!u){toast('Nom et URL requis.','err');return}
-    if(!/^(https:\/\/|mailto:)/.test(u)){toast('URL invalide : commencez par https:// ou mailto:','err');return}
-    store.data.profiles.push({name:n,url:u});save();log('Profil','ajout : '+n);viewProfiles();toast('Profil ajouté','ok');
-  });
-  $('#pRows').innerHTML=store.data.profiles.map(function(p,i){
-    return '<div class="alert-item"><strong style="min-width:110px">'+esc(p.name)+'</strong><a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="flex:1;word-break:break-all">'+esc(p.url)+'</a>'
-     +'<button class="btn btn-outline btn-sm" data-pv="'+i+'">Tester</button><button class="btn btn-danger btn-sm" data-pd="'+i+'">Retirer</button></div>';
-  }).join('');
-  $all('[data-pv]').forEach(function(b){b.addEventListener('click',function(){
-    var p=store.data.profiles[+b.dataset.pv];
-    if(p.url.indexOf('mailto:')===0){toast('Lien mailto : non testable par requête.','warn');return}
-    fetch(p.url,{mode:'no-cors'}).then(function(){toast('Requête envoyée (no-cors : la présence de la page ne peut pas être prouvée — ouvrez le lien pour confirmer).','warn')}).catch(function(){toast('Injoignable depuis ce navigateur.','err')});
-  })});
-  $all('[data-pd]').forEach(function(b){b.addEventListener('click',function(){
-    var i=+b.dataset.pd,p=store.data.profiles[i];
-    confirmModal('Retirer ce profil ?',p.name+' — '+p.url,function(){store.data.profiles.splice(i,1);save();log('Profil','retrait : '+p.name);viewProfiles()});
-  })});
-}
-
-/* ============================================================
-   VUE : PARAMÈTRES (export / import / reset)
-============================================================ */
-function viewSettings(){
-  $('#view').innerHTML=
-    '<div class="card"><h2>Exporter les données</h2><p class="mono">Télécharge hub-data.json complet (projets, contenu, compétences, outils, profils, liste de surveillance). C\'est le fichier de vérité à publier dans le dépôt.</p><pre class="export" id="expPreview"></pre><div style="margin-top:.75rem"><button class="btn btn-dark" id="expBtn">Télécharger hub-data.json</button> <button class="btn btn-outline" id="expInstr">Instructions de publication</button></div></div>'
-    +'<div class="card"><h2>Importer</h2><p class="mono">Remplace les données du hub par un fichier hub-data.json. Validation + aperçu + confirmation avant tout remplacement.</p><label class="btn btn-outline btn-sm" style="cursor:pointer;margin-top:.5rem">Choisir un fichier<input type="file" id="impFile" class="hidden" accept="application/json,.json"></label><div id="impInfo"></div></div>'
-    +'<div class="card"><h2>Architecture & limites (honnêteté technique)</h2><div class="mono" style="line-height:1.7">'
-    +'• Hébergement : GitHub Pages = <strong>statique</strong>. Pas de base de données, pas de serveur, pas de secrets.<br>'
-    +'• Ce hub : <strong>local-first</strong>. Données réelles (hub-data.json) + vos modifications dans CE navigateur (localStorage).<br>'
-    +'• Publication sur le site public : <strong>export JSON + commit Git</strong> (manuel, ou via votre assistant dans le chat).<br>'
-    +'• Verrou d\'accès : empreinte SHA-256 + limitation d\'essais — dissuasion, <strong>pas</strong> une sécurité serveur.<br>'
-    +'• Pour une authentification réelle, des rôles et l\'écriture directe sur GitHub : backend serverless ou Decap CMS + OAuth — documentation fournie dans <code>hub-documentation.md</code>.<br>'
-    +'• Aucun token ni secret n\'est présent dans ce hub.</div></div>'
-    +'<div class="card"><h2>Zone de danger</h2><button class="btn btn-danger" id="resetBtn">Réinitialiser le hub (données d\'origine)</button><p class="help" style="margin-top:.5rem">Efface toutes les modifications locales, le journal, la checklist et l\'historique de surveillance de ce navigateur. Les données du dépôt ne sont pas touchées.</p></div>';
-  $('#expPreview').textContent=JSON.stringify(store.data,null,2).slice(0,1500)+'\n… (tronqué à l\'aperçu)';
+  h+='<p class="help">* étapes obligatoires. La progression est réelle : elle reflète ces cases.</p></div>';
+  h+='<div class="card"><h2>État de publication</h2>'
+    +'<div class="item"><span class="dot '+(ready?'warn':'neut')+'" style="margin-top:6px"></span><div><strong>'+ready+' projet(s) « Prêt à publier »</strong><small class="mut">'+(ready?'À pousser via export + commit.':'Aucun en attente.')+'</small></div></div>'
+    +'<div class="item"><span class="dot '+(missingAlt?'warn':'ok')+'" style="margin-top:6px"></span><div><strong>'+(missingAlt?missingAlt+' image(s) sans texte alternatif':'Tous les textes alternatifs sont renseignés')+'</strong><small class="mut">Voir Médiathèque.</small></div></div>'
+    +'<div class="item"><span class="dot '+(store.dirty?'warn':'ok')+'" style="margin-top:6px"></span><div><strong>'+(store.dirty?'Des modifications n\'ont pas été exportées':'Aucune modification en attente d\'export')+'</strong></div></div></div></div>';
+  h+='<div class="card"><h2>Export</h2><p class="help" style="margin-bottom:.8rem">Génère le <code>hub-data.json</code> complet (projets, contenus, SEO, état de la checklist) à déposer dans le dépôt. L\'export est journalisé.</p>'
+    +'<button class="btn btn-primary" id="expBtn">⬇ Exporter hub-data.json</button> '
+    +'<button class="btn btn-ghost" id="expShow">Voir le contenu</button></div>';
+  $('#view').innerHTML=h;
+  $all('[data-ci]').forEach(function(c){c.addEventListener('change',function(){store.checklist[+c.dataset.ci].done=c.checked;lsSet(LS.checklist,store.checklist);store.dirty=true;$('#dirtyPill').classList.remove('hidden');log('Checklist',(c.checked?'✓ ':'✗ ')+store.checklist[+c.dataset.ci].label);viewPublish()})});
   $('#expBtn').addEventListener('click',exportData);
-  $('#expInstr').addEventListener('click',function(){
-    modal('Publier les modifications sur le site',
-      '<ol style="padding-left:1.2rem;line-height:2"><li>Téléchargez <code>hub-data.json</code> (bouton Exporter).</li><li>Remplacez <code>hub-data.json</code> à la racine du dépôt.</li><li>Si des projets changent de statut ou des textes changent : appliquez les mêmes changements aux pages HTML concernées (le hub ne réécrit pas les pages — aucune écriture côté client sans backend).</li><li>Commit + push = publication (GitHub Pages se redéploie en ~1 min).</li></ol><p class="help">Astuce : envoyez-moi le fichier exporté dans le chat — je mets à jour les pages et je publie pour vous.</p>',
-      [{label:'Compris',cls:'btn-dark'}]);
-  });
-  $('#impFile').addEventListener('change',function(e){
-    var f=e.target.files[0];e.target.value='';if(!f)return;
-    var rd=new FileReader();
-    rd.onload=function(){
-      try{
-        var d=JSON.parse(rd.result);
-        if(!d.projects||!d.pages||!d.meta)throw new Error('schéma invalide (projets/pages/meta manquants)');
-        $('#impInfo').innerHTML='<div class="alert-item"><span class="pill info">aperçu</span><div>'+d.projects.length+' projets · '+d.pages.length+' pages · '+(d.media||[]).length+' médias · version '+esc(d.meta.version||'?')+'</div></div>'
-          +'<button class="btn btn-danger btn-sm" id="impDo" style="margin-top:.5rem">Confirmer le remplacement</button>';
-        $('#impDo').addEventListener('click',function(){
-          confirmModal('Remplacer toutes les données ?','Les données locales actuelles seront écrasées (journal et checklist conservés).',function(){
-            store.data=d;save();log('Import',f.name);notify('Données importées depuis '+f.name,'info');go('dashboard');toast('Import appliqué','ok');
-          });
-        });
-      }catch(err){toast('Import refusé : '+err.message,'err')}
-    };
-    rd.readAsText(f);
-  });
-  $('#resetBtn').addEventListener('click',function(){
-    confirmModal('Réinitialiser le hub ?','Toutes vos modifications locales, le journal, la checklist et l\'historique seront effacés de ce navigateur.',function(){
-      [LS.data,LS.journal,LS.checklist,LS.watch,'hub2_watchhist',LS.alerts,'hub2_alts'].forEach(function(k){localStorage.removeItem(k)});
-      toast('Hub réinitialisé','ok');setTimeout(function(){location.reload()},600);
-    });
-  });
+  $('#expShow').addEventListener('click',function(){modal('Contenu de l\'export','<pre class="exp">'+esc(exportPayload())+'</pre>')});
+}
+function exportPayload(){
+  var d=JSON.parse(JSON.stringify(store.data));
+  d.meta=d.meta||{};d.meta.version='3.0';d.meta.generated=new Date().toISOString().slice(0,10);
+  d.seo=store.seo;d.checklist=store.checklist;
+  return JSON.stringify(d,null,2);
 }
 function exportData(){
-  download('hub-data.json',JSON.stringify(store.data,null,2));
-  markClean();log('Export','hub-data.json');toast('hub-data.json téléchargé','ok');
+  var blob=new Blob([exportPayload()],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hub-data.json';a.click();
+  markClean();log('Export hub-data.json effectué');toast('Export téléchargé — déposez-le dans le dépôt puis commitez.','ok');
+  if($('#dirtyPill'))$('#dirtyPill').classList.add('hidden');
 }
-function download(name,text){
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},400);
+
+/* ==================== HISTORIQUE & SAUVEGARDES ==================== */
+function viewHistory(){
+  var snaps=lsGet(LS.snaps,[]);
+  var h='<div class="card"><h2>Sauvegardes locales</h2><p class="help" style="margin-bottom:.8rem">Instantanés de toutes les données du hub (projets, contenus, SEO, checklist) stockés dans ce navigateur. La restauration est guidée : elle n\'écrase jamais sans confirmation et journalise l\'opération.</p>'
+    +'<button class="btn btn-primary btn-sm" id="snapAdd">＋ Créer une sauvegarde maintenant</button>'
+    +'<button class="btn btn-ghost btn-sm" id="snapImport">⇪ Restaurer depuis un fichier hub-data.json</button>'
+    +'<div style="margin-top:.9rem" id="snapList"></div></div>';
+  h+='<div class="card"><h2>Journal ('+store.journal.length+' événements)</h2>';
+  if(!store.journal.length)h+='<div class="empty">Aucun événement journalisé.</div>';
+  else{h+='<div style="max-height:340px;overflow:auto"><table><thead><tr><th>Date</th><th>Action</th><th>Cible</th></tr></thead><tbody>';
+    store.journal.slice(0,120).forEach(function(j){h+='<tr><td><small class="mut">'+new Date(j.ts).toLocaleString('fr-FR')+'</small></td><td>'+esc(j.action)+'</td><td>'+esc(j.target||'')+'</td></tr>'});
+    h+='</tbody></table></div>'}
+  h+='</div>';
+  $('#view').innerHTML=h;
+  drawSnaps();
+  function drawSnaps(){
+    var l='';snaps=lsGet(LS.snaps,[]);
+    if(!snaps.length)l='<div class="empty">Aucune sauvegarde pour l\'instant.</div>';
+    snaps.forEach(function(s,i){
+      l+='<div class="item"><span class="dot ok" style="margin-top:6px"></span><div style="flex:1"><strong>'+esc(s.label)+'</strong><small class="mut">'+new Date(s.ts).toLocaleString('fr-FR')+' · '+s.projects.length+' projets · '+fmtBytes(s.blob.length)+'</small></div>'
+        +'<button class="btn btn-ghost btn-sm" data-rest="'+i+'">Restaurer…</button>'
+        +'<button class="btn btn-ghost btn-sm" data-dls="'+i+'">Télécharger</button>'
+        +'<button class="btn btn-danger btn-sm" data-sdel="'+i+'">✕</button></div>';
+    });
+    $('#snapList').innerHTML=l;
+    $all('[data-rest]').forEach(function(b){b.addEventListener('click',function(){var s=lsGet(LS.snaps,[])[+b.dataset.rest];
+      modal('Restaurer « '+s.label+' » ?','<p>Le contenu actuel sera <strong>remplacé</strong> par cette sauvegarde.</p><label class="check"><input type="checkbox" id="keepSnap" checked><span class="txt">Créer d\'abord une sauvegarde de l\'état actuel (recommandé)</span></label>',
+        [{label:'Annuler',cls:'btn-ghost'},{label:'Restaurer',cls:'btn-danger',onClick:function(bg){
+          if($('#keepSnap',bg).checked)snap('Avant restauration du '+new Date().toLocaleString('fr-FR'));
+          var data=JSON.parse(s.blob);store.data=data;save();log('Restauration effectuée',s.label);bg.remove();go('history');toast('Sauvegarde restaurée.','ok');
+        }}]);
+    })});
+    $all('[data-dls]').forEach(function(b){b.addEventListener('click',function(){var s=lsGet(LS.snaps,[])[+b.dataset.dls];var blob=new Blob([s.blob],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hub-backup-'+s.ts.slice(0,10)+'.json';a.click()})});
+    $all('[data-sdel]').forEach(function(b){b.addEventListener('click',function(){var ss=lsGet(LS.snaps,[]);confirmModal('Supprimer cette sauvegarde ?','Action définitive.',function(){var s=ss.splice(+b.dataset.sdel,1)[0];lsSet(LS.snaps,ss);log('Sauvegarde supprimée',s.label);drawSnaps()})})});
+  }
+  $('#snapAdd').addEventListener('click',function(){
+    modal('Nouvelle sauvegarde','<label class="lbl req">Nom</label><input type="text" id="slLbl" value="Sauvegarde manuelle">',[{label:'Annuler',cls:'btn-ghost'},{label:'Créer',cls:'btn-primary',onClick:function(bg){snap($('#slLbl',bg).value.trim()||'Sauvegarde');log('Sauvegarde créée');bg.remove();drawSnaps();toast('Sauvegarde créée.','ok')}}]);
+  });
+  $('#snapImport').addEventListener('click',function(){
+    var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+    inp.addEventListener('change',function(){
+      var f=inp.files[0];if(!f)return;var r=new FileReader();
+      r.onload=function(){
+        try{var data=JSON.parse(r.result);if(!data.projects)throw new Error('structure invalide');
+          confirmModal('Restaurer depuis « '+f.name+' » ?','Le hub sera rechargé avec ce fichier ('+data.projects.length+' projets). L\'état actuel sera sauvegardé d\'abord.',function(){snap('Avant import fichier');store.data=data;save();log('Restauration depuis fichier',f.name);toast('Fichier restauré.','ok');go('history')});
+        }catch(e){toast('Fichier invalide : '+e.message,'err')}
+      };r.readAsText(f);
+    });inp.click();
+  });
 }
+function snap(label){
+  var ss=lsGet(LS.snaps,[]);
+  ss.unshift({ts:new Date().toISOString(),label:label,projects:store.data.projects.map(function(p){return p.slug}),blob:JSON.stringify(store.data)});
+  if(ss.length>12)ss.length=12;lsSet(LS.snaps,ss);
+}
+
+/* ==================== PARAMÈTRES ==================== */
+function viewSettings(){
+  var used=0;Object.keys(localStorage).forEach(function(k){if(k.indexOf('hub2_')===0)used+=(localStorage.getItem(k)||'').length});
+  var h='<div class="card"><h2>Accès</h2>'
+    +'<p style="font-size:.875rem;margin-bottom:.7rem">Pour changer le code d\'accès : calculez le SHA-256 du nouveau code (terminal : <code>printf N | sha256sum</code> ou un générateur en ligne) et remplacez la constante <code>ACCESS_SHA256</code> en tête du script de <code>hub.html</code>. Le code n\'est jamais stocké en clair.</p></div>';
+  h+='<div class="grid2"><div class="card"><h2>Session</h2><p style="font-size:.875rem">Durée : '+SESSION_HOURS+' h, conservée uniquement dans l\'onglet (sessionStorage). Elle se termine aussi à la fermeture ou via « Se déconnecter ».</p>'
+    +'<button class="btn btn-ghost btn-sm" id="stLogout" style="margin-top:.7rem">Terminer la session</button></div>';
+  h+='<div class="card"><h2>Données locales</h2><p style="font-size:.875rem">'+fmtBytes(used)+' utilisés par le hub dans ce navigateur (brouillons, journal, checklist, sauvegardes).</p>'
+    +'<button class="btn btn-danger btn-sm" id="stWipe" style="margin-top:.7rem">Réinitialiser les données locales…</button></div></div>';
+  h+='<div class="card"><h2>Architecture (réel, à connecter plus tard)</h2><ul style="margin-left:1.2rem;font-size:.875rem;line-height:2">'
+    +'<li><strong>Hébergement :</strong> GitHub Pages (statique) — <a href="https://vasilias-studio.github.io/" target="_blank" rel="noopener">site public</a></li>'
+    +'<li><strong>Données :</strong> hub-data.json (versionné Git) + cache navigateur — pas de serveur, pas de base.</li>'
+    +'<li><strong>Verrou :</strong> SHA-256 côté navigateur — confort, pas sécurité serveur. Pour un vrai compte : Netlify Identity, backend ou CMS (Decap/Sveltia).</li>'
+    +'<li><strong>Publication :</strong> export → commit → push → redéploiement GitHub Pages.</li>'
+    +'<li><strong>Sauvegardes :</strong> instantanés navigateur (12 max) + exports téléchargeables.</li></ul></div>';
+  h+='<div class="card"><h2>Documentation</h2><p style="font-size:.875rem"><a href="hub-documentation.md" target="_blank" rel="noopener">Ouvrir hub-documentation.md</a> — guide complet du hub (accès, workflow, sauvegardes, rollback, évolutions).</p></div>';
+  $('#view').innerHTML=h;
+  $('#stLogout').addEventListener('click',function(){sessionEnd();location.reload()});
+  $('#stWipe').addEventListener('click',function(){confirmModal('Réinitialiser les données locales ?','Journal, checklist, sauvegardes et modifications non exportées seront définitivement perdus. Le fichier hub-data.json du site n\'est PAS touché.',function(){
+    Object.keys(localStorage).forEach(function(k){if(k.indexOf('hub2_')===0)localStorage.removeItem(k)});sessionStorage.clear();location.reload();
+  })});
+}
+
 </script>
 </body>
 </html>

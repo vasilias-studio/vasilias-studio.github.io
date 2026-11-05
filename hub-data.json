@@ -2,7 +2,7 @@
   "meta": {
     "site": "Vasilías Studio",
     "url": "https://vasilias-studio.github.io/",
-    "version": "2.0",
+    "version": "3.0",
     "generated": "2026-10-28"
   },
   "projects": [
@@ -44,7 +44,7 @@
       "id": "pellicano",
       "title": "PELLICANO",
       "slug": "work-pellicano",
-      "status": "archived",
+      "status": "incomplete",
       "nature": "À confirmer",
       "year": "",
       "category": [
@@ -61,7 +61,7 @@
       "id": "dolce",
       "title": "Dolce",
       "slug": "work-dolce",
-      "status": "archived",
+      "status": "incomplete",
       "nature": "À confirmer",
       "year": "",
       "category": [
@@ -78,7 +78,7 @@
       "id": "les-trois-etoiles",
       "title": "Les Trois Étoiles",
       "slug": "work-les-trois-etoiles",
-      "status": "archived",
+      "status": "incomplete",
       "nature": "À confirmer",
       "year": "",
       "category": [
