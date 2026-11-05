@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>Tableau de bord — Vasilías Studio</title>
+<title>Hub — Vasilías Studio</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,226 +13,855 @@
 :root{
   --bg:#F2E9D8; --ink:#161513; --muted:#6A665C; --line:rgba(22,21,19,.12);
   --accent:#BF814B; --accent-text:#8F5A22; --surface:#ECE9E2;
-  --ok:#1e7d43; --warn:#b45309; --err:#b91c1c;
+  --ok:#1e7d43; --warn:#b45309; --err:#b91c1c; --info:#1d4ed8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
 body{font-family:'Josefin Sans',sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
-.container{max-width:1024px;margin:0 auto;padding:2rem 1.25rem 4rem}
-h1{font-size:1.75rem;font-weight:700;text-transform:uppercase;letter-spacing:-.02em}
-h2{font-size:.8125rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem;font-weight:600}
-.card{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+a{color:var(--accent-text);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:3px}
+h1{font-size:1.35rem;font-weight:700;text-transform:uppercase;letter-spacing:-.02em}
+h2{font-size:.8125rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
 .mono{font-size:.8125rem;color:var(--muted)}
-.row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--line)}
-.row:last-child{border-bottom:none}
-.row a{color:var(--accent-text);text-decoration:none;font-weight:600}
-.row a:hover{text-decoration:underline}
-.pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.pill.ok{color:var(--ok);border-color:var(--ok)}
-.pill.warn{color:var(--warn);border-color:var(--warn)}
-.pill.err{color:var(--err);border-color:var(--err)}
-.pill.mut{color:var(--muted)}
-.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
-.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:999px;font-family:inherit;font-size:.8125rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid transparent;cursor:pointer;text-decoration:none;font-weight:600}
-.btn-dark{background:var(--ink);color:var(--bg)}
-.btn-dark:hover{opacity:.9}
-.btn-outline{border-color:var(--line);color:var(--ink);background:transparent}
-.btn-outline:hover{border-color:var(--ink)}
-.grid{display:grid;grid-template-columns:1fr;gap:1rem}
-@media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
-header.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.25rem 0;flex-wrap:wrap}
-.badge-priv{font-size:.6875rem;text-transform:uppercase;letter-spacing:.1em;color:var(--bg);background:var(--ink);padding:.3rem .8rem;border-radius:999px}
-.check{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;cursor:pointer}
-.check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent-text);flex:none}
-.check span{font-size:.9375rem}
-.check input:checked + span{text-decoration:line-through;color:var(--muted)}
-ul.actions{list-style:none}
-ul.actions li{padding:.5rem 0;border-bottom:1px solid var(--line)}
-ul.actions li:last-child{border-bottom:none}
-ul.actions a{color:var(--accent-text);font-weight:600;text-decoration:none}
-ul.actions a:hover{text-decoration:underline}
-ul.actions small{display:block;color:var(--muted);font-weight:400;font-size:.8125rem}
-.commit{padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
-.commit:last-child{border-bottom:none}
-.commit code{font-size:.75rem;color:var(--muted)}
-/* verrou */
+.hidden{display:none!important}
+
+/* ---------- Verrou ---------- */
 #lock{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;align-items:center;justify-content:center;padding:1.5rem}
 #lock .box{max-width:340px;width:100%;text-align:center}
-#lock input{width:100%;padding:.9rem 1rem;font-size:1.1rem;text-align:center;letter-spacing:.35em;border:1px solid var(--line);border-radius:6px;background:#fff;margin:1.25rem 0;font-family:inherit}
-#lock input:focus{outline:2px solid var(--ink)}
+#lock input{width:100%;padding:.9rem 1rem;font-size:1.05rem;text-align:center;letter-spacing:.3em;border:1px solid var(--line);border-radius:6px;background:#fff;margin:1.25rem 0}
 #lock .err{color:var(--err);font-size:.8125rem;min-height:1.4em}
-.hidden{display:none!important}
-footer{text-align:center;padding-top:2rem;font-size:.75rem;color:var(--muted)}
+
+/* ---------- Layout ---------- */
+#app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:var(--ink);color:var(--bg);padding:1.5rem 1rem;position:fixed;inset:0 auto 0 0;display:flex;flex-direction:column;gap:2px;z-index:40;transition:transform .25s ease}
+.sidebar .brand{font-size:1.05rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem 1.25rem;display:block}
+.sidebar button.nav{display:flex;align-items:center;gap:.6rem;width:100%;text-align:left;background:none;border:none;color:rgba(242,233,216,.75);padding:.6rem .75rem;border-radius:6px;cursor:pointer;font-size:.9rem}
+.sidebar button.nav:hover{background:rgba(255,255,255,.08);color:#fff}
+.sidebar button.nav.active{background:var(--accent);color:var(--ink);font-weight:600}
+.sidebar .foot{margin-top:auto;font-size:.6875rem;color:rgba(242,233,216,.5);padding:.5rem .75rem}
+.main{flex:1;margin-left:230px;min-width:0}
+.topbar{position:sticky;top:0;z-index:30;background:rgba(242,233,216,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;flex-wrap:wrap}
+.topbar .spacer{flex:1}
+.content{padding:1.75rem 1.5rem 4rem;max-width:1100px}
+#burger{display:none;position:fixed;top:.85rem;left:.85rem;z-index:50;background:var(--ink);color:var(--bg);border:none;border-radius:6px;padding:.55rem .8rem;cursor:pointer;font-size:1rem}
+@media(max-width:860px){
+  #burger{display:block}
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.25)}
+  .main{margin-left:0}
+  .content{padding:4rem 1rem 4rem}
+}
+
+/* ---------- Composants ---------- */
+.card{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.25rem}
+.stat{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1rem;cursor:pointer;text-align:left;transition:border-color .2s}
+.stat:hover{border-color:var(--accent)}
+.stat .v{font-size:1.6rem;font-weight:700}
+.stat .l{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.7rem 1.3rem;border-radius:999px;font-size:.8125rem;text-transform:uppercase;letter-spacing:.06em;border:1px solid transparent;cursor:pointer;font-weight:600;background:none}
+.btn-dark{background:var(--ink);color:var(--bg)}.btn-dark:hover{opacity:.88}
+.btn-outline{border-color:var(--line)}.btn-outline:hover{border-color:var(--ink)}
+.btn-accent{background:var(--accent);color:var(--ink)}.btn-accent:hover{opacity:.88}
+.btn-danger{color:var(--err);border-color:var(--err)}.btn-danger:hover{background:var(--err);color:#fff}
+.btn-sm{padding:.4rem .85rem;font-size:.75rem}
+.pill{display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.2rem .65rem;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:var(--ok)}.pill.warn{color:var(--warn);border-color:var(--warn)}
+.pill.err{color:var(--err);border-color:var(--err)}.pill.mut{color:var(--muted)}.pill.info{color:var(--info);border-color:var(--info)}
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line)}
+td{padding:.6rem;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+input[type=text],input[type=url],input[type=password],input[type=number],select,textarea{width:100%;padding:.65rem .8rem;border:1px solid var(--line);border-radius:6px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ink);outline-offset:1px}
+label.lbl{display:block;font-size:.8125rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:.9rem 0 .35rem}
+.help{font-size:.8125rem;color:var(--muted);margin-top:.25rem}
+.req::after{content:" *";color:var(--err)}
+.toolbar{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem}
+.toolbar input,.toolbar select{width:auto;min-width:160px}
+.spacer{flex:1}
+.check{display:flex;align-items:flex-start;gap:.7rem;padding:.5rem 0;cursor:pointer}
+.check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent-text);flex:none}
+.check input:checked ~ span.txt{text-decoration:line-through;color:var(--muted)}
+.progress{height:8px;background:var(--surface);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.progress > div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.alert-item{display:flex;gap:.7rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.alert-item:last-child{border-bottom:none}
+.chip{font-size:.75rem;padding:.15rem .55rem;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.55)}
+/* toasts */
+#toasts{position:fixed;bottom:1.25rem;right:1.25rem;z-index:80;display:flex;flex-direction:column;gap:.5rem;max-width:320px}
+.toast{background:var(--ink);color:var(--bg);padding:.8rem 1.1rem;border-radius:6px;font-size:.875rem;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.toast.ok{border-left:4px solid var(--ok)}.toast.err{border-left:4px solid var(--err)}.toast.warn{border-left:4px solid var(--warn)}
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(22,21,19,.45);z-index:70;display:flex;align-items:flex-start;justify-content:center;padding:3rem 1rem;overflow:auto}
+.modal{background:var(--bg);border-radius:8px;max-width:640px;width:100%;padding:1.5rem;border:1px solid var(--line)}
+.modal h3{font-size:1.05rem;margin-bottom:.5rem}
+.modal .foot{display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.modal img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px}
+.empty{padding:2rem;text-align:center;color:var(--muted);font-size:.9rem}
+.logout{color:inherit;background:none;border:1px solid rgba(242,233,216,.35);border-radius:999px;padding:.35rem .8rem;font-size:.75rem;cursor:pointer;text-transform:uppercase;letter-spacing:.06em}
+.logout:hover{background:rgba(255,255,255,.1)}
+.dirty-pill{background:var(--warn);color:#fff}
+pre.export{background:var(--ink);color:var(--bg);padding:1rem;border-radius:6px;overflow:auto;font-size:.78rem;max-height:260px;white-space:pre-wrap;word-break:break-word}
 </style>
 </head>
 <body>
 
-<div id="lock" aria-label="Accès protégé">
+<div id="lock">
   <div class="box">
-    <h1>Vasilías Studio</h1>
-    <p class="mono" style="margin-top:.5rem">Tableau de bord — accès restreint</p>
+    <h1 style="font-size:1.5rem">Vasilías Studio</h1>
+    <p class="mono" style="margin-top:.5rem">Hub d'administration — accès restreint</p>
     <input type="password" id="code" inputmode="numeric" autocomplete="off" placeholder="Code" aria-label="Code d'accès">
     <button class="btn btn-dark" id="unlock" style="width:100%;justify-content:center">Entrer</button>
-    <p class="err" id="lockerr" role="status"></p>
+    <p class="err" id="lockerr" role="alert"></p>
+    <p class="mono" style="margin-top:1rem;font-size:.75rem">Le code est vérifié par empreinte SHA-256 (jamais stocké en clair). Verrou de confort : il décourage les curieux, ce n'est pas une sécurité serveur.</p>
   </div>
 </div>
+
+<button id="burger" aria-label="Ouvrir le menu">☰</button>
 
 <div id="app" class="hidden">
-<div class="container">
-  <header class="top">
-    <div>
-      <h1>Tableau de bord</h1>
-      <p class="mono">Vasilías Studio · vasilias-studio.github.io</p>
+  <nav class="sidebar" id="sidebar" aria-label="Navigation du hub">
+    <span class="brand">Vasilías — Hub</span>
+    <button class="nav" data-view="dashboard">▦ Tableau de bord</button>
+    <button class="nav" data-view="projects">◈ Projets</button>
+    <button class="nav" data-view="content">✎ Contenu des pages</button>
+    <button class="nav" data-view="media">▤ Bibliothèque média</button>
+    <button class="nav" data-view="seo">◎ SEO & partage</button>
+    <button class="nav" data-view="watch">♥ Surveillance</button>
+    <button class="nav" data-view="checklist">☑ Checklist</button>
+    <button class="nav" data-view="history">↺ Historique</button>
+    <button class="nav" data-view="profiles">☰ Profils & liens</button>
+    <button class="nav" data-view="settings">⚙ Paramètres</button>
+    <div class="foot">
+      Hub v2.0 · données réelles<br>
+      <button class="logout" id="btnLogout" style="margin-top:.6rem">Se déconnecter</button>
     </div>
-    <span class="badge-priv">Privé</span>
-  </header>
+  </nav>
 
-  <!-- 1. Auto-diagnostic -->
-  <div class="card">
-    <h2>État des pages</h2>
-    <p class="mono" style="margin-bottom:1rem">Test réel de chaque page du site (code HTTP + temps de réponse), mesuré depuis votre navigateur.</p>
-    <button class="btn btn-dark" id="runTest">Vérifier le site</button>
-    <span class="mono" id="testStatus" role="status"></span>
-    <div id="results" style="margin-top:.5rem"></div>
+  <div class="main">
+    <div class="topbar">
+      <h1 id="viewTitle">Tableau de bord</h1>
+      <div class="spacer"></div>
+      <span class="pill warn hidden" id="dirtyPill"><span class="dot"></span>Modifs non exportées</span>
+      <button class="btn btn-outline btn-sm" id="quickExport">Exporter les données</button>
+      <span class="pill mut" id="notifPill" title="Notifications">🔔 0</span>
+    </div>
+    <div class="content" id="view"><p class="mono">Chargement des données réelles…</p></div>
   </div>
-
-  <div class="grid">
-    <!-- 2. Projets -->
-    <div class="card">
-      <h2>Projets</h2>
-      <div class="row"><a href="work-nebulo.html">Nébulo</a><span class="pill ok"><span class="dot"></span>En ligne</span></div>
-      <div class="row"><a href="work-orquid-spices.html">ORQUID SPICES</a><span class="pill ok"><span class="dot"></span>En ligne</span></div>
-      <div class="row"><span>PELLICANO</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
-      <div class="row"><span>Dolce</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
-      <div class="row"><span>Les Trois Étoiles</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
-      <p class="mono" style="margin-top:1rem">Pour republier une page en attente : vraies images + année + statut (concepts ou client) + description exacte. Sauvegardes prêtes dans le dossier <code>backup-unpublished/</code> du projet.</p>
-    </div>
-
-    <!-- 3. Actions rapides -->
-    <div class="card">
-      <h2>Actions rapides</h2>
-      <ul class="actions">
-        <li><a href="https://github.com/vasilias-studio/vasilias-studio.github.io" target="_blank" rel="noopener">Ouvrir le dépôt GitHub</a><small>Fichiers, commits, paramètres Pages</small></li>
-        <li><a href="https://github.com/vasilias-studio/vasilias-studio.github.io/edit/main/index.html" target="_blank" rel="noopener">Modifier la page d'accueil</a><small>Édition rapide d'un texte (commit = publication)</small></li>
-        <li><a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fvasilias-studio.github.io%2F" target="_blank" rel="noopener">Mesurer la performance</a><small>PageSpeed Insights (score réel, mobile + desktop)</small></li>
-        <li><a href="https://www.opengraph.xyz/url/https%3A%2F%2Fvasilias-studio.github.io%2F" target="_blank" rel="noopener">Prévisualiser le partage social</a><small>Image et texte affichés quand le lien est partagé</small></li>
-        <li><a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a><small>Suivre l'indexation — déposer sitemap.xml</small></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="grid">
-    <!-- 4. Checklist -->
-    <div class="card">
-      <h2>Checklist avant publication</h2>
-      <div id="checklist">
-        <label class="check"><input type="checkbox" data-k="c1"><span>Aucun placeholder ni champ « à compléter » visible</span></label>
-        <label class="check"><input type="checkbox" data-k="c2"><span>Statut honnête de chaque projet (concept / client)</span></label>
-        <label class="check"><input type="checkbox" data-k="c3"><span>Textes relus (années, noms, orthographe)</span></label>
-        <label class="check"><input type="checkbox" data-k="c4"><span>« État des pages » ci-dessus : tout est vert</span></label>
-        <label class="check"><input type="checkbox" data-k="c5"><span>Test mobile : menu, boutons, images</span></label>
-        <label class="check"><input type="checkbox" data-k="c6"><span>Formulaire contact : message test envoyé et reçu</span></label>
-      </div>
-      <p class="mono" style="margin-top:1rem">Les cases sont mémorisées dans ce navigateur.</p>
-    </div>
-
-    <!-- 5. Derniers commits -->
-    <div class="card">
-      <h2>Derniers changements publiés</h2>
-      <div id="commits"><p class="mono">Chargement…</p></div>
-      <p class="mono" style="margin-top:.75rem">Via l'API publique GitHub (peut échouer hors connexion ou limite atteinte).</p>
-    </div>
-  </div>
-
-  <!-- 6. Profils -->
-  <div class="card">
-    <h2>Mes profils</h2>
-    <div class="row"><a href="https://www.behance.net/ericot1" target="_blank" rel="noopener">Behance</a><span class="pill mut">Portfolio pro</span></div>
-    <div class="row"><a href="https://www.instagram.com/ericot.vasilias/" target="_blank" rel="noopener">Instagram</a><span class="pill mut">@ericot.vasilias</span></div>
-    <div class="row"><a href="https://www.linkedin.com/in/ericot-lauranto-5807a8360" target="_blank" rel="noopener">LinkedIn</a><span class="pill mut">Ericot Lauranto</span></div>
-    <div class="row"><a href="https://www.facebook.com/profile.php?id=100071948245188" target="_blank" rel="noopener">Facebook</a><span class="pill mut">Page studio</span></div>
-    <div class="row"><a href="mailto:ericotlauranto34@gmail.com">Email</a><span class="pill mut">ericotlauranto34@gmail.com</span></div>
-  </div>
-
-  <footer>
-    Vasilias Studio · Tableau de bord privé · Page non indexée (noindex).<br>
-    Lien : <strong>vasilias-studio.github.io/hub.html</strong>
-  </footer>
 </div>
-</div>
+
+<div id="toasts" aria-live="polite"></div>
 
 <script>
-/* ---------- Verrou d'accès (léger : dissuade les curieux, ne protège pas contre un inspecteur) ---------- */
-var HUB_CODE = '2026';
-(function(){
-  if (sessionStorage.getItem('hub_ok') === '1') { show(); return; }
-  var code = document.getElementById('code');
-  function tryUnlock(){
-    if (code.value.trim() === HUB_CODE) {
-      sessionStorage.setItem('hub_ok','1'); show();
-    } else {
-      document.getElementById('lockerr').textContent = 'Code incorrect.';
-      code.value=''; code.focus();
-    }
+'use strict';
+/* ============================================================
+   HUB VASILÍAS STUDIO v2 — local-first, zéro secret côté client.
+   Données : hub-data.json (dépôt) + modifications en localStorage.
+   Publication sur le site public = export JSON + commit Git (voir Paramètres).
+   ============================================================ */
+
+var ACCESS_SHA256 = '158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab'; // empreinte du code — pas le code
+var LS = {
+  data:'hub2_data', journal:'hub2_journal', checklist:'hub2_checklist',
+  watch:'hub2_watch', alerts:'hub2_alerts', session:'hub2_ok', attempts:'hub2_attempts'
+};
+var CATEGORIES = ['Branding','Identité visuelle','Design graphique','Réseaux sociaux','Packaging','UI/UX','3D','Éditorial','Autre'];
+var NATURES = ['Projet client','Projet personnel','Concept fictif','Exercice','Collaboration','À confirmer'];
+var STATUSES = {published:'Publié', draft:'Brouillon', review:'En révision', archived:'Archivé'};
+
+var store = {
+  data:null, // données fusionnées (json + delta local)
+  dirty:false,
+  journal:[], checklist:[], watchCfg:[], watchHist:{}, alerts:[]
+};
+
+/* ---------- utilitaires ---------- */
+function $(s,c){return (c||document).querySelector(s)}
+function $all(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function slugify(t){return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
+function fmtBytes(b){if(b<1024)return b+' o';if(b<1048576)return (b/1024).toFixed(1)+' Ko';return (b/1048576).toFixed(1)+' Mo'}
+function today(){return new Date().toISOString().slice(0,10)}
+function toast(msg,type){var t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;$('#toasts').appendChild(t);setTimeout(function(){t.remove()},4200)}
+function lsGet(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function lsSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
+
+/* ---------- notifications internes ---------- */
+function notify(msg,type,view){
+  store.alerts.unshift({ts:new Date().toISOString(),msg:msg,type:type||'info',view:view||null});
+  if(store.alerts.length>80)store.alerts.length=80;
+  lsSet(LS.alerts,store.alerts); renderNotifPill();
+}
+function renderNotifPill(){
+  var unread=store.alerts.filter(function(a){return !a.read}).length;
+  $('#notifPill').textContent='🔔 '+unread;
+}
+function markAlertsRead(){store.alerts.forEach(function(a){a.read=true});lsSet(LS.alerts,store.alerts);renderNotifPill()}
+
+/* ---------- journal d'actions ---------- */
+function log(action,target){
+  store.journal.unshift({ts:new Date().toISOString(),action:action,target:target||''});
+  if(store.journal.length>300)store.journal.length=300;
+  lsSet(LS.journal,store.journal);
+}
+
+/* ---------- persistance ---------- */
+function save(){
+  lsSet(LS.data,store.data);
+  store.dirty=true; $('#dirtyPill').classList.remove('hidden');
+}
+function markClean(){store.dirty=false;$('#dirtyPill').classList.add('hidden')}
+
+/* ---------- chargement ---------- */
+function loadAll(cb){
+  fetch('hub-data.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok) throw new Error('hub-data.json introuvable ('+r.status+')');
+    return r.json();
+  }).then(function(base){
+    var delta = lsGet(LS.data,null);
+    store.data = delta || base;
+    store.journal = lsGet(LS.journal,[]);
+    store.checklist = lsGet(LS.checklist,[
+      {label:'Texte relu (orthographe, années, noms)',done:false,required:true},
+      {label:'Statut honnête du projet confirmé (concept / client)',done:false,required:true},
+      {label:'Images optimisées et textes alt renseignés',done:false,required:false},
+      {label:'Liens internes testés',done:false,required:true},
+      {label:'Contrôle mobile (menu, boutons, images)',done:false,required:false},
+      {label:'SEO : title + meta description renseignés',done:false,required:true},
+      {label:'Formulaire contact : message test envoyé et reçu',done:false,required:false}
+    ]);
+    store.watchCfg = lsGet(LS.watch,null) || base.watch.slice();
+    store.watchHist = lsGet('hub2_watchhist',{});
+    store.alerts = lsGet(LS.alerts,[]);
+    cb(null);
+  }).catch(function(e){ cb(e) });
+}
+
+/* ---------- verrou (hash SHA-256 + limitation d'essais) ---------- */
+function sha256(t){
+  return crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){
+    return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('');
+  });
+}
+(function initLock(){
+  if(sessionStorage.getItem(LS.session)==='1'){enter();return}
+  var att=lsGet(LS.attempts,{n:0,until:0});
+  var input=$('#code');
+  function blocked(){
+    if(Date.now()<att.until){
+      $('#lockerr').textContent='Trop de tentatives. Réessayez dans '+Math.ceil((att.until-Date.now())/1000)+' s.';
+      return true;
+    } return false;
   }
-  function show(){ document.getElementById('lock').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); init(); }
-  document.getElementById('unlock').addEventListener('click', tryUnlock);
-  code.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+  function tryUnlock(){
+    if(blocked())return;
+    sha256(input.value.trim()).then(function(h){
+      if(h===ACCESS_SHA256){
+        sessionStorage.setItem(LS.session,'1');lsSet(LS.attempts,{n:0,until:0});enter();
+      }else{
+        att.n=(att.n||0)+1;
+        if(att.n>=5){att.until=Date.now()+60000;att.n=0;toast('Verrou temporaire : 1 minute','warn')}
+        lsSet(LS.attempts,att);
+        $('#lockerr').textContent='Code incorrect.';input.value='';input.focus();
+      }
+    }).catch(function(){$('#lockerr').textContent='Navigateur trop ancien pour la vérification sécurisée.'});
+  }
+  $('#unlock').addEventListener('click',tryUnlock);
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock()});
 })();
 
-function init(){
-  /* ---------- Auto-diagnostic ---------- */
-  var pages = ['index.html','work.html','about.html','services.html','contact.html','print.html','social.html','work-nebulo.html','work-orquid-spices.html','robots.txt','sitemap.xml'];
-  document.getElementById('runTest').addEventListener('click', function(){
-    var box = document.getElementById('results');
-    box.innerHTML = '';
-    document.getElementById('testStatus').textContent = ' — test en cours…';
-    var done = 0;
-    pages.forEach(function(p){
-      var row = document.createElement('div');
-      row.className='row';
-      row.innerHTML = '<a href="'+p+'" target="_blank" rel="noopener">'+p+'</a><span class="pill mut">…</span>';
-      box.appendChild(row);
-      var t0 = performance.now();
-      fetch(p, {cache:'no-store'}).then(function(r){
-        var ms = Math.round(performance.now()-t0);
-        var pill = row.querySelector('.pill');
-        if (r.status === 200) { pill.className='pill ok'; pill.innerHTML='<span class="dot"></span>200 · '+ms+' ms'; }
-        else { pill.className='pill err'; pill.textContent = r.status; }
-      }).catch(function(){
-        var pill = row.querySelector('.pill');
-        pill.className='pill err'; pill.textContent='Erreur réseau';
-      }).finally(function(){
-        done++;
-        if (done === pages.length) document.getElementById('testStatus').textContent = ' — terminé ✓';
-      });
+function enter(){
+  $('#lock').classList.add('hidden');$('#app').classList.remove('hidden');
+  loadAll(function(err){
+    if(err){
+      $('#view').innerHTML='<div class="card"><p class="pill err">Erreur</p><p>'+esc(err.message)+'</p><p class="help">Le fichier hub-data.json doit être présent à la racine du site.</p></div>';
+      return;
+    }
+    renderNotifPill();
+    if(lsGet(LS.data,null)) $('#dirtyPill').classList.remove('hidden');
+    scanProjectAlerts();
+    bindNav();go('dashboard');
+  });
+}
+function scanProjectAlerts(){
+  store.data.projects.forEach(function(p){
+    if(p.status==='archived' && (!p.year || p.nature==='À confirmer')){
+      notify('Projet « '+p.title+' » archivé : informations manquantes (année, nature).','warn','projects');
+    }
+  });
+  var missing=store.data.projects.filter(function(p){return p.status==='published'&&(!p.year||!p.nature)});
+  if(missing.length)notify(missing.length+' projet(s) publié(s) sans année ou nature.','warn','projects');
+}
+
+/* ---------- navigation ---------- */
+var VIEWS={dashboard:'Tableau de bord',projects:'Projets',content:'Contenu des pages',media:'Bibliothèque média',seo:'SEO & partage',watch:'Surveillance',checklist:'Checklist',history:'Historique',profiles:'Profils & liens',settings:'Paramètres'};
+function bindNav(){
+  $all('.nav').forEach(function(b){b.addEventListener('click',function(){go(b.dataset.view);$('#sidebar').classList.remove('open')})});
+  $('#burger').addEventListener('click',function(){$('#sidebar').classList.toggle('open')});
+  $('#btnLogout').addEventListener('click',function(){sessionStorage.removeItem(LS.session);location.reload()});
+  $('#quickExport').addEventListener('click',exportData);
+  $('#notifPill').addEventListener('click',function(){go('dashboard');markAlertsRead()});
+  $('#notifPill').style.cursor='pointer';
+}
+function go(view){
+  $all('.nav').forEach(function(b){b.classList.toggle('active',b.dataset.view===view)});
+  $('#viewTitle').textContent=VIEWS[view];
+  ({dashboard:viewDashboard,projects:viewProjects,content:viewContent,media:viewMedia,seo:viewSeo,watch:viewWatch,checklist:viewChecklist,history:viewHistory,profiles:viewProfiles,settings:viewSettings})[view]();
+}
+
+/* ---------- modal générique ---------- */
+function modal(title,bodyHTML,buttons){
+  var bg=document.createElement('div');bg.className='modal-bg';
+  bg.innerHTML='<div class="modal" role="dialog" aria-modal="true"><h3>'+esc(title)+'</h3><div>'+bodyHTML+'</div><div class="foot"></div></div>';
+  var foot=$('.foot',bg);
+  (buttons||[{label:'Fermer',cls:'btn-outline'}]).forEach(function(b){
+    var btn=document.createElement('button');btn.className='btn '+b.cls;btn.textContent=b.label;
+    btn.addEventListener('click',function(){if(b.onClick)b.onClick(bg);else bg.remove()});
+    foot.appendChild(btn);
+  });
+  bg.addEventListener('click',function(e){if(e.target===bg)bg.remove()});
+  document.body.appendChild(bg);
+  var f=bg.querySelector('input,select,textarea,button');if(f)f.focus();
+  return bg;
+}
+function confirmModal(title,text,onYes){
+  modal(title,'<p>'+esc(text)+'</p>',[
+    {label:'Annuler',cls:'btn-outline'},
+    {label:'Confirmer',cls:'btn-danger',onClick:function(bg){bg.remove();onYes()}}
+  ]);
+}
+
+/* ============================================================
+   VUE : TABLEAU DE BORD
+============================================================ */
+function viewDashboard(){
+  var d=store.data;
+  var counts={published:0,draft:0,review:0,archived:0};
+  d.projects.forEach(function(p){counts[p.status]=(counts[p.status]||0)+1});
+  var totalMb=(d.media.reduce(function(s,m){return s+m.bytes},0)/1048576).toFixed(1);
+  var doneC=store.checklist.filter(function(c){return c.done}).length, totC=store.checklist.length;
+  var histKeys=Object.keys(store.watchHist);
+  var lastCheck=histKeys.length?Math.max.apply(null,histKeys.map(function(k){return store.watchHist[k].ts})) : null;
+  var incSignals=histKeys.reduce(function(n,k){var h=store.watchHist[k];return n+(h.ok===false?1:0)},0);
+
+  $('#view').innerHTML=
+   '<div class="stats">'
+  +'<button class="stat" data-go="projects"><span class="v">'+d.projects.length+'</span><span class="l">Projets au total</span></button>'
+  +'<button class="stat" data-go="projects"><span class="v" style="color:var(--ok)">'+counts.published+'</span><span class="l">Publiés</span></button>'
+  +'<button class="stat" data-go="projects"><span class="v" style="color:var(--warn)">'+(counts.draft+counts.review)+'</span><span class="l">Brouillons / révision</span></button>'
+  +'<button class="stat" data-go="projects"><span class="v">'+counts.archived+'</span><span class="l">Archivés</span></button>'
+  +'<button class="stat" data-go="watch"><span class="v">'+store.watchCfg.length+'</span><span class="l">Pages surveillées</span></button>'
+  +'<button class="stat" data-go="history"><span class="v">'+store.journal.length+'</span><span class="l">Actions journalisées</span></button>'
+  +'</div>'
+  +'<div class="card"><h2>Alertes & notifications</h2><div id="dashAlerts"></div></div>'
+  +'<div class="card"><h2>Surveillance — dernier contrôle</h2><div id="dashWatch"></div></div>'
+  +'<div class="card"><h2>Checklist de publication</h2><div class="progress"><div style="width:'+(totC?Math.round(doneC/totC*100):0)+'%"></div></div><p class="mono" style="margin-top:.5rem">'+doneC+'/'+totC+' étapes validées</p></div>'
+  +'<div class="card"><h2>Données</h2><p class="mono">Source : hub-data.json'+ (store.dirty?' + modifications locales non exportées':'') +' · '+d.media.length+' médias · '+totalMb+' Mo · générées le '+esc(d.meta.generated)+'. Les statistiques sont calculées à partir de vos données réelles ; toute donnée indisponible est signalée.</p></div>';
+
+  $all('.stat').forEach(function(s){s.addEventListener('click',function(){go(s.dataset.go)})});
+
+  var al=$('#dashAlerts');
+  if(!store.alerts.length){al.innerHTML='<div class="empty">Aucune alerte — tout est en ordre.</div>'}
+  else{
+    al.innerHTML=store.alerts.slice(0,8).map(function(a){
+      return '<div class="alert-item"><span class="pill '+(a.type==='warn'?'warn':a.type==='err'?'err':'info')+'">'+a.type+'</span><div><div>'+esc(a.msg)+'</div><div class="mono">'+new Date(a.ts).toLocaleString('fr-FR')+'</div></div>'+(a.view?'<button class="btn btn-outline btn-sm" data-go="'+a.view+'" style="margin-left:auto">Ouvrir</button>':'')+'</div>';
+    }).join('');
+    $all('[data-go]',al).forEach(function(b){b.addEventListener('click',function(){go(b.dataset.go)})});
+  }
+
+  var dw=$('#dashWatch');
+  if(!lastCheck){dw.innerHTML='<div class="empty">Aucun contrôle effectué. Ouvrez « Surveillance » et lancez un test.</div>'}
+  else{
+    dw.innerHTML='<p class="mono">Dernier contrôle : '+new Date(lastCheck).toLocaleString('fr-FR')+' · '+incSignals+' incident(s) récent(s)</p>'
+      +histKeys.map(function(k){var h=store.watchHist[k];return '<div class="alert-item"><span>'+esc(k)+'</span><span class="pill '+(h.ok?'ok':'err')+'" style="margin-left:auto">'+(h.ok?h.status+' · '+h.ms+' ms':esc(h.error||('HTTP '+h.status)))+'</span></div>'}).join('');
+  }
+}
+
+/* ============================================================
+   VUE : PROJETS (CRUD complet)
+============================================================ */
+function viewProjects(){
+  var html='<div class="toolbar">'
+    +'<input type="text" id="pjSearch" placeholder="Rechercher…" aria-label="Rechercher un projet">'
+    +'<select id="pjFilter" aria-label="Filtrer par statut"><option value="">Tous statuts</option>'
+    +Object.keys(STATUSES).map(function(s){return '<option value="'+s+'">'+STATUSES[s]+'</option>'}).join('')+'</select>'
+    +'<select id="pjSort" aria-label="Tri"><option value="title">Tri : titre</option><option value="year">Tri : année</option><option value="status">Tri : statut</option></select>'
+    +'<span class="spacer"></span><button class="btn btn-dark" id="pjNew">+ Nouveau projet</button></div>'
+    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>Projet</th><th>Nature</th><th>Année</th><th>Statut</th><th style="text-align:right">Actions</th></tr></thead><tbody id="pjRows"></tbody></table></div>'
+    +'<p class="mono">La publication réelle sur le site s\'effectue via « Paramètres → Exporter ». Toute modification est journalisée.</p>';
+  $('#view').innerHTML=html;
+  $('#pjNew').addEventListener('click',function(){projectForm(null)});
+  ['pjSearch','pjFilter','pjSort'].forEach(function(id){$('#'+id).addEventListener('input',renderProjectRows)});
+  renderProjectRows();
+}
+function renderProjectRows(){
+  var q=($('#pjSearch').value||'').toLowerCase(), f=$('#pjFilter').value, s=$('#pjSort').value;
+  var list=store.data.projects.filter(function(p){
+    return (!f||p.status===f) && (!q||(p.title+p.slug+(p.tagline||'')).toLowerCase().indexOf(q)>=0);
+  });
+  list.sort(function(a,b){return String(a[s]||'').localeCompare(String(b[s]||''))});
+  var tb=$('#pjRows');
+  if(!list.length){tb.innerHTML='<tr><td colspan="5"><div class="empty">Aucun projet ne correspond.</div></td></tr>';return}
+  tb.innerHTML=list.map(function(p,i){
+    var pill={published:'ok',draft:'mut',review:'info',archived:'warn'}[p.status]||'mut';
+    return '<tr><td><strong>'+esc(p.title)+'</strong><div class="mono">'+esc(p.slug)+'</div></td>'
+      +'<td>'+esc(p.nature||'—')+(p.nature==='Projet client'&&p.client?' · '+esc(p.client):'')+'</td>'
+      +'<td>'+esc(p.year||'—')+'</td>'
+      +'<td><span class="pill '+pill+'">'+STATUSES[p.status]+'</span></td>'
+      +'<td style="text-align:right;white-space:nowrap">'
+      +'<button class="btn btn-outline btn-sm" data-act="view" data-i="'+store.data.projects.indexOf(p)+'">Voir</button> '
+      +'<button class="btn btn-outline btn-sm" data-act="edit" data-i="'+store.data.projects.indexOf(p)+'">Modifier</button> '
+      +'<button class="btn btn-outline btn-sm" data-act="dup" data-i="'+store.data.projects.indexOf(p)+'">Dupliquer</button> '
+      +'<button class="btn btn-danger btn-sm" data-act="del" data-i="'+store.data.projects.indexOf(p)+'">Suppr.</button></td></tr>';
+  }).join('');
+  $all('[data-act]',tb).forEach(function(b){b.addEventListener('click',function(){projectAction(b.dataset.act,+b.dataset.i)})});
+}
+function projectAction(act,i){
+  var p=store.data.projects[i];
+  if(act==='view'){
+    var deps = p.page ? 'Page publique : <a href="'+esc(p.page)+'" target="_blank" rel="noopener">'+esc(p.page)+'</a>' : 'Aucune page publique associée.';
+    modal(p.title,
+      '<p class="mono">'+esc(p.slug)+' · '+esc(p.year||'année non renseignée')+' · '+esc(p.nature||'')+'</p>'
+      +'<p style="margin:.75rem 0">'+esc(p.tagline||'')+'</p>'
+      +'<p>'+esc(p.description||'')+'</p>'
+      +'<div style="margin:.75rem 0">'+(p.category||[]).map(function(c){return '<span class="chip">'+esc(c)+'</span>'}).join(' ')+'</div>'
+      +'<p class="mono">'+deps+' · Statut : '+STATUSES[p.status]+'</p>'
+      +'<p class="help">Prévisualisation résumée ; le rendu public exact est la page liée ci-dessus.</p>',
+      (p.status==='archived'
+        ?[{label:'Fermer',cls:'btn-outline'},{label:'Passer en brouillon',cls:'btn-accent',onClick:function(bg){p.status='draft';save();log('Désarchivage',p.title);bg.remove();renderProjectRows();toast('Projet passé en brouillon','ok')}}]
+        :[{label:'Fermer',cls:'btn-outline'},{label:'Archiver',cls:'btn-danger',onClick:function(bg){confirmModal('Archiver ce projet ?','Le projet sera retiré des listes actives (rien n\'est supprimé).',function(){p.status='archived';save();log('Archivage',p.title);renderProjectRows();notify('Projet « '+p.title+' » archivé.','info','projects');bg.remove();toast('Projet archivé','ok')})}}]
+      ));
+  }
+  if(act==='edit')projectForm(i);
+  if(act==='dup'){
+    var copy=JSON.parse(JSON.stringify(p));copy.id='';copy.title=p.title+' (copie)';copy.slug=uniqueSlug(slugify(p.title+'-copie'));copy.status='draft';
+    store.data.projects.push(copy);save();log('Duplication',p.title);renderProjectRows();toast('Projet dupliqué en brouillon','ok');
+  }
+  if(act==='del'){
+    confirmModal('Supprimer « '+p.title+' » ?',
+      p.page
+       ? 'Attention : ce projet est lié à la page publique '+p.page+'. Supprimez d\'abord la page du site, sinon vous créerez un lien cassé. La suppression est définitive (exportez avant si besoin).'
+       : 'Ce projet n\'est lié à aucune page publique. La suppression est définitive (exportez avant si besoin).',
+      function(){var t=p.title;store.data.projects.splice(i,1);save();log('Suppression',t);renderProjectRows();notify('Projet « '+t+' » supprimé du hub.','warn','projects');toast('Projet supprimé','ok')});
+  }
+}
+function uniqueSlug(base){
+  var s=base||'projet',n=2;
+  while(store.data.projects.some(function(p){return p.slug===s})){s=base+'-'+(n++)}
+  return s;
+}
+function projectForm(i){
+  var p=i==null?{title:'',slug:'',tagline:'',description:'',category:[],year:'',nature:'',client:'',role:'',scope:'',credits:'',services:'',tools:'',links:'',seoTitle:'',seoDesc:'',cover:'',page:'',status:'draft'}:store.data.projects[i];
+  var isNew=i==null;
+  var body=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
+    +'<div><label class="lbl req">Titre</label><input type="text" id="fTitle" value="'+esc(p.title)+'"></div>'
+    +'<div><label class="lbl req">Slug (URL)</label><input type="text" id="fSlug" value="'+esc(p.slug)+'" placeholder="auto si vide"><div class="help">Lettres minuscules, chiffres et tirets.</div></div>'
+    +'</div>'
+    +'<label class="lbl">Résumé (tagline)</label><input type="text" id="fTag" value="'+esc(p.tagline)+'">'
+    +'<label class="lbl">Description longue</label><textarea id="fDesc">'+esc(p.description)+'</textarea>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 1rem">'
+    +'<div><label class="lbl">Année / date</label><input type="text" id="fYear" value="'+esc(p.year)+'" placeholder="Mai 2026"></div>'
+    +'<div><label class="lbl req">Nature</label><select id="fNature"><option value="">— Choisir —</option>'+NATURES.map(function(n){return '<option '+(p.nature===n?'selected':'')+'>'+n+'</option>'}).join('')+'</select><div class="help">Jamais un concept présenté comme client.</div></div>'
+    +'<div><label class="lbl">Client / marque (publiable)</label><input type="text" id="fClient" value="'+esc(p.client)+'"></div>'
+    +'</div>'
+    +'<label class="lbl">Catégories</label><div id="fCats">'+CATEGORIES.map(function(c){return '<label class="check" style="padding:2px 0"><input type="checkbox" value="'+c+'" '+((p.category||[]).indexOf(c)>=0?'checked':'')+'><span class="txt" style="font-size:.875rem">'+c+'</span></label>'}).join('')+'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
+    +'<div><label class="lbl">Mon rôle exact</label><input type="text" id="fRole" value="'+esc(p.role)+'"></div>'
+    +'<div><label class="lbl">Périmètre de contribution</label><input type="text" id="fScope" value="'+esc(p.scope)+'"></div>'
+    +'<div><label class="lbl">Crédits</label><input type="text" id="fCredits" value="'+esc(p.credits)+'"></div>'
+    +'<div><label class="lbl">Services liés</label><input type="text" id="fServices" value="'+esc(p.services)+'"></div>'
+    +'<div><label class="lbl">Logiciels utilisés</label><input type="text" id="fTools" value="'+esc(p.tools)+'"></div>'
+    +'<div><label class="lbl">Liens externes (un par ligne)</label><textarea id="fLinks" style="min-height:56px">'+esc(p.links)+'</textarea></div>'
+    +'</div>'
+    +'<h2 style="margin:1rem 0 .25rem">SEO du projet</h2>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
+    +'<div><label class="lbl">Title SEO</label><input type="text" id="fSeoT" value="'+esc(p.seoTitle)+'"></div>'
+    +'<div><label class="lbl">Image de couverture (chemin)</label><input type="text" id="fCover" value="'+esc(p.cover)+'" placeholder="assets/projects/…/cover.jpg"></div>'
+    +'</div>'
+    +'<label class="lbl">Meta description SEO</label><textarea id="fSeoD" style="min-height:56px">'+esc(p.seoDesc)+'</textarea>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem">'
+    +'<div><label class="lbl">Page publique liée</label><input type="text" id="fPage" value="'+esc(p.page)+'" placeholder="work-xxx.html (si existante)"></div>'
+    +'<div><label class="lbl req">Statut</label><select id="fStatus">'+Object.keys(STATUSES).map(function(s){return '<option value="'+s+'" '+(p.status===s?'selected':'')+'>'+STATUSES[s]+'</option>'}).join('')+'</select></div>'
+    +'</div>';
+  modal(isNew?'Nouveau projet':'Modifier « '+p.title+' »',body,[
+    {label:'Annuler',cls:'btn-outline'},
+    {label:isNew?'Créer le projet':'Enregistrer',cls:'btn-dark',onClick:function(bg){
+      var title=$('#fTitle',bg).value.trim();
+      var nature=$('#fNature',bg).value;
+      var slug=slugify($('#fSlug',bg).value.trim()||title);
+      if(!title){toast('Le titre est requis.','err');return}
+      if(!nature){toast('La nature du projet est obligatoire (client / personnel / concept…).','err');return}
+      if(!slug){toast('Slug invalide.','err');return}
+      var clash=store.data.projects.some(function(o,x){return o.slug===slug&&x!==i});
+      if(clash){toast('Slug déjà utilisé — choisissez-en un autre.','err');return}
+      var client=$('#fClient',bg).value.trim();
+      if((nature==='Concept fictif'||nature==='Exercice')&&client){toast('Un concept/exercice ne peut pas afficher un client. Retirez le client ou changez la nature.','err');return}
+      var cats=$all('#fCats input:checked',bg).map(function(c){return c.value});
+      var obj={title:title,slug:slug,tagline:$('#fTag',bg).value.trim(),description:$('#fDesc',bg).value.trim(),
+        category:cats,year:$('#fYear',bg).value.trim(),nature:nature,client:client,
+        role:$('#fRole',bg).value.trim(),scope:$('#fScope',bg).value.trim(),credits:$('#fCredits',bg).value.trim(),
+        services:$('#fServices',bg).value.trim(),tools:$('#fTools',bg).value.trim(),links:$('#fLinks',bg).value.trim(),
+        seoTitle:$('#fSeoT',bg).value.trim(),seoDesc:$('#fSeoD',bg).value.trim(),cover:$('#fCover',bg).value.trim(),
+        page:$('#fPage',bg).value.trim(),status:$('#fStatus',bg).value};
+      if(isNew){obj.id='p'+Date.now();store.data.projects.push(obj);log('Création',title);notify('Projet « '+title+' » créé (statut : '+STATUSES[obj.status]+').','info','projects')}
+      else{obj.id=p.id;store.data.projects[i]=obj;log('Modification',title)}
+      save();bg.remove();renderProjectRows();toast('Enregistré dans le hub','ok');
+    }}
+  ]);
+}
+
+/* ============================================================
+   VUE : CONTENU DES PAGES
+============================================================ */
+function viewContent(){
+  var c=store.data.content||{};
+  $('#view').innerHTML=
+    '<div class="card"><h2>Textes éditables</h2><p class="mono">Ces textes sont gérés ici en suivant vos informations officielles. Ils s\'appliquent au site via l\'export (Paramètres) suivi d\'une mise à jour des pages.</p>'
+    +'<label class="lbl">Accroche hero (accueil)</label><textarea id="cHero">'+esc(c.hero||'Designer graphique & digital freelance, fondateur de Vasilías Studio — basé à Toamasina, Madagascar. Spécialisation : branding & identité visuelle.')+'</textarea>'
+    +'<label class="lbl">Phrase de positionnement</label><textarea id="cPos">'+esc(c.pos||'Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.')+'</textarea>'
+    +'<label class="lbl">Présentation courte (accueil)</label><textarea id="cShort" style="min-height:110px">'+esc(c.short||'Je suis designer graphique et digital freelance, fondateur de Vasilías Studio, basé à Toamasina, Madagascar. Depuis deux ans, je développe ma pratique du design en autodidacte, avec une attention particulière portée au branding et à la création d\'identités visuelles. J\'accompagne les marques dans la construction d\'une image cohérente, distinctive et adaptée à leur univers.')+'</textarea>'
+    +'<label class="lbl">Localisation affichée</label><input type="text" id="cLoc" value="'+esc(c.loc||'Toamasina, Madagascar')+'">'
+    +'<label class="lbl">Email public</label><input type="text" id="cMail" value="'+esc(c.mail||'ericotlauranto34@gmail.com')+'">'
+    +'<div style="margin-top:1rem"><button class="btn btn-dark" id="cSave">Enregistrer</button></div></div>'
+    +'<div class="card"><h2>Compétences & logiciels</h2><p class="mono">Séparés, sans niveau ni pourcentage — conformément à vos règles.</p>'
+    +'<label class="lbl">Compétences (une par ligne)</label><textarea id="cSkills">'+esc((store.data.skills||[]).join('\n'))+'</textarea>'
+    +'<label class="lbl">Logiciels (un par ligne)</label><textarea id="cTools2">'+esc((store.data.tools||[]).join('\n'))+'</textarea>'
+    +'<div style="margin-top:1rem"><button class="btn btn-dark" id="cSave2">Enregistrer</button></div></div>';
+  $('#cSave').addEventListener('click',function(){
+    store.data.content={hero:$('#cHero').value.trim(),pos:$('#cPos').value.trim(),short:$('#cShort').value.trim(),loc:$('#cLoc').value.trim(),mail:$('#cMail').value.trim()};
+    save();log('Contenu','Textes principaux');toast('Textes enregistrés','ok');
+  });
+  $('#cSave2').addEventListener('click',function(){
+    store.data.skills=$('#cSkills').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
+    store.data.tools=$('#cTools2').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
+    save();log('Contenu','Compétences & logiciels');toast('Listes enregistrées','ok');
+  });
+}
+
+/* ============================================================
+   VUE : MÉDIAS
+============================================================ */
+function viewMedia(){
+  $('#view').innerHTML=
+    '<div class="toolbar"><input type="text" id="mSearch" placeholder="Rechercher un fichier…" aria-label="Rechercher">'
+    +'<span class="spacer"></span><label class="btn btn-outline btn-sm" style="cursor:pointer">＋ Importer (validation locale)<input type="file" id="mFile" class="hidden" accept="image/*"></label></div>'
+    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>Fichier</th><th>Poids</th><th>Alt / légende</th><th style="text-align:right">Actions</th></tr></thead><tbody id="mRows"></tbody></table></div>'
+    +'<p class="mono">Inventaire réel du dépôt (hub-data.json). L\'import valide le fichier dans votre navigateur (type, taille, dimensions) puis vous indique où le déposer dans le dépôt — GitHub Pages ne permet pas d\'envoi direct sans backend.</p>';
+  $('#mSearch').addEventListener('input',renderMediaRows);
+  $('#mFile').addEventListener('change',mediaImport);
+  renderMediaRows();
+}
+function mediaAltKey(p){return 'alt:'+p}
+function renderMediaRows(){
+  var q=($('#mSearch').value||'').toLowerCase();
+  var list=store.data.media.filter(function(m){return !q||m.path.toLowerCase().indexOf(q)>=0});
+  var tb=$('#mRows');
+  if(!list.length){tb.innerHTML='<tr><td colspan="4"><div class="empty">Aucun fichier.</div></td></tr>';return}
+  tb.innerHTML=list.map(function(m){
+    var i=store.data.media.indexOf(m);
+    var alt=lsGet('hub2_alts',{})[m.path]||'';
+    return '<tr><td style="word-break:break-all">'+esc(m.path)+'</td><td>'+fmtBytes(m.bytes)+'</td>'
+     +'<td><input type="text" value="'+esc(alt)+'" data-alt="'+i+'" placeholder="Texte alt…" style="min-width:140px"></td>'
+     +'<td style="text-align:right;white-space:nowrap"><button class="btn btn-outline btn-sm" data-ma="prev" data-mi="'+i+'">Aperçu</button> '
+     +'<button class="btn btn-outline btn-sm" data-ma="copy" data-mi="'+i+'">Copier le chemin</button> '
+     +'<button class="btn btn-outline btn-sm" data-ma="use" data-mi="'+i+'">Usages</button></td></tr>';
+  }).join('');
+  $all('[data-ma]',tb).forEach(function(b){b.addEventListener('click',function(){mediaAction(b.dataset.ma,+b.dataset.mi)})});
+  $all('[data-alt]',tb).forEach(function(inp){inp.addEventListener('change',function(){
+    var alts=lsGet('hub2_alts',{});alts[store.data.media[+inp.dataset.alt].path]=inp.value.trim();lsSet('hub2_alts',alts);
+    log('Média','alt : '+store.data.media[+inp.dataset.alt].path);toast('Alt enregistré (local)','ok');
+  })});
+}
+function mediaAction(act,i){
+  var m=store.data.media[i];
+  if(act==='prev'){
+    var isImg=/\.(jpe?g|png|svg|webp|gif)$/i.test(m.path);
+    modal(m.path,
+      (isImg?'<img src="'+esc(m.path)+'" alt="Aperçu"><p class="mono" style="margin-top:.5rem">'+fmtBytes(m.bytes)+'</p>':'<p>Fichier non prévisualisable.</p>'),
+      [{label:'Fermer',cls:'btn-outline'}]);
+  }
+  if(act==='copy'){
+    navigator.clipboard.writeText(m.path).then(function(){toast('Chemin copié','ok')}).catch(function(){toast('Copie impossible (permissions navigateur)','err')});
+  }
+  if(act==='use'){
+    var fname=m.path.split('/').pop();
+    toast('Recherche des usages…');
+    var pages=store.data.pages.map(function(p){return p.file});
+    Promise.all(pages.map(function(pg){return fetch(pg,{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){return t.indexOf(fname)>=0?pg:null}).catch(function(){return null})}))
+    .then(function(res){
+      var used=res.filter(Boolean);
+      modal('Usages de '+fname, used.length
+        ?'<p>Ce fichier est référencé dans :</p><ul>'+used.map(function(u){return '<li><a href="'+u+'" target="_blank" rel="noopener">'+u+'</a></li>'}).join('')+'</ul><p class="help">Le supprimer du dépôt créerait une image cassée sur ces pages.</p>'
+        :'<p>Aucune page publique ne référence ce fichier (fichier potentiellement orphelin).</p>',
+        [{label:'Fermer',cls:'btn-outline'}]);
+    });
+  }
+}
+function mediaImport(e){
+  var f=e.target.files[0];e.target.value='';
+  if(!f)return;
+  var okTypes=['image/jpeg','image/png','image/webp','image/svg+xml','image/gif'];
+  if(okTypes.indexOf(f.type)<0){toast('Type rejeté : '+f.type+' (images uniquement — les exécutables sont refusés)','err');return}
+  if(f.size>8*1048576){toast('Fichier trop lourd ('+fmtBytes(f.size)+') — visez < 2 Mo pour le web.','err');return}
+  var rd=new FileReader();
+  rd.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+      modal('Import validé : '+f.name,
+        '<img src="'+rd.result+'" alt="Aperçu import"><p class="mono" style="margin:.5rem 0">'+fmtBytes(f.size)+' · '+img.width+'×'+img.height+' px · '+f.type+'</p>'
+        +'<p>Déposez ce fichier dans <code>assets/</code> (sous-dossier du projet concerné), référencez-le dans la page, puis publiez via Git. Le hub ne peut pas écrire dans le dépôt sans backend (limite GitHub Pages, documentée).</p>',
+        [{label:'Compris',cls:'btn-dark'}]);
+      log('Média','import validé : '+f.name);notify('Média « '+f.name+' » validé localement — à déposer dans le dépôt.','info','media');
+    };
+    img.onerror=function(){toast('Fichier image illisible.','err')};
+    img.src=rd.result;
+  };
+  rd.readAsDataURL(f);
+}
+
+/* ============================================================
+   VUE : SEO (audit réel)
+============================================================ */
+function viewSeo(){
+  $('#view').innerHTML=
+    '<div class="card"><h2>Audit SEO réel par page</h2><p class="mono">Le hub télécharge chaque page et mesure : balise title, meta description, nombre de H1, images sans alt, liens internes cassés. Aucun score inventé — seuls des contrôles factuels.</p><div style="margin-top:1rem"><button class="btn btn-dark" id="seoRun">Lancer l\'audit</button> <span class="mono" id="seoStatus"></span></div></div>'
+    +'<div id="seoOut"></div>'
+    +'<div class="card"><h2>Sitemap & robots</h2><div class="mono">Fichiers présents : <a href="robots.txt" target="_blank" rel="noopener">robots.txt</a> · <a href="sitemap.xml" target="_blank" rel="noopener">sitemap.xml</a> (hub.html est volontairement exclu et en noindex).</div></div>';
+  $('#seoRun').addEventListener('click',runSeo);
+}
+function runSeo(){
+  var out=$('#seoOut');out.innerHTML='';var st=$('#seoStatus');st.textContent=' — audit en cours…';
+  var pages=store.data.pages.map(function(p){return p.file});var done=0;
+  pages.forEach(function(pg){
+    fetch(pg,{cache:'no-store'}).then(function(r){
+      if(!r.ok)throw new Error('HTTP '+r.status);return r.text();
+    }).then(function(html){
+      var doc=new DOMParser().parseFromString(html,'text/html');
+      var title=(doc.querySelector('title')||{}).textContent||'';
+      var desc=doc.querySelector('meta[name="description"]');
+      var h1s=doc.querySelectorAll('h1').length;
+      var imgs=Array.prototype.slice.call(doc.querySelectorAll('img'));
+      var noAlt=imgs.filter(function(im){return !im.hasAttribute('alt')}).length;
+      var links=Array.prototype.slice.call(doc.querySelectorAll('a[href]'))
+        .map(function(a){return a.getAttribute('href')})
+        .filter(function(h){return h&&/^[a-z0-9\-]+\.html/.test(h)})
+        .map(function(h){return h.split('#')[0]});
+      var uniq=Array.prototype.slice.call(new Set(links));
+      return Promise.all(uniq.map(function(l){return fetch(l,{cache:'no-store'}).then(function(r2){return r2.ok?null:l}).catch(function(){return l})}))
+        .then(function(broken){return {pg:pg,title:title,desc:desc?desc.getAttribute('content'):'',h1:h1s,noAlt:noAlt,broken:broken.filter(Boolean)}});
+    }).then(function(res){
+      var issues=[];
+      if(!res.title)issues.push('title absent');if(!res.desc)issues.push('meta description absente');
+      if(res.h1!==1)issues.push(res.h1+' balises H1 (1 attendu)');
+      if(res.noAlt)issues.push(res.noAlt+' image(s) sans alt');
+      if(res.broken.length)issues.push('liens cassés : '+res.broken.join(', '));
+      var card=document.createElement('div');card.className='card';
+      card.innerHTML='<h2 style="margin-bottom:.5rem"><a href="'+res.pg+'" target="_blank" rel="noopener">'+res.pg+'</a></h2>'
+        +'<div class="mono">Title : '+(res.title?'✓ '+esc(res.title.slice(0,70)):'✗')+'</div>'
+        +'<div class="mono">Description : '+(res.desc?'✓ '+esc(res.desc.slice(0,90))+'…':'✗')+'</div>'
+        +'<div class="mono">H1 : '+res.h1+' · images sans alt : '+res.noAlt+' · liens internes cassés : '+res.broken.length+'</div>'
+        +(issues.length?'<p style="margin-top:.5rem"><span class="pill err">'+issues.length+' problème(s)</span> '+esc(issues.join(' · '))+'</p>'
+                      :'<p style="margin-top:.5rem"><span class="pill ok">Conforme</span></p>');
+      out.appendChild(card);
+    }).catch(function(e){
+      var card=document.createElement('div');card.className='card';
+      card.innerHTML='<h2>'+esc(pg)+'</h2><p><span class="pill err">Inaccessible</span> '+esc(e.message)+'</p>';
+      out.appendChild(card);
+    }).finally(function(){if(++done===pages.length){st.textContent=' — terminé ✓';log('SEO','audit lancé');toast('Audit SEO terminé','ok')}});
+  });
+}
+
+/* ============================================================
+   VUE : SURVEILLANCE
+============================================================ */
+function viewWatch(){
+  $('#view').innerHTML=
+    '<div class="card"><h2>URLs surveillées</h2><p class="mono">Une par ligne. Contrôle manuel uniquement — un onglet navigateur ne surveille pas en continu (pour une surveillance 24/7 : service externe gratuit type UptimeRobot, voir Paramètres → documentation).</p>'
+    +'<textarea id="wList" style="margin-top:.5rem">'+esc(store.watchCfg.join('\n'))+'</textarea>'
+    +'<div style="margin-top:.75rem"><button class="btn btn-outline btn-sm" id="wSave">Enregistrer la liste</button> <button class="btn btn-dark" id="wRun">Contrôler maintenant</button> <span class="mono" id="wStatus"></span></div></div>'
+    +'<div class="card" style="padding:.5rem 1.25rem"><table><thead><tr><th>URL</th><th>Dernier état</th><th>Temps</th><th>Quand</th></tr></thead><tbody id="wRows"></tbody></table></div>';
+  $('#wSave').addEventListener('click',function(){
+    store.watchCfg=$('#wList').value.split('\n').map(function(s){return s.trim()}).filter(Boolean);
+    lsSet(LS.watch,store.watchCfg);log('Surveillance','liste mise à jour');renderWatch();toast('Liste enregistrée','ok');
+  });
+  $('#wRun').addEventListener('click',runWatch);
+  renderWatch();
+}
+function renderWatch(){
+  var tb=$('#wRows');
+  tb.innerHTML=store.watchCfg.map(function(u){
+    var h=store.watchHist[u];
+    var state=h?(h.ok?'<span class="pill ok">'+h.status+'</span>':'<span class="pill err">'+esc(h.error||('HTTP '+h.status))+'</span>'):'<span class="pill mut">jamais testé</span>';
+    return '<tr><td>'+esc(u)+'</td><td>'+state+'</td><td>'+(h?h.ms+' ms':'—')+'</td><td class="mono">'+(h?new Date(h.ts).toLocaleString('fr-FR'):'—')+'</td></tr>';
+  }).join('');
+}
+function runWatch(){
+  var st=$('#wStatus');st.textContent=' — contrôle en cours…';var done=0;var incidents=0;
+  store.watchCfg.forEach(function(u){
+    var t0=performance.now();
+    var ctrl=new AbortController();var to=setTimeout(function(){ctrl.abort()},12000);
+    fetch(u,{cache:'no-store',signal:ctrl.signal}).then(function(r){
+      store.watchHist[u]={ts:Date.now(),ok:r.ok,status:r.status,ms:Math.round(performance.now()-t0)};
+      if(!r.ok){incidents++;notify('Page en erreur : '+u+' (HTTP '+r.status+')','err','watch')}
+    }).catch(function(e){
+      var kind=(e.name==='AbortError')?'délai dépassé (pas de réponse)':'panne réseau ou blocage';
+      store.watchHist[u]={ts:Date.now(),ok:false,error:kind,ms:Math.round(performance.now()-t0)};
+      incidents++;notify('Surveillance : '+u+' — '+kind,'err','watch');
+    }).finally(function(){
+      clearTimeout(to);lsSet('hub2_watchhist',store.watchHist);
+      if(++done===store.watchCfg.length){st.textContent=' — terminé ✓';renderWatch();log('Surveillance','contrôle manuel ('+incidents+' incident(s))');toast(incidents?incidents+' incident(s) détecté(s)':'Tout est accessible','ok')}
     });
   });
+}
 
-  /* ---------- Checklist persistante ---------- */
-  document.querySelectorAll('#checklist input').forEach(function(cb){
-    cb.checked = localStorage.getItem('hub_'+cb.dataset.k) === '1';
-    cb.addEventListener('change', function(){
-      localStorage.setItem('hub_'+cb.dataset.k, cb.checked ? '1' : '0');
-    });
+/* ============================================================
+   VUE : CHECKLIST (CRUD)
+============================================================ */
+function viewChecklist(){
+  var done=store.checklist.filter(function(c){return c.done}).length;
+  $('#view').innerHTML=
+    '<div class="card"><div class="progress"><div style="width:'+(store.checklist.length?Math.round(done/store.checklist.length*100):0)+'%"></div></div>'
+    +'<p class="mono" style="margin:.5rem 0 1rem">'+done+'/'+store.checklist.length+' étapes</p><div id="clList"></div>'
+    +'<div class="toolbar" style="margin-top:.75rem"><input type="text" id="clNew" placeholder="Nouvelle étape…" aria-label="Nouvelle étape"><label class="check" style="padding:0"><input type="checkbox" id="clReq"><span class="txt mono">obligatoire</span></label><button class="btn btn-dark btn-sm" id="clAdd">Ajouter</button></div></div>';
+  $('#clAdd').addEventListener('click',function(){
+    var v=$('#clNew').value.trim();if(!v){toast('Étape vide.','err');return}
+    store.checklist.push({label:v,done:false,required:$('#clReq').checked});
+    lsSet(LS.checklist,store.checklist);log('Checklist','ajout : '+v);viewChecklist();
   });
+  var box=$('#clList');
+  box.innerHTML=store.checklist.map(function(c,i){
+    return '<div class="check"><input type="checkbox" data-ci="'+i+'" '+(c.done?'checked':'')+'>'
+     +'<span class="txt">'+esc(c.label)+(c.required?' <span class="pill err" style="margin-left:.35rem">obligatoire</span>':'')
+     +(c.doneAt?'<div class="mono">validée le '+new Date(c.doneAt).toLocaleString('fr-FR')+'</div>':'')+'</span>'
+     +'<button class="btn btn-danger btn-sm" data-cd="'+i+'" style="margin-left:auto">Retirer</button></div>';
+  }).join('');
+  $all('[data-ci]',box).forEach(function(cb){cb.addEventListener('change',function(){
+    var i=+cb.dataset.ci;store.checklist[i].done=cb.checked;store.checklist[i].doneAt=cb.checked?new Date().toISOString():null;
+    lsSet(LS.checklist,store.checklist);log('Checklist',(cb.checked?'validée : ':'dévalidée : ')+store.checklist[i].label);viewChecklist();
+  })});
+  $all('[data-cd]',box).forEach(function(b){b.addEventListener('click',function(){
+    var i=+b.dataset.cd;confirmModal('Retirer cette étape ?',store.checklist[i].label,function(){log('Checklist','retrait : '+store.checklist[i].label);store.checklist.splice(i,1);lsSet(LS.checklist,store.checklist);viewChecklist()});
+  })});
+}
 
-  /* ---------- Derniers commits (API GitHub publique) ---------- */
-  fetch('https://api.github.com/repos/vasilias-studio/vasilias-studio.github.io/commits?per_page=6&sha=main')
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+/* ============================================================
+   VUE : HISTORIQUE
+============================================================ */
+function viewHistory(){
+  $('#view').innerHTML=
+    '<div class="card"><h2>Journal local des actions (ce navigateur)</h2><div class="toolbar"><select id="hFilter"><option value="">Toutes actions</option></select><button class="btn btn-outline btn-sm" id="hExport">Exporter le journal (JSON)</button><button class="btn btn-danger btn-sm" id="hClear">Vider</button></div><div id="hRows"></div></div>'
+    +'<div class="card"><h2>Commits GitHub réels</h2><div id="ghCommits"><p class="mono">Chargement…</p></div></div>';
+  var acts=Array.prototype.slice.call(new Set(store.journal.map(function(j){return j.action.split(' : ')[0]})));
+  $('#hFilter').innerHTML='<option value="">Toutes actions</option>'+acts.map(function(a){return '<option>'+esc(a)+'</option>'}).join('');
+  $('#hFilter').addEventListener('change',renderHist);
+  $('#hExport').addEventListener('click',function(){download('journal-hub.json',JSON.stringify(store.journal,null,2));toast('Journal exporté','ok')});
+  $('#hClear').addEventListener('click',function(){confirmModal('Vider le journal local ?','Cette action est définitive.',function(){store.journal=[];lsSet(LS.journal,[]);renderHist()})});
+  renderHist();
+  fetch('https://api.github.com/repos/vasilias-studio/vasilias-studio.github.io/commits?per_page=8&sha=main')
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
     .then(function(list){
-      var html = '';
-      list.forEach(function(c){
-        var d = new Date(c.commit.author.date);
-        var date = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
-        var msg = c.commit.message.split('\n')[0];
-        html += '<div class="commit"><code>'+c.sha.slice(0,7)+'</code> · '+date+'<br>'+msg.replace(/</g,'&lt;')+'</div>';
-      });
-      document.getElementById('commits').innerHTML = html || '<p class="mono">Aucun commit trouvé.</p>';
+      $('#ghCommits').innerHTML=list.map(function(c){
+        var d=new Date(c.commit.author.date);
+        return '<div class="alert-item"><div style="flex:1"><div>'+esc(c.commit.message.split('\n')[0])+'</div><div class="mono">'+d.toLocaleString('fr-FR')+' · '+c.sha.slice(0,7)+'</div></div><a class="btn btn-outline btn-sm" href="'+c.html_url+'" target="_blank" rel="noopener">Voir</a></div>';
+      }).join('')||'<div class="empty">Aucun commit.</div>';
     })
-    .catch(function(){
-      document.getElementById('commits').innerHTML = '<p class="mono">Impossible de charger les commits (limite API ou hors ligne). <a style="color:var(--accent-text)" href="https://github.com/vasilias-studio/vasilias-studio.github.io/commits/main">Voir sur GitHub</a></p>';
+    .catch(function(e){$('#ghCommits').innerHTML='<p class="mono">API GitHub indisponible ('+esc(e.message)+') — <a href="https://github.com/vasilias-studio/vasilias-studio.github.io/commits/main" target="_blank" rel="noopener">voir l\'historique sur GitHub</a>.</p>'});
+}
+function renderHist(){
+  var f=$('#hFilter').value;
+  var list=store.journal.filter(function(j){return !f||j.action.indexOf(f)===0});
+  $('#hRows').innerHTML=list.length?list.slice(0,60).map(function(j){
+    return '<div class="alert-item"><span class="chip">'+esc(j.action)+'</span><div><div>'+esc(j.target)+'</div><div class="mono">'+new Date(j.ts).toLocaleString('fr-FR')+'</div></div></div>';
+  }).join(''):'<div class="empty">Journal vide.</div>';
+}
+
+/* ============================================================
+   VUE : PROFILS & LIENS (CRUD + validation)
+============================================================ */
+function viewProfiles(){
+  $('#view').innerHTML=
+    '<div class="card"><h2>Profils réels du studio</h2><p class="mono">Aucun profil inventé : seuls ceux que vous configurez ici.</p><div id="pRows"></div>'
+    +'<div class="toolbar" style="margin-top:.75rem"><input type="text" id="pName" placeholder="Nom (ex : Behance)" aria-label="Nom du profil"><input type="url" id="pUrl" placeholder="https://… ou mailto:…" aria-label="URL du profil"><button class="btn btn-dark btn-sm" id="pAdd">Ajouter</button></div></div>';
+  $('#pAdd').addEventListener('click',function(){
+    var n=$('#pName').value.trim(),u=$('#pUrl').value.trim();
+    if(!n||!u){toast('Nom et URL requis.','err');return}
+    if(!/^(https:\/\/|mailto:)/.test(u)){toast('URL invalide : commencez par https:// ou mailto:','err');return}
+    store.data.profiles.push({name:n,url:u});save();log('Profil','ajout : '+n);viewProfiles();toast('Profil ajouté','ok');
+  });
+  $('#pRows').innerHTML=store.data.profiles.map(function(p,i){
+    return '<div class="alert-item"><strong style="min-width:110px">'+esc(p.name)+'</strong><a href="'+esc(p.url)+'" target="_blank" rel="noopener" style="flex:1;word-break:break-all">'+esc(p.url)+'</a>'
+     +'<button class="btn btn-outline btn-sm" data-pv="'+i+'">Tester</button><button class="btn btn-danger btn-sm" data-pd="'+i+'">Retirer</button></div>';
+  }).join('');
+  $all('[data-pv]').forEach(function(b){b.addEventListener('click',function(){
+    var p=store.data.profiles[+b.dataset.pv];
+    if(p.url.indexOf('mailto:')===0){toast('Lien mailto : non testable par requête.','warn');return}
+    fetch(p.url,{mode:'no-cors'}).then(function(){toast('Requête envoyée (no-cors : la présence de la page ne peut pas être prouvée — ouvrez le lien pour confirmer).','warn')}).catch(function(){toast('Injoignable depuis ce navigateur.','err')});
+  })});
+  $all('[data-pd]').forEach(function(b){b.addEventListener('click',function(){
+    var i=+b.dataset.pd,p=store.data.profiles[i];
+    confirmModal('Retirer ce profil ?',p.name+' — '+p.url,function(){store.data.profiles.splice(i,1);save();log('Profil','retrait : '+p.name);viewProfiles()});
+  })});
+}
+
+/* ============================================================
+   VUE : PARAMÈTRES (export / import / reset)
+============================================================ */
+function viewSettings(){
+  $('#view').innerHTML=
+    '<div class="card"><h2>Exporter les données</h2><p class="mono">Télécharge hub-data.json complet (projets, contenu, compétences, outils, profils, liste de surveillance). C\'est le fichier de vérité à publier dans le dépôt.</p><pre class="export" id="expPreview"></pre><div style="margin-top:.75rem"><button class="btn btn-dark" id="expBtn">Télécharger hub-data.json</button> <button class="btn btn-outline" id="expInstr">Instructions de publication</button></div></div>'
+    +'<div class="card"><h2>Importer</h2><p class="mono">Remplace les données du hub par un fichier hub-data.json. Validation + aperçu + confirmation avant tout remplacement.</p><label class="btn btn-outline btn-sm" style="cursor:pointer;margin-top:.5rem">Choisir un fichier<input type="file" id="impFile" class="hidden" accept="application/json,.json"></label><div id="impInfo"></div></div>'
+    +'<div class="card"><h2>Architecture & limites (honnêteté technique)</h2><div class="mono" style="line-height:1.7">'
+    +'• Hébergement : GitHub Pages = <strong>statique</strong>. Pas de base de données, pas de serveur, pas de secrets.<br>'
+    +'• Ce hub : <strong>local-first</strong>. Données réelles (hub-data.json) + vos modifications dans CE navigateur (localStorage).<br>'
+    +'• Publication sur le site public : <strong>export JSON + commit Git</strong> (manuel, ou via votre assistant dans le chat).<br>'
+    +'• Verrou d\'accès : empreinte SHA-256 + limitation d\'essais — dissuasion, <strong>pas</strong> une sécurité serveur.<br>'
+    +'• Pour une authentification réelle, des rôles et l\'écriture directe sur GitHub : backend serverless ou Decap CMS + OAuth — documentation fournie dans <code>hub-documentation.md</code>.<br>'
+    +'• Aucun token ni secret n\'est présent dans ce hub.</div></div>'
+    +'<div class="card"><h2>Zone de danger</h2><button class="btn btn-danger" id="resetBtn">Réinitialiser le hub (données d\'origine)</button><p class="help" style="margin-top:.5rem">Efface toutes les modifications locales, le journal, la checklist et l\'historique de surveillance de ce navigateur. Les données du dépôt ne sont pas touchées.</p></div>';
+  $('#expPreview').textContent=JSON.stringify(store.data,null,2).slice(0,1500)+'\n… (tronqué à l\'aperçu)';
+  $('#expBtn').addEventListener('click',exportData);
+  $('#expInstr').addEventListener('click',function(){
+    modal('Publier les modifications sur le site',
+      '<ol style="padding-left:1.2rem;line-height:2"><li>Téléchargez <code>hub-data.json</code> (bouton Exporter).</li><li>Remplacez <code>hub-data.json</code> à la racine du dépôt.</li><li>Si des projets changent de statut ou des textes changent : appliquez les mêmes changements aux pages HTML concernées (le hub ne réécrit pas les pages — aucune écriture côté client sans backend).</li><li>Commit + push = publication (GitHub Pages se redéploie en ~1 min).</li></ol><p class="help">Astuce : envoyez-moi le fichier exporté dans le chat — je mets à jour les pages et je publie pour vous.</p>',
+      [{label:'Compris',cls:'btn-dark'}]);
+  });
+  $('#impFile').addEventListener('change',function(e){
+    var f=e.target.files[0];e.target.value='';if(!f)return;
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{
+        var d=JSON.parse(rd.result);
+        if(!d.projects||!d.pages||!d.meta)throw new Error('schéma invalide (projets/pages/meta manquants)');
+        $('#impInfo').innerHTML='<div class="alert-item"><span class="pill info">aperçu</span><div>'+d.projects.length+' projets · '+d.pages.length+' pages · '+(d.media||[]).length+' médias · version '+esc(d.meta.version||'?')+'</div></div>'
+          +'<button class="btn btn-danger btn-sm" id="impDo" style="margin-top:.5rem">Confirmer le remplacement</button>';
+        $('#impDo').addEventListener('click',function(){
+          confirmModal('Remplacer toutes les données ?','Les données locales actuelles seront écrasées (journal et checklist conservés).',function(){
+            store.data=d;save();log('Import',f.name);notify('Données importées depuis '+f.name,'info');go('dashboard');toast('Import appliqué','ok');
+          });
+        });
+      }catch(err){toast('Import refusé : '+err.message,'err')}
+    };
+    rd.readAsText(f);
+  });
+  $('#resetBtn').addEventListener('click',function(){
+    confirmModal('Réinitialiser le hub ?','Toutes vos modifications locales, le journal, la checklist et l\'historique seront effacés de ce navigateur.',function(){
+      [LS.data,LS.journal,LS.checklist,LS.watch,'hub2_watchhist',LS.alerts,'hub2_alts'].forEach(function(k){localStorage.removeItem(k)});
+      toast('Hub réinitialisé','ok');setTimeout(function(){location.reload()},600);
     });
+  });
+}
+function exportData(){
+  download('hub-data.json',JSON.stringify(store.data,null,2));
+  markClean();log('Export','hub-data.json');toast('hub-data.json téléchargé','ok');
+}
+function download(name,text){
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},400);
 }
 </script>
 </body>

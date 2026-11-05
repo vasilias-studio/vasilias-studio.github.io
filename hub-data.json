@@ -1,0 +1,322 @@
+{
+  "meta": {
+    "site": "Vasilías Studio",
+    "url": "https://vasilias-studio.github.io/",
+    "version": "2.0",
+    "generated": "2026-10-28"
+  },
+  "projects": [
+    {
+      "id": "nebulo",
+      "title": "Nébulo",
+      "slug": "work-nebulo",
+      "status": "published",
+      "nature": "Concept fictif",
+      "year": "Juillet 2025",
+      "category": [
+        "Identity",
+        "Branding"
+      ],
+      "client": "",
+      "role": "Identité Visuelle · Direction Artistique",
+      "tagline": "Système d'identité contemporain et dynamique.",
+      "page": "work-nebulo.html",
+      "cover": "assets/projects/nebulo/cover.jpg"
+    },
+    {
+      "id": "orquid-spices",
+      "title": "ORQUID SPICES",
+      "slug": "work-orquid-spices",
+      "status": "published",
+      "nature": "Client",
+      "year": "Mai 2026",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "client": "Orquid Spices",
+      "role": "Branding · Packaging Design · Direction Artistique",
+      "tagline": "Identité globale d'une maison d'épices fines fondée à Madagascar.",
+      "page": "work-orquid-spices.html",
+      "cover": "assets/projects/orquid-spices/Cover.jpg"
+    },
+    {
+      "id": "pellicano",
+      "title": "PELLICANO",
+      "slug": "work-pellicano",
+      "status": "archived",
+      "nature": "À confirmer",
+      "year": "",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "client": "",
+      "role": "",
+      "tagline": "Identité méditerranéenne — en attente de contenus.",
+      "page": "",
+      "cover": ""
+    },
+    {
+      "id": "dolce",
+      "title": "Dolce",
+      "slug": "work-dolce",
+      "status": "archived",
+      "nature": "À confirmer",
+      "year": "",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "client": "",
+      "role": "",
+      "tagline": "Glace artisanale — en attente de contenus.",
+      "page": "",
+      "cover": ""
+    },
+    {
+      "id": "les-trois-etoiles",
+      "title": "Les Trois Étoiles",
+      "slug": "work-les-trois-etoiles",
+      "status": "archived",
+      "nature": "À confirmer",
+      "year": "",
+      "category": [
+        "Identity",
+        "Print"
+      ],
+      "client": "",
+      "role": "",
+      "tagline": "Art de la table — en attente de contenus.",
+      "page": "",
+      "cover": ""
+    }
+  ],
+  "pages": [
+    {
+      "file": "index.html",
+      "title": "Accueil"
+    },
+    {
+      "file": "work.html",
+      "title": "Projets"
+    },
+    {
+      "file": "about.html",
+      "title": "À propos"
+    },
+    {
+      "file": "services.html",
+      "title": "Services"
+    },
+    {
+      "file": "contact.html",
+      "title": "Contact"
+    },
+    {
+      "file": "print.html",
+      "title": "Imprimés"
+    },
+    {
+      "file": "social.html",
+      "title": "Réseaux sociaux"
+    },
+    {
+      "file": "work-nebulo.html",
+      "title": "Étude : Nébulo"
+    },
+    {
+      "file": "work-orquid-spices.html",
+      "title": "Étude : ORQUID SPICES"
+    }
+  ],
+  "services": [
+    {
+      "title": "Création de Logo & Identités Visuelles"
+    },
+    {
+      "title": "Brandboard & Charte Graphique"
+    },
+    {
+      "title": "Direction Artistique"
+    },
+    {
+      "title": "Supports de Communication"
+    },
+    {
+      "title": "Visuels pour Réseaux Sociaux"
+    },
+    {
+      "title": "Design de Packaging"
+    },
+    {
+      "title": "Conception d'Interfaces & UI/UX"
+    },
+    {
+      "title": "Modélisation & Visualisation 3D"
+    }
+  ],
+  "skills": [
+    "Branding & identité visuelle",
+    "Design graphique",
+    "Direction artistique",
+    "Packaging",
+    "Design digital & UI/UX",
+    "Création 3D (Blender)"
+  ],
+  "tools": [
+    "Adobe Illustrator",
+    "Adobe Photoshop",
+    "Adobe InDesign",
+    "Figma",
+    "Blender",
+    "Canva"
+  ],
+  "profiles": [
+    {
+      "name": "Behance",
+      "url": "https://www.behance.net/ericot1"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/ericot.vasilias/"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/in/ericot-lauranto-5807a8360"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/profile.php?id=100071948245188"
+    },
+    {
+      "name": "Email",
+      "url": "mailto:ericotlauranto34@gmail.com"
+    }
+  ],
+  "watch": [
+    "index.html",
+    "work.html",
+    "about.html",
+    "services.html",
+    "contact.html",
+    "work-nebulo.html",
+    "work-orquid-spices.html",
+    "robots.txt",
+    "sitemap.xml"
+  ],
+  "media": [
+    {
+      "path": "assets/about-portrait-v2.png",
+      "bytes": 890774
+    },
+    {
+      "path": "assets/hero-vasilias-v2.jpg",
+      "bytes": 127642
+    },
+    {
+      "path": "assets/pin-blue.png",
+      "bytes": 126102
+    },
+    {
+      "path": "assets/print-1.jpg",
+      "bytes": 154745
+    },
+    {
+      "path": "assets/print-2.jpg",
+      "bytes": 225377
+    },
+    {
+      "path": "assets/print-visuals.jpg",
+      "bytes": 117348
+    },
+    {
+      "path": "assets/social-1.jpg",
+      "bytes": 155874
+    },
+    {
+      "path": "assets/social-2.jpg",
+      "bytes": 118938
+    },
+    {
+      "path": "assets/social-3.jpg",
+      "bytes": 101363
+    },
+    {
+      "path": "assets/social-visuals.jpg",
+      "bytes": 174840
+    },
+    {
+      "path": "assets/placeholders/portrait-placeholder.svg",
+      "bytes": 637
+    },
+    {
+      "path": "assets/projects/nebulo/asset-1.jpg",
+      "bytes": 326402
+    },
+    {
+      "path": "assets/projects/nebulo/asset-2.jpg",
+      "bytes": 592971
+    },
+    {
+      "path": "assets/projects/nebulo/asset-3.jpg",
+      "bytes": 966182
+    },
+    {
+      "path": "assets/projects/nebulo/asset-4.jpg",
+      "bytes": 671179
+    },
+    {
+      "path": "assets/projects/nebulo/asset-5.jpg",
+      "bytes": 787200
+    },
+    {
+      "path": "assets/projects/nebulo/asset-6.jpg",
+      "bytes": 230108
+    },
+    {
+      "path": "assets/projects/nebulo/cover.jpg",
+      "bytes": 398688
+    },
+    {
+      "path": "assets/projects/nebulo/hero.jpg",
+      "bytes": 102867
+    },
+    {
+      "path": "assets/projects/orquid-spices/1.jpg",
+      "bytes": 823127
+    },
+    {
+      "path": "assets/projects/orquid-spices/2.jpg",
+      "bytes": 343746
+    },
+    {
+      "path": "assets/projects/orquid-spices/3.jpg",
+      "bytes": 773480
+    },
+    {
+      "path": "assets/projects/orquid-spices/4.jpg",
+      "bytes": 1367099
+    },
+    {
+      "path": "assets/projects/orquid-spices/5.jpg",
+      "bytes": 2032148
+    },
+    {
+      "path": "assets/projects/orquid-spices/6.jpg",
+      "bytes": 1858981
+    },
+    {
+      "path": "assets/projects/orquid-spices/Cover.jpg",
+      "bytes": 593651
+    },
+    {
+      "path": "assets/og/og-image.png",
+      "bytes": 193334
+    },
+    {
+      "path": "assets/og/og-image.svg",
+      "bytes": 764
+    }
+  ]
+}
