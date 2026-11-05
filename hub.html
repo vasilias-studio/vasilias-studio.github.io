@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Tableau de bord — Vasilías Studio</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2E9D8; --ink:#161513; --muted:#6A665C; --line:rgba(22,21,19,.12);
+  --accent:#BF814B; --accent-text:#8F5A22; --surface:#ECE9E2;
+  --ok:#1e7d43; --warn:#b45309; --err:#b91c1c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:'Josefin Sans',sans-serif;color:var(--ink);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+.container{max-width:1024px;margin:0 auto;padding:2rem 1.25rem 4rem}
+h1{font-size:1.75rem;font-weight:700;text-transform:uppercase;letter-spacing:-.02em}
+h2{font-size:.8125rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem;font-weight:600}
+.card{background:rgba(255,255,255,.6);border:1px solid var(--line);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem}
+.mono{font-size:.8125rem;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.row a{color:var(--accent-text);text-decoration:none;font-weight:600}
+.row a:hover{text-decoration:underline}
+.pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.pill.ok{color:var(--ok);border-color:var(--ok)}
+.pill.warn{color:var(--warn);border-color:var(--warn)}
+.pill.err{color:var(--err);border-color:var(--err)}
+.pill.mut{color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.6rem;border-radius:999px;font-family:inherit;font-size:.8125rem;text-transform:uppercase;letter-spacing:.08em;border:1px solid transparent;cursor:pointer;text-decoration:none;font-weight:600}
+.btn-dark{background:var(--ink);color:var(--bg)}
+.btn-dark:hover{opacity:.9}
+.btn-outline{border-color:var(--line);color:var(--ink);background:transparent}
+.btn-outline:hover{border-color:var(--ink)}
+.grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:768px){.grid{grid-template-columns:1fr 1fr}}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.25rem 0;flex-wrap:wrap}
+.badge-priv{font-size:.6875rem;text-transform:uppercase;letter-spacing:.1em;color:var(--bg);background:var(--ink);padding:.3rem .8rem;border-radius:999px}
+.check{display:flex;align-items:flex-start;gap:.75rem;padding:.55rem 0;cursor:pointer}
+.check input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent-text);flex:none}
+.check span{font-size:.9375rem}
+.check input:checked + span{text-decoration:line-through;color:var(--muted)}
+ul.actions{list-style:none}
+ul.actions li{padding:.5rem 0;border-bottom:1px solid var(--line)}
+ul.actions li:last-child{border-bottom:none}
+ul.actions a{color:var(--accent-text);font-weight:600;text-decoration:none}
+ul.actions a:hover{text-decoration:underline}
+ul.actions small{display:block;color:var(--muted);font-weight:400;font-size:.8125rem}
+.commit{padding:.6rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.commit:last-child{border-bottom:none}
+.commit code{font-size:.75rem;color:var(--muted)}
+/* verrou */
+#lock{position:fixed;inset:0;background:var(--bg);z-index:99;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#lock .box{max-width:340px;width:100%;text-align:center}
+#lock input{width:100%;padding:.9rem 1rem;font-size:1.1rem;text-align:center;letter-spacing:.35em;border:1px solid var(--line);border-radius:6px;background:#fff;margin:1.25rem 0;font-family:inherit}
+#lock input:focus{outline:2px solid var(--ink)}
+#lock .err{color:var(--err);font-size:.8125rem;min-height:1.4em}
+.hidden{display:none!important}
+footer{text-align:center;padding-top:2rem;font-size:.75rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div id="lock" aria-label="Accès protégé">
+  <div class="box">
+    <h1>Vasilías Studio</h1>
+    <p class="mono" style="margin-top:.5rem">Tableau de bord — accès restreint</p>
+    <input type="password" id="code" inputmode="numeric" autocomplete="off" placeholder="Code" aria-label="Code d'accès">
+    <button class="btn btn-dark" id="unlock" style="width:100%;justify-content:center">Entrer</button>
+    <p class="err" id="lockerr" role="status"></p>
+  </div>
+</div>
+
+<div id="app" class="hidden">
+<div class="container">
+  <header class="top">
+    <div>
+      <h1>Tableau de bord</h1>
+      <p class="mono">Vasilías Studio · vasilias-studio.github.io</p>
+    </div>
+    <span class="badge-priv">Privé</span>
+  </header>
+
+  <!-- 1. Auto-diagnostic -->
+  <div class="card">
+    <h2>État des pages</h2>
+    <p class="mono" style="margin-bottom:1rem">Test réel de chaque page du site (code HTTP + temps de réponse), mesuré depuis votre navigateur.</p>
+    <button class="btn btn-dark" id="runTest">Vérifier le site</button>
+    <span class="mono" id="testStatus" role="status"></span>
+    <div id="results" style="margin-top:.5rem"></div>
+  </div>
+
+  <div class="grid">
+    <!-- 2. Projets -->
+    <div class="card">
+      <h2>Projets</h2>
+      <div class="row"><a href="work-nebulo.html">Nébulo</a><span class="pill ok"><span class="dot"></span>En ligne</span></div>
+      <div class="row"><a href="work-orquid-spices.html">ORQUID SPICES</a><span class="pill ok"><span class="dot"></span>En ligne</span></div>
+      <div class="row"><span>PELLICANO</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
+      <div class="row"><span>Dolce</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
+      <div class="row"><span>Les Trois Étoiles</span><span class="pill warn"><span class="dot"></span>En attente</span></div>
+      <p class="mono" style="margin-top:1rem">Pour republier une page en attente : vraies images + année + statut (concepts ou client) + description exacte. Sauvegardes prêtes dans le dossier <code>backup-unpublished/</code> du projet.</p>
+    </div>
+
+    <!-- 3. Actions rapides -->
+    <div class="card">
+      <h2>Actions rapides</h2>
+      <ul class="actions">
+        <li><a href="https://github.com/vasilias-studio/vasilias-studio.github.io" target="_blank" rel="noopener">Ouvrir le dépôt GitHub</a><small>Fichiers, commits, paramètres Pages</small></li>
+        <li><a href="https://github.com/vasilias-studio/vasilias-studio.github.io/edit/main/index.html" target="_blank" rel="noopener">Modifier la page d'accueil</a><small>Édition rapide d'un texte (commit = publication)</small></li>
+        <li><a href="https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fvasilias-studio.github.io%2F" target="_blank" rel="noopener">Mesurer la performance</a><small>PageSpeed Insights (score réel, mobile + desktop)</small></li>
+        <li><a href="https://www.opengraph.xyz/url/https%3A%2F%2Fvasilias-studio.github.io%2F" target="_blank" rel="noopener">Prévisualiser le partage social</a><small>Image et texte affichés quand le lien est partagé</small></li>
+        <li><a href="https://search.google.com/search-console" target="_blank" rel="noopener">Google Search Console</a><small>Suivre l'indexation — déposer sitemap.xml</small></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 4. Checklist -->
+    <div class="card">
+      <h2>Checklist avant publication</h2>
+      <div id="checklist">
+        <label class="check"><input type="checkbox" data-k="c1"><span>Aucun placeholder ni champ « à compléter » visible</span></label>
+        <label class="check"><input type="checkbox" data-k="c2"><span>Statut honnête de chaque projet (concept / client)</span></label>
+        <label class="check"><input type="checkbox" data-k="c3"><span>Textes relus (années, noms, orthographe)</span></label>
+        <label class="check"><input type="checkbox" data-k="c4"><span>« État des pages » ci-dessus : tout est vert</span></label>
+        <label class="check"><input type="checkbox" data-k="c5"><span>Test mobile : menu, boutons, images</span></label>
+        <label class="check"><input type="checkbox" data-k="c6"><span>Formulaire contact : message test envoyé et reçu</span></label>
+      </div>
+      <p class="mono" style="margin-top:1rem">Les cases sont mémorisées dans ce navigateur.</p>
+    </div>
+
+    <!-- 5. Derniers commits -->
+    <div class="card">
+      <h2>Derniers changements publiés</h2>
+      <div id="commits"><p class="mono">Chargement…</p></div>
+      <p class="mono" style="margin-top:.75rem">Via l'API publique GitHub (peut échouer hors connexion ou limite atteinte).</p>
+    </div>
+  </div>
+
+  <!-- 6. Profils -->
+  <div class="card">
+    <h2>Mes profils</h2>
+    <div class="row"><a href="https://www.behance.net/ericot1" target="_blank" rel="noopener">Behance</a><span class="pill mut">Portfolio pro</span></div>
+    <div class="row"><a href="https://www.instagram.com/ericot.vasilias/" target="_blank" rel="noopener">Instagram</a><span class="pill mut">@ericot.vasilias</span></div>
+    <div class="row"><a href="https://www.linkedin.com/in/ericot-lauranto-5807a8360" target="_blank" rel="noopener">LinkedIn</a><span class="pill mut">Ericot Lauranto</span></div>
+    <div class="row"><a href="https://www.facebook.com/profile.php?id=100071948245188" target="_blank" rel="noopener">Facebook</a><span class="pill mut">Page studio</span></div>
+    <div class="row"><a href="mailto:ericotlauranto34@gmail.com">Email</a><span class="pill mut">ericotlauranto34@gmail.com</span></div>
+  </div>
+
+  <footer>
+    Vasilias Studio · Tableau de bord privé · Page non indexée (noindex).<br>
+    Lien : <strong>vasilias-studio.github.io/hub.html</strong>
+  </footer>
+</div>
+</div>
+
+<script>
+/* ---------- Verrou d'accès (léger : dissuade les curieux, ne protège pas contre un inspecteur) ---------- */
+var HUB_CODE = '2026';
+(function(){
+  if (sessionStorage.getItem('hub_ok') === '1') { show(); return; }
+  var code = document.getElementById('code');
+  function tryUnlock(){
+    if (code.value.trim() === HUB_CODE) {
+      sessionStorage.setItem('hub_ok','1'); show();
+    } else {
+      document.getElementById('lockerr').textContent = 'Code incorrect.';
+      code.value=''; code.focus();
+    }
+  }
+  function show(){ document.getElementById('lock').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); init(); }
+  document.getElementById('unlock').addEventListener('click', tryUnlock);
+  code.addEventListener('keydown', function(e){ if(e.key==='Enter') tryUnlock(); });
+})();
+
+function init(){
+  /* ---------- Auto-diagnostic ---------- */
+  var pages = ['index.html','work.html','about.html','services.html','contact.html','print.html','social.html','work-nebulo.html','work-orquid-spices.html','robots.txt','sitemap.xml'];
+  document.getElementById('runTest').addEventListener('click', function(){
+    var box = document.getElementById('results');
+    box.innerHTML = '';
+    document.getElementById('testStatus').textContent = ' — test en cours…';
+    var done = 0;
+    pages.forEach(function(p){
+      var row = document.createElement('div');
+      row.className='row';
+      row.innerHTML = '<a href="'+p+'" target="_blank" rel="noopener">'+p+'</a><span class="pill mut">…</span>';
+      box.appendChild(row);
+      var t0 = performance.now();
+      fetch(p, {cache:'no-store'}).then(function(r){
+        var ms = Math.round(performance.now()-t0);
+        var pill = row.querySelector('.pill');
+        if (r.status === 200) { pill.className='pill ok'; pill.innerHTML='<span class="dot"></span>200 · '+ms+' ms'; }
+        else { pill.className='pill err'; pill.textContent = r.status; }
+      }).catch(function(){
+        var pill = row.querySelector('.pill');
+        pill.className='pill err'; pill.textContent='Erreur réseau';
+      }).finally(function(){
+        done++;
+        if (done === pages.length) document.getElementById('testStatus').textContent = ' — terminé ✓';
+      });
+    });
+  });
+
+  /* ---------- Checklist persistante ---------- */
+  document.querySelectorAll('#checklist input').forEach(function(cb){
+    cb.checked = localStorage.getItem('hub_'+cb.dataset.k) === '1';
+    cb.addEventListener('change', function(){
+      localStorage.setItem('hub_'+cb.dataset.k, cb.checked ? '1' : '0');
+    });
+  });
+
+  /* ---------- Derniers commits (API GitHub publique) ---------- */
+  fetch('https://api.github.com/repos/vasilias-studio/vasilias-studio.github.io/commits?per_page=6&sha=main')
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(list){
+      var html = '';
+      list.forEach(function(c){
+        var d = new Date(c.commit.author.date);
+        var date = d.toLocaleDateString('fr-FR', {day:'2-digit',month:'short',year:'numeric'}) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+        var msg = c.commit.message.split('\n')[0];
+        html += '<div class="commit"><code>'+c.sha.slice(0,7)+'</code> · '+date+'<br>'+msg.replace(/</g,'&lt;')+'</div>';
+      });
+      document.getElementById('commits').innerHTML = html || '<p class="mono">Aucun commit trouvé.</p>';
+    })
+    .catch(function(){
+      document.getElementById('commits').innerHTML = '<p class="mono">Impossible de charger les commits (limite API ou hors ligne). <a style="color:var(--accent-text)" href="https://github.com/vasilias-studio/vasilias-studio.github.io/commits/main">Voir sur GitHub</a></p>';
+    });
+}
+</script>
+</body>
+</html>
