@@ -4,13 +4,13 @@
    ============================================================ */
 
 :root {
-  --bg: #F2E9D8;
+  --bg: #FFFFFF;
   --ink: #161513;
   --muted: #6A665C;      /* 4.75:1 sur --bg (WCAG AA) */
   --accent-text: #8F5A22;  /* 4.77:1 sur --bg ; #BF814B reste pour fonds noirs, bordures, tracés */
   --line: rgba(22, 21, 19, 0.12);
   --accent: #BF814B;
-  --surface: #ECE9E2;
+  --surface: #F7F6F4;
 }
 
 * { box-sizing: border-box; }
@@ -70,7 +70,7 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 2rem;
-  border-radius: 999px;
+  border-radius: 2px;
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.8125rem;
   text-transform: uppercase;
@@ -119,7 +119,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (min-width: 640px) { .site-header { padding: 2rem 0; } }
 .site-header.scrolled {
-  background: rgba(242, 233, 216, 0.92);
+  background: rgba(255, 255, 255, 0.93);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(22,21,19,0.1);
   padding: 1rem 0;
@@ -433,7 +433,7 @@ button { font-family: inherit; cursor: pointer; }
 .selected-meta .num { color: var(--accent-text); font-weight: 700; }
 .selected-tagline { color: rgba(22,21,19,0.8); line-height: 1.6; }
 .selected-cats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-.selected-cats span { padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.6); border: 1px solid rgba(22,21,19,0.1); border-radius: 999px; font-family: 'Josefin Sans', sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.selected-cats span { padding: 0.3rem 0.65rem; background: #fff; border: 1px solid #161513; border-radius: 2px; font-family: 'Josefin Sans', sans-serif; font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #161513; }
 .selected-cta { margin-top: 1rem; display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-text); }
 .selected-item:hover .selected-cta { transform: translateX(8px); }
 .selected-cta { transition: transform 0.3s; }
@@ -444,7 +444,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (min-width: 1024px) { .exp-grid { grid-template-columns: repeat(3, 1fr); } }
 .exp-card {
   padding: 2rem;
-  background: rgba(255,255,255,0.6);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: 2px;
   transition: border-color 0.2s;
@@ -511,9 +511,9 @@ button { font-family: inherit; cursor: pointer; }
 .work-filter { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 4rem; }
 .work-filter button {
   padding: 0.5rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(22,21,19,0.12);
-  background: rgba(255,255,255,0.6);
+  border-radius: 2px;
+  border: 1px solid rgba(22,21,19,0.15);
+  background: #fff;
   color: var(--ink);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.8125rem;
@@ -561,12 +561,12 @@ button { font-family: inherit; cursor: pointer; }
   background: var(--ink); color: var(--bg);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em;
-  border-radius: 999px;
+  border-radius: 2px;
 }
 .media-card-title { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; margin: 1rem 0 0.25rem; }
 .media-card-desc { font-size: 1rem; line-height: 1.6; color: rgba(22,21,19,0.8); }
 .media-list { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.media-list span { padding: 0.5rem 1rem; background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 999px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.media-list span { padding: 0.45rem 0.9rem; background: #fff; border: 1px solid #161513; border-radius: 2px; font-family: 'Josefin Sans', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; }
 
 /* ---------- Case study ---------- */
 .case-header .eyebrow-row { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; }
@@ -621,7 +621,7 @@ button { font-family: inherit; cursor: pointer; }
 
 .case-panel {
   padding: 2rem 3rem;
-  background: rgba(255,255,255,0.6);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: 2px;
 }
@@ -663,7 +663,7 @@ button { font-family: inherit; cursor: pointer; }
 .next-project .link {
   display: block;
   padding: 2rem 4rem;
-  background: var(--surface);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: 2px;
   transition: all 0.5s;
@@ -694,7 +694,7 @@ button { font-family: inherit; cursor: pointer; }
 .about-body strong { color: var(--ink); }
 .about-body p { margin: 1rem 0 0; }
 .about-tools { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.about-tools span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.about-tools span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid #161513; border-radius: 2px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .about-cta { margin-top: 2rem; }
 
 /* ---------- Services page ---------- */
@@ -702,7 +702,7 @@ button { font-family: inherit; cursor: pointer; }
 @media (min-width: 768px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
 .service-card {
   padding: 2rem 2.5rem;
-  background: rgba(255,255,255,0.6);
+  background: #fff;
   border: 1px solid var(--line);
   border-radius: 2px;
   display: flex;
@@ -736,7 +736,7 @@ button { font-family: inherit; cursor: pointer; }
 .contact-grid { margin-top: 4rem; display: grid; grid-template-columns: 1fr; gap: 3rem; }
 @media (min-width: 1024px) { .contact-grid { grid-template-columns: 5fr 7fr; gap: 4rem; } }
 .contact-intro { font-size: 1rem; line-height: 1.7; color: rgba(22,21,19,0.8); }
-.mail-box { margin-top: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 2px; }
+.mail-box { margin-top: 2rem; padding: 1.5rem; background: #fff; border: 1px solid var(--line); border-radius: 2px; }
 .mail-box .k { font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; color: var(--muted); }
 .mail-box .v { font-family: 'Josefin Sans', sans-serif; font-size: 0.875rem; font-weight: 600; word-break: break-all; margin-top: 0.5rem; user-select: all; }
 .mail-actions { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; }
@@ -744,7 +744,7 @@ button { font-family: inherit; cursor: pointer; }
 .social-item {
   display: flex; align-items: center;
   padding: 1rem;
-  background: rgba(255,255,255,0.4);
+  background: #fff;
   border: 1px solid rgba(22,21,19,0.1);
   border-radius: 2px;
   transition: border-color 0.2s;
@@ -754,7 +754,7 @@ button { font-family: inherit; cursor: pointer; }
 .social-item .name { font-weight: 600; }
 .social-item .url { color: var(--muted); font-size: 0.6rem; text-transform: uppercase; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.form-card { padding: 2rem; background: rgba(255,255,255,0.6); border: 1px solid var(--line); border-radius: 2px; }
+.form-card { padding: 2rem; background: #fff; border: 1px solid var(--line); border-radius: 2px; }
 @media (min-width: 640px) { .form-card { padding: 3rem; } }
 .form-card h3 { font-size: 1.5rem; font-weight: 700; margin: 0 0 1.5rem; }
 .form-group { margin-bottom: 1.5rem; }
