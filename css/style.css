@@ -869,12 +869,16 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 
 /* --- Projets : ruban horizontal --- */
 .h2-marquee{overflow:hidden;margin:clamp(2.5rem,5vw,4.5rem) -5.5vw 0}
+.h2-marquee + .h2-marquee{margin-top:clamp(1.5rem,3vw,2.5rem)}
 .h2-track{display:flex;width:max-content;animation:h2slide 40s linear infinite}
-.h2-track:hover,.h2-marquee:focus-within .h2-track{animation-play-state:paused}
+.h2-track-rev{animation:h2slideRev 40s linear infinite}
+.h2-marquee:focus-within .h2-track{animation-play-state:paused}
 .h2-set{display:flex;gap:clamp(2rem,4.5vw,4.5rem);padding:0 clamp(2rem,4.5vw,4.5rem) 1.5rem 5.5vw}
 .h2-set:last-child{padding-left:clamp(2rem,4.5vw,4.5rem);padding-right:5.5vw}
 @keyframes h2slide{to{transform:translateX(-50%)}}
-@media (prefers-reduced-motion: reduce){.h2-track{animation:none}.h2-marquee{overflow-x:auto}}
+.h2-track-rev{animation:h2slideRev 40s linear infinite}
+@keyframes h2slideRev{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media (prefers-reduced-motion: reduce){.h2-track,.h2-track-rev{animation:none}.h2-marquee{overflow-x:auto}}
 .h2-card{flex:0 0 min(31rem,76vw);text-decoration:none;color:inherit;display:block}
 .h2-card-media{display:block;aspect-ratio:16/9;background:#0B0B0E;border:1px solid rgba(22,21,19,.12);overflow:hidden}
 .h2-card-media img{width:100%;height:100%;object-fit:contain;display:block}
