@@ -119,9 +119,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (min-width: 640px) { .site-header { padding: 2rem 0; } }
 .site-header.scrolled {
-  background: rgba(255, 255, 255, 0.93);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(22,21,19,0.1);
+  background: #fff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+  box-shadow: 0 1px 0 rgba(22,21,19,.08);
   padding: 1rem 0;
 }
 .site-header-inner {
@@ -151,6 +153,10 @@ button { font-family: inherit; cursor: pointer; }
   transition: color 0.2s;
 }
 .nav-desktop a:hover { color: var(--ink); }
+.nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F0;padding:.6rem 1.15rem;border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:600}
+.nav-desktop a[href="contact.html"]:hover{background:#BF814B;color:#fff}
+.nav-desktop a[href="contact.html"].active{color:#F7F5F0}
+.nav-desktop a[href="contact.html"].active::after{display:none}
 .nav-desktop a.active { color: var(--ink); font-weight: 600; }
 .nav-desktop a.active::after {
   content: '';
@@ -816,10 +822,6 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .tool-ico { width: 1.15em; height: 1.15em; flex: none; }
 
 /* ================= HOME v2 — maquette studio (fond blanc, grotesque) ================= */
-body.home-v2{background:#fff}
-body.home-v2 .wordmark{text-transform:uppercase}
-body.home-v2 .site-header.scrolled{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 1px 0 rgba(22,21,19,.08)}
-body.home-v2 .nav-desktop a[href="contact.html"]{background:#161513;color:#F7F5F0;padding:.6rem 1.15rem;border-radius:2px;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:600}
 .h2-sec{padding:clamp(4rem,8vw,6.5rem) 5.5vw;background:#fff;color:#161513}
 .h2-title{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.9rem,3.4vw,3.3rem);line-height:1.08;letter-spacing:-0.015em;margin:0}
 .h2-title-xl{text-transform:uppercase;font-size:clamp(2rem,3.6vw,3.6rem)}
