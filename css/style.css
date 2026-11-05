@@ -846,7 +846,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .h2-moi .h2-sub{margin:1.6rem 0 2rem;font-size:clamp(.82rem,1vw,.95rem);line-height:1.65;color:var(--muted);max-width:33rem}
 .h2-moi-media{position:absolute;bottom:0;right:0;margin:0;display:block;text-align:center;z-index:0;height:100%}
 .h2-moi-media img{width:auto;height:100%;max-width:none;max-height:none;display:block;transform:none}
-@media(max-width:860px){.h2-moi-grid{grid-template-columns:1fr}.h2-moi-media{position:static;order:-1;margin-bottom:.5rem;height:auto}.h2-moi-media img{height:auto;max-height:min(80vh,700px)}}
+@media(max-width:860px){.h2-moi-grid{grid-template-columns:1fr}.h2-moi-media{position:static;order:-1;margin-bottom:.5rem;height:auto}.h2-moi-media img{width:auto;height:auto;max-width:100%;max-height:min(80vh,700px);margin:auto;display:inline-block}}
 
 /* --- Process : 4 colonnes simples --- */
 .h2-steps{list-style:none;margin:clamp(2.5rem,4vw,4rem) 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(22,21,19,.16)}
