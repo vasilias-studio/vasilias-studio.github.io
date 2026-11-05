@@ -811,3 +811,5 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .site-footer a:focus-visible, .site-footer button:focus-visible, .menu-overlay a:focus-visible {
   outline-color: var(--accent);
 }
+.soc { width: 1em; height: 1em; fill: currentColor; vertical-align: -0.16em; margin-right: 0.42em; flex: none; }
+.social-item .soc { width: 1.3em; height: 1.3em; margin-right: 0.8em; }
