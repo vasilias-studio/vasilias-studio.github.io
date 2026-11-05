@@ -694,7 +694,7 @@ button { font-family: inherit; cursor: pointer; }
 .about-body strong { color: var(--ink); }
 .about-body p { margin: 1rem 0 0; }
 .about-tools { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-.about-tools span { padding: 0.5rem 1rem; background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.about-tools span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.7); border: 1px solid var(--line); border-radius: 6px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .about-cta { margin-top: 2rem; }
 
 /* ---------- Services page ---------- */
@@ -813,3 +813,4 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 }
 .soc { width: 1em; height: 1em; fill: currentColor; vertical-align: -0.16em; margin-right: 0.42em; flex: none; }
 .social-item .soc { width: 1.3em; height: 1.3em; margin-right: 0.8em; }
+.tool-ico { width: 1.15em; height: 1.15em; flex: none; }
