@@ -8,8 +8,8 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=37">
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=38">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -26,7 +26,7 @@
 <meta name="twitter:image" content="https://vasilias-studio.github.io/assets/og/og-image.png">
 <link rel="canonical" href="https://vasilias-studio.github.io/">
 </head>
-<body>
+<body class="home-v2">
 
   <!-- Preloader -->
   <div class="preloader"><span class="preloader-logo">Vasilías</span></div>
@@ -34,7 +34,7 @@
   <!-- Header -->
   <header class="site-header">
     <div class="container site-header-inner">
-      <a href="index.html" class="wordmark">Vasilías</a>
+      <a href="index.html" class="wordmark">Vasilias</a>
       <nav class="nav-desktop">
         <a href="work.html">Projets</a>
         <a href="about.html">À Propos</a>
@@ -50,7 +50,7 @@
   <!-- Mobile Menu Overlay -->
   <div class="menu-overlay" id="menuOverlay">
     <div class="menu-top">
-      <a href="index.html" class="wordmark">Vasilías</a>
+      <a href="index.html" class="wordmark">Vasilias</a>
       <button class="menu-close" id="menuCloseBtn" aria-label="Fermer le menu">
         <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="#F2E9D8" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -73,203 +73,82 @@
     </div>
   </div>
 
-  <!-- Hero -->
-  <section class="hero">
-    <!-- Arrière-plan : animation du contour du logo -->
-    <div class="hero-bg" aria-hidden="true">
-      <svg viewBox="0 0 317.48 178.05" class="contour-svg" role="img" aria-label="Tracés abstraits">
-        <defs>
-          <linearGradient id="logoFade" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#fff" stop-opacity="0"/>
-            <stop offset="0.18" stop-color="#fff" stop-opacity="1"/>
-            <stop offset="0.82" stop-color="#fff" stop-opacity="1"/>
-            <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-          </linearGradient>
-          <mask id="logoMask">
-            <rect x="0" y="0" width="317.48" height="178.05" fill="url(#logoFade)"/>
-          </mask>
-          <!-- Dégradé de fondu pour la queue du tracé (dissipation) -->
-          <linearGradient id="cometFade" x1="-10" y1="0" x2="330" y2="0" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#bf814b" stop-opacity="0"/>
-            <stop offset="0.25" stop-color="#bf814b" stop-opacity="1"/>
-            <stop offset="1" stop-color="#bf814b" stop-opacity="1"/>
-          </linearGradient>
-        </defs>
-        <g mask="url(#logoMask)" fill="none" stroke="url(#cometFade)" stroke-width="1" stroke-linejoin="round" stroke-linecap="round">
-          <!-- Tracé 1 : depuis la gauche -->
-          <path d="M-10,90 C50,40 110,150 170,90 C230,40 280,140 330,80"
-            stroke-dasharray="90 600" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-690;0" keyTimes="0;0.5;1" dur="30s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 2 : depuis la droite -->
-          <path d="M330,50 C280,20 240,90 200,60 C160,30 120,80 80,45"
-            stroke-dasharray="60 520" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="3s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-580;0" keyTimes="0;0.5;1" dur="30s" begin="3s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 3 : depuis la gauche -->
-          <path d="M-10,160 C50,120 90,170 150,135 C210,100 250,150 330,110"
-            stroke-dasharray="70 460" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="6s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-530;0" keyTimes="0;0.5;1" dur="30s" begin="6s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 4 : depuis la droite -->
-          <path d="M330,160 C280,120 240,170 190,135 C140,100 90,160 40,125"
-            stroke-dasharray="80 580" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="9s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-660;0" keyTimes="0;0.5;1" dur="30s" begin="9s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 5 : depuis la gauche -->
-          <path d="M-10,45 C40,80 90,20 150,60 C210,95 260,35 330,75"
-            stroke-dasharray="50 400" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="12s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-450;0" keyTimes="0;0.5;1" dur="30s" begin="12s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 6 : depuis la droite -->
-          <path d="M330,90 C270,40 210,140 150,90 C90,40 40,140 -10,100"
-            stroke-dasharray="85 620" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="15s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-705;0" keyTimes="0;0.5;1" dur="30s" begin="15s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 7 : depuis la gauche -->
-          <path d="M-10,130 C40,160 90,110 150,150 C210,175 250,120 317,140"
-            stroke-dasharray="45 420" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="18s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-465;0" keyTimes="0;0.5;1" dur="30s" begin="18s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 8 : depuis la droite -->
-          <path d="M330,30 C280,60 240,10 200,45 C160,75 120,30 80,60"
-            stroke-dasharray="45 400" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="21s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-445;0" keyTimes="0;0.5;1" dur="30s" begin="21s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-          <!-- Tracé 9 : depuis la gauche -->
-          <path d="M-10,70 C40,40 90,120 150,70 C210,30 260,110 330,60"
-            stroke-dasharray="50 430" opacity="0">
-            <animate attributeName="opacity" values="1;1;0;0" keyTimes="0;0.45;0.5;1" dur="30s" begin="24s" repeatCount="indefinite"/>
-            <animate attributeName="stroke-dashoffset" values="0;-480;0" keyTimes="0;0.5;1" dur="30s" begin="24s" repeatCount="indefinite" calcMode="linear"/>
-          </path>
-        </g>
-      </svg>
-    </div>
+  <!-- Hero (maquette studio) -->
+  <section class="h2-hero" aria-label="Accueil">
+    <h1 class="h2-word">VASILIAS</h1>
+    <picture class="h2-statue">
+      <source srcset="assets/statue.webp" type="image/webp">
+      <img src="assets/statue.png" width="1024" height="1024" alt="Buste sculpté en pierre, emblème de Vasilías Studio" fetchpriority="high" decoding="async">
+    </picture>
+  </section>
 
-    <div class="hero-inner">
-      <div class="hero-meta font-mono-custom">
-        <div class="hero-pad" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;width:100%;">
-          <span>Graphic &amp; Digital Designer — Freelance</span>
-          <div style="display:flex;gap:1rem;align-items:center;">
-            <span><span class="dot"></span>Disponible pour projets</span>
-            <span>·</span>
-            <span>Toamasina - Madagascar</span>
-          </div>
-        </div>
+  <!-- Moi -->
+  <section class="h2-sec h2-moi" id="moi">
+    <div class="h2-moi-grid">
+      <div class="reveal reveal-right">
+        <h2 class="h2-title">Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.</h2>
+        <p class="h2-sub">Je suis designer graphique et digital freelance, fondateur de Vasilías Studio, basé à Toamasina, Madagascar. Depuis deux ans, je développe ma pratique du design en autodidacte, avec une attention particulière portée au branding et à la création d'identités visuelles. J'accompagne les marques dans la construction d'une image cohérente, distinctive et adaptée à leur univers.</p>
+        <a class="h2-btn" href="about.html">En savoir plus</a>
       </div>
-
-      <div class="hero-main hero-centered">
-        <div>
-          <h1 class="hero-sub reveal reveal-up">Design. <span id="cycleWord">Précision.</span></h1>
-          <p class="hero-sub-note reveal reveal-up">Designer graphique &amp; digital freelance, fondateur de Vasilías Studio — basé à Toamasina, Madagascar. Spécialisation : branding &amp; identité visuelle.</p>
-          <div class="hero-cta reveal reveal-left">
-            <a href="contact.html" class="btn btn-dark">Parler de mon projet <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-            <a href="work.html" class="btn btn-outline">Voir mes projets <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="hero-scroll font-mono-custom">
-        <div class="hero-pad" style="display:flex;align-items:center;justify-content:space-between;gap:1rem;width:100%;">
-          
-          <div class="bounce" style="display:flex;gap:0.5rem;align-items:center;">
-            <span>Scroll</span>
-            <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="#BF814B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-      </div>
+      <picture class="h2-moi-media reveal reveal-left">
+        <source srcset="assets/statue.webp" type="image/webp">
+        <img src="assets/statue.png" width="1024" height="1024" alt="" loading="lazy" decoding="async">
+      </picture>
     </div>
   </section>
 
-  <!-- Selected Work -->
-  <section class="section">
-    <div class="section-head reveal reveal-right">
-      <div>
-        <h2 class="section-title">Projets Sélectionnés</h2>
-      </div>
-      <a href="work.html" class="btn btn-outline" style="padding:0.75rem 1.5rem;">Voir tous les projets (2) <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-    </div>
+  <!-- Processus -->
+  <section class="h2-sec h2-process" id="processus">
+    <h2 class="h2-title h2-title-xl reveal reveal-up">Un processus clair,<br>du premier échange à la livraison</h2>
+    <ol class="h2-steps">
+      <li class="h2-step reveal reveal-left"><span class="h2-num">1</span><h3 class="h2-step-t">Brief &amp; écoute</h3><p class="h2-step-d">Comprendre votre marque, votre marché, vos objectifs et vos contraintes avant de dessiner quoi que ce soit.</p></li>
+      <li class="h2-step reveal reveal-up"><span class="h2-num">2</span><h3 class="h2-step-t">Recherche &amp; direction artistique</h3><p class="h2-step-d">Références, moodboard et concept créatif : définir ensemble la voie visuelle à explorer.</p></li>
+      <li class="h2-step reveal reveal-down"><span class="h2-num">3</span><h3 class="h2-step-t">Création &amp; itérations</h3><p class="h2-step-d">Conception, allers-retours et affinage jusqu'à un système graphique juste et cohérent.</p></li>
+      <li class="h2-step reveal reveal-right"><span class="h2-num">4</span><h3 class="h2-step-t">Livraison &amp; fichiers de production</h3><p class="h2-step-d">Fichiers sources organisés, prêts pour l'impression et le digital, avec les règles d'utilisation.</p></li>
+    </ol>
+    <p class="h2-center"><a class="h2-btn" href="contact.html">Démarrer un projet</a></p>
+  </section>
 
-    <div class="selected-list">
-      <!-- Nébulo -->
-      <a class="selected-item reveal reveal-down" href="work-nebulo.html">
-        <div class="selected-media"><img src="assets/projects/nebulo/cover.jpg" alt="Vignette du projet Nébulo" width="2816" height="1584" loading="lazy" decoding="async"></div>
-        <div>
-          <div class="selected-meta"><span class="num">01</span><span>/</span><span>Juillet 2025 · Fictif</span></div>
-          <h3 class="selected-title">Nébulo</h3>
-          <p class="selected-tagline">Système d'identité contemporain et dynamique pour Nébulo.</p>
-          <div class="selected-cats"><span>Identity</span><span>Branding</span></div>
-          <div class="selected-cta">Explorer l'étude de cas <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
-        </div>
+  <!-- Projets sélectionnés -->
+  <section class="h2-sec" id="projets">
+    <h2 class="h2-title h2-title-xl reveal reveal-right">Projets sélectionnés</h2>
+    <div class="h2-rail" role="list" aria-label="Projets sélectionnés">
+      <a class="h2-card" role="listitem" href="work-nebulo.html">
+        <span class="h2-card-media"><img src="assets/projects/nebulo/cover.jpg" alt="Visuel d'identité Nébulo, silhouette bleue néon" width="2816" height="1584" loading="lazy" decoding="async"></span>
+        <strong class="h2-card-t">Nébulo</strong>
+        <span class="h2-card-d">Système d'identité contemporain et dynamique pour Nébulo.</span>
+        <span class="h2-tags"><span>Identity</span><span>Branding</span></span>
       </a>
-
-      <!-- ORQUID SPICES -->
-      <a class="selected-item reveal reveal-zoom" href="work-orquid-spices.html">
-        <div class="selected-media"><img src="assets/projects/orquid-spices/Cover.jpg" alt="Vignette du packaging ORQUID SPICES" width="1920" height="1080" loading="lazy" decoding="async"></div>
-        <div>
-          <div class="selected-meta"><span class="num">02</span><span>/</span><span>Mai 2026 · Orquid Spices</span></div>
-          <h3 class="selected-title">ORQUID SPICES</h3>
-          <p class="selected-tagline">Identité globale et packaging premium pour épices d'exception.</p>
-          <div class="selected-cats"><span>Branding</span><span>Packaging</span></div>
-          <div class="selected-cta">Explorer l'étude de cas <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
-        </div>
+      <a class="h2-card" role="listitem" href="work-orquid-spices.html">
+        <span class="h2-card-media"><img src="assets/projects/orquid-spices/Cover.jpg" alt="Packaging ORQUID SPICES, marbre sombre" width="1920" height="1080" loading="lazy" decoding="async"></span>
+        <strong class="h2-card-t">Orquid Spices</strong>
+        <span class="h2-card-d">Identité globale et packaging premium pour épices d'exception.</span>
+        <span class="h2-tags"><span>Branding</span><span>Packaging</span></span>
       </a>
-
+      <a class="h2-card" role="listitem" href="print.html">
+        <span class="h2-card-media"><img src="assets/print-visuals.jpg" alt="Supports imprimés Vasilías" width="1376" height="768" loading="lazy" decoding="async"></span>
+        <strong class="h2-card-t">Imprimés</strong>
+        <span class="h2-card-d">Cartes de visite, affiches, brochures et papeterie prêts pour l'impression.</span>
+        <span class="h2-tags"><span>Print</span></span>
+      </a>
+      <a class="h2-card" role="listitem" href="social.html">
+        <span class="h2-card-media"><img src="assets/social-visuals.jpg" alt="Visuels pour réseaux sociaux Vasilías" width="1376" height="768" loading="lazy" decoding="async"></span>
+        <strong class="h2-card-t">Réseaux Sociaux</strong>
+        <span class="h2-card-d">Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes.</span>
+        <span class="h2-tags"><span>Social</span></span>
+      </a>
     </div>
+    <p class="h2-center"><a class="h2-btn" href="work.html">Voir tous les projets</a></p>
   </section>
 
-  <!-- Expertise List -->
-  <section class="section">
-    <div class="section-head reveal reveal-zoom-out">
-      <h2 class="section-title" style="max-width:48rem;">Champs d'intervention &amp; Spécialisations</h2>
-    </div>
-    <div class="exp-grid">
-      <div class="exp-card reveal reveal-left"><span class="exp-num">01</span><h3 class="exp-title">Identité visuelle</h3></div>
-      <div class="exp-card reveal reveal-right"><span class="exp-num">02</span><h3 class="exp-title">Branding</h3></div>
-      <div class="exp-card reveal reveal-up"><span class="exp-num">03</span><h3 class="exp-title">Création de logos</h3></div>
-      <div class="exp-card reveal reveal-up"><span class="exp-num">04</span><h3 class="exp-title">Direction artistique</h3></div>
-      <div class="exp-card reveal reveal-left"><span class="exp-num">05</span><h3 class="exp-title">Design graphique</h3></div>
-      <div class="exp-card reveal reveal-right"><span class="exp-num">06</span><h3 class="exp-title">Packaging design</h3></div>
-      <div class="exp-card reveal reveal-down"><span class="exp-num">07</span><h3 class="exp-title">Supports imprimés (print)</h3></div>
-      <div class="exp-card reveal reveal-zoom"><span class="exp-num">08</span><h3 class="exp-title">Affiches et flyers</h3></div>
-      <div class="exp-card reveal reveal-fade"><span class="exp-num">09</span><h3 class="exp-title">Contenus pour réseaux sociaux</h3></div>
-      <div class="exp-card reveal reveal-zoom-out"><span class="exp-num">10</span><h3 class="exp-title">UI/UX design</h3></div>
-      <div class="exp-card reveal reveal-left"><span class="exp-num">11</span><h3 class="exp-title">Expérimentation 3D et design digital</h3></div>
-    </div>
-  </section>
-
-  <!-- Intro -->
-  <section class="section intro-max">
-    <div class="reveal reveal-right">
-      <h2 class="intro-title">Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.</h2>
-      <div class="intro-body">
-        <p>Je suis designer graphique et digital freelance, fondateur de Vasilías Studio, basé à Toamasina, Madagascar. Depuis deux ans, je développe ma pratique du design en autodidacte, avec une attention particulière portée au branding et à la création d'identités visuelles. J'accompagne les marques dans la construction d'une image cohérente, distinctive et adaptée à leur univers.</p>
-      </div>
-      <div class="intro-action">
-        <a href="about.html" class="btn btn-outline">En savoir plus sur le parcours <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Méthode -->
-  <section class="section">
-    <div class="section-head reveal reveal-up">
-      <h2 class="section-title" style="max-width:48rem;">Un processus clair, du premier échange à la livraison</h2>
-      <a href="contact.html" class="btn btn-outline" style="padding:0.75rem 1.5rem;">Démarrer un projet <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-    </div>
-    <div class="exp-grid method-grid">
-      <div class="exp-card reveal reveal-left"><span class="exp-num">01</span><h3 class="exp-title">Brief &amp; écoute</h3><p class="method-desc">Comprendre votre marque, votre marché, vos objectifs et vos contraintes avant de dessiner quoi que ce soit.</p></div>
-      <div class="exp-card reveal reveal-up"><span class="exp-num">02</span><h3 class="exp-title">Recherche &amp; direction artistique</h3><p class="method-desc">Références, moodboard et concept créatif : définir ensemble la voie visuelle à explorer.</p></div>
-      <div class="exp-card reveal reveal-down"><span class="exp-num">03</span><h3 class="exp-title">Création &amp; itérations</h3><p class="method-desc">Conception, allers-retours et affinage jusqu'à un système graphique juste et cohérent.</p></div>
-      <div class="exp-card reveal reveal-right"><span class="exp-num">04</span><h3 class="exp-title">Livraison &amp; fichiers de production</h3><p class="method-desc">Fichiers sources organisés, prêts pour l'impression et le digital, avec les règles d'utilisation.</p></div>
+  <!-- Champs d'intervention -->
+  <section class="h2-sec" id="champs">
+    <h2 class="h2-title h2-title-xl reveal reveal-left">Champs d'intervention<br>&amp; spécialisations</h2>
+    <div class="h2-rows">
+      <a class="h2-row" href="services.html"><span class="h2-row-t">Branding</span><span class="h2-row-d">Logotypes, systèmes d'identité, palettes chromatiques et règles d'utilisation, pour une image cohérente sur l'ensemble de vos supports.</span></a>
+      <a class="h2-row even" href="services.html"><span class="h2-row-t">Packaging Design</span><span class="h2-row-d">Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.</span></a>
+      <a class="h2-row" href="services.html"><span class="h2-row-t">Supports Imprimés (Print)</span><span class="h2-row-d">Cartes de visite, affiches, brochures et autres supports imprimés ou numériques, conçus pour être lisibles et mémorables.</span></a>
+      <a class="h2-row even" href="services.html"><span class="h2-row-t">Contenus pour Réseaux Sociaux</span><span class="h2-row-d">Publications, stories et templates déclinés dans votre identité, adaptés aux formats de chaque plateforme.</span></a>
     </div>
   </section>
 
