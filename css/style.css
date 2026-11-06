@@ -7,7 +7,7 @@
   --bg: #FFFFFF;
   --ink: #161513;
   --muted: #6A665C;      /* 4.75:1 sur --bg (WCAG AA) */
-  --accent-text: #8F5A22;  /* 4.77:1 sur --bg ; #BF814B reste pour fonds noirs, bordures, tracés */
+  --accent-text: #A35E26;  /* cuivre sombre, contraste 5.02:1 sur le fond blanc */
   --line: rgba(22, 21, 19, 0.12);
   --accent: #BF814B;
   --surface: #F7F6F4;
