@@ -458,6 +458,30 @@
       }
     }
 
+    /* Méthodologie de la page À propos */
+    var method = doc.querySelector('[data-hub="about-work-process"]');
+    var workProcess = ab.workProcess || {};
+    if (method && Array.isArray(workProcess.steps) && workProcess.steps.length) {
+      var methodSteps = workProcess.steps.map(function (step, idx) {
+        var delay = (0.05 + idx * 0.1).toFixed(2).replace(/0$/, '') + 's';
+        var num = String(idx + 1).padStart(2, '0');
+        var points = (step.points || []).map(function (point) { return '<li>' + esc(point) + '</li>'; }).join('');
+        return '<li class="about-method-step reveal reveal-up" style="--d:' + delay + '">'
+          + '<span class="about-method-number" aria-hidden="true">' + num + '</span>'
+          + '<h4 class="about-method-step-title">' + esc(step.title) + '</h4>'
+          + '<p class="about-method-hook">' + esc(step.hook || '') + '</p>'
+          + '<ul class="about-method-list">' + points + '</ul>'
+          + '<p class="about-method-goal"><span>Objectif</span> ' + esc(step.goal || '') + '</p>'
+          + '</li>';
+      }).join('');
+      method.innerHTML = '<header class="about-method-head reveal reveal-up">'
+        + '<p class="about-method-eyebrow">' + esc(workProcess.eyebrow || 'MÉTHODOLOGIE & APPROCHE') + '</p>'
+        + '<h3 class="about-method-title" id="about-method-title">' + esc(workProcess.title || 'Comment je travaille') + '</h3>'
+        + '<p class="about-method-intro">' + esc(workProcess.intro || '') + '</p></header>'
+        + '<ol class="about-method-grid">' + methodSteps + '</ol>'
+        + (workProcess.quote ? '<blockquote class="about-method-quote reveal reveal-up"><p>« ' + esc(workProcess.quote) + ' »</p></blockquote>' : '');
+    }
+
     /* Compétences & Outils */
     var skillsWrap = doc.querySelector('[data-hub="skills-list"]');
     if (skillsWrap && Array.isArray(data.skills)) {
