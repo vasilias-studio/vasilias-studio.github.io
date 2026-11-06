@@ -475,7 +475,6 @@
           + '</li>';
       }).join('');
       method.innerHTML = '<header class="about-method-head reveal reveal-up">'
-        + '<p class="about-method-eyebrow">' + esc(workProcess.eyebrow || 'MÉTHODOLOGIE & APPROCHE') + '</p>'
         + '<h3 class="about-method-title" id="about-method-title">' + esc(workProcess.title || 'Comment je travaille') + '</h3>'
         + '<p class="about-method-intro">' + esc(workProcess.intro || '') + '</p></header>'
         + '<ol class="about-method-grid">' + methodSteps + '</ol>'
