@@ -57,6 +57,7 @@ assert.match(response.html, /vasilias-studio\.github\.io/);
 assert.match(response.html, /nonce-123/);
 assert.match(response.html, /form-response\.html/);
 assert.match(response.html, /vasilias-form-response/);
+assert.match(response.html, /,"\*"\)/);
 assert.equal(response.frameMode, 'ALLOWALL');
 
 const quoteSummary = sandbox.parseQuoteSummary_(JSON.stringify({

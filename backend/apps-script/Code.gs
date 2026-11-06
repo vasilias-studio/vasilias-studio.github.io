@@ -476,7 +476,7 @@ function responsePage_(success, type, clientNonce) {
     '<title>' + title + ' — Vasilías Studio</title>' +
     '<style>body{margin:0;background:#f5f2ed;color:#24211e;font:16px/1.6 Arial,sans-serif;display:grid;min-height:100vh;place-items:center}.card{background:#fff;max-width:560px;margin:24px;padding:36px;border:1px solid #ded8d1;border-radius:16px}h1{font-size:1.7rem;margin:0 0 12px}a{color:#8a552b}.mark{color:#BF814B;font-size:2rem}</style></head>' +
     '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main>' +
-    '<script>(function(){try{window.top.postMessage(' + response + ',"https://vasilias-studio.github.io");}catch(e){}})();</script></body></html>';
+    '<script>(function(){try{window.top.postMessage(' + response + ',"*");}catch(e){}})();</script></body></html>';
   return HtmlService.createHtmlOutput(html)
     .setTitle(title + ' — Vasilías Studio')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
