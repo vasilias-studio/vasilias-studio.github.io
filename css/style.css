@@ -1366,3 +1366,32 @@ html,.home-v2{overflow-x:clip}
 .form-card .form-success p{max-width:30rem;margin:0;color:var(--muted);line-height:1.7}
 .form-card .form-success .again{margin-top:1.75rem;padding:0;font-weight:600}
 @media(prefers-reduced-motion:reduce){.contact-quote,.contact-quote-cta .ico,.cf-field>input,.cf-field>textarea,.cf-chip{transition:none}}
+
+/* Contact : plus d'espace (respiration entre les blocs) */
+.contact-grid{margin-top:clamp(3.5rem,7vw,6.5rem);row-gap:clamp(4rem,9vw,6rem)}
+@media(min-width:1024px){.contact-grid{column-gap:clamp(4.5rem,8vw,9rem)}}
+.contact-page-pad,.page:has(.contact-grid){padding-bottom:clamp(7rem,12vw,10rem)}
+.contact-kicker{margin-bottom:1.25rem}
+.contact-intro{margin-top:1.75rem;line-height:1.85}
+.contact-side .mail-box{margin-top:3.25rem;padding:2rem 0}
+.contact-side .mail-box .v{margin-top:1rem}
+.contact-side .mail-actions{margin-top:1.75rem;gap:1rem}
+.contact-facts{margin-top:3rem}
+.contact-facts>div{padding:1.4rem 0;gap:1.5rem}
+.contact-side .social-list{margin-top:3rem}
+.contact-side .social-item{padding:1.4rem 0}
+.contact-quote{margin-top:3.5rem;padding:2rem;gap:1.5rem}
+.contact-quote-text{gap:.6rem}
+.cf-note{margin:1.1rem 0 3rem}
+.contact-form .contact-kicker{margin-bottom:1.1rem}
+.cf-grid{row-gap:2.6rem}
+@media(min-width:640px){.cf-grid{column-gap:3rem}}
+.cf-field{gap:.75rem .3rem}
+.cf-field>input,.cf-field>textarea{padding-top:1rem;padding-bottom:1rem}
+.cf-field>textarea{min-height:12rem;padding:1.1rem 1.15rem}
+.cf-chips{gap:.7rem;margin-top:1.4rem}
+.cf-chip{padding:.65rem 1rem}
+.contact-form .cf-consent{margin-top:3rem;padding-top:1.75rem;gap:.9rem}
+.cf-actions{margin-top:2.5rem}
+.cf-error{margin-top:1.75rem}
+.form-card .form-success{padding:clamp(3rem,8vw,5rem) 0}
