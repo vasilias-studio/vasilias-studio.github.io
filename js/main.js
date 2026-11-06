@@ -190,6 +190,24 @@ document.addEventListener('DOMContentLoaded', function () {
   var formAgain = document.getElementById('formAgain');
 
   if (form) {
+    var packLabels = {
+      'logo-brandboard': 'Pack Logo + Brandboard',
+      'prinkipas': 'Pack Prínkipas',
+      'vasilias': 'Pack Vasilías'
+    };
+    var requestedPack = new URLSearchParams(window.location.search).get('pack');
+    var requestedPackLabel = packLabels[requestedPack];
+    if (requestedPackLabel) {
+      var subjectField = form.querySelector('#subject');
+      var messageField = form.querySelector('#message');
+      if (subjectField && !subjectField.value) subjectField.value = 'Demande — ' + requestedPackLabel;
+      if (messageField && !messageField.value) {
+        messageField.value = `Bonjour,\n\nJe souhaite discuter du ${requestedPackLabel}.\n\nMon projet et mes objectifs :\n`;
+      }
+    }
+  }
+
+  if (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (submitBtn) {
