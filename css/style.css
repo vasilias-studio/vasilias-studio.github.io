@@ -1395,3 +1395,8 @@ html,.home-v2{overflow-x:clip}
 .cf-actions{margin-top:2.5rem}
 .cf-error{margin-top:1.75rem}
 .form-card .form-success{padding:clamp(3rem,8vw,5rem) 0}
+.contact-side .mail-box a.v{display:block;text-decoration:none;transition:color .2s ease}
+.contact-side .mail-box a.v:hover{color:var(--accent-text)}
+.contact-side .mail-box{padding:2rem 0}
+.contact-side .social-list{margin-top:0}
+.form-card .contact-form h3{margin:0 0 3rem}
