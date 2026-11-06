@@ -822,7 +822,11 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 .tool-ico { width: 1.15em; height: 1.15em; flex: none; }
 
 /* ================= HOME v2 — maquette studio (fond blanc, grotesque) ================= */
-.h2-sec{padding:clamp(4rem,8vw,6.5rem) 5.5vw;background:#fff;color:#161513}
+.h2-sec{padding:clamp(4rem,8vw,6.5rem) 5.5vw;background:#fff;color:#161513;overflow-x:clip}
+/* Section vide : fond blanc comme les autres (sinon le hero fixe transparaît), sans contenu */
+.h2-spacer{padding:0;height:clamp(5rem,12vw,10rem)}
+/* Empêche tout débordement horizontal (translateX des .reveal) qui fait dézoomer la page sur mobile */
+html,.home-v2{overflow-x:clip}
 .h2-title{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.9rem,3.4vw,3.3rem);line-height:1.08;letter-spacing:-0.015em;margin:0}
 .h2-title-xl{text-transform:uppercase;font-size:clamp(2rem,3.6vw,3.6rem)}
 .h2-btn{display:inline-flex;align-items:center;gap:.5rem;background:#161513;color:#fff;text-decoration:none;text-transform:uppercase;font-size:.72rem;font-weight:600;letter-spacing:.09em;padding:1rem 1.7rem;border-radius:2px;transition:background .2s ease}
