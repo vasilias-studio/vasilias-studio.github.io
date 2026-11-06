@@ -719,6 +719,30 @@ button { font-family: inherit; cursor: pointer; }
 .about-body p { margin: 1rem 0 0; }
 .about-tools { display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .about-tools span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid #161513; border-radius: 2px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.about-capabilities { margin-top: clamp(3rem, 6vw, 5rem); }
+.about-capabilities-head { margin-bottom: clamp(1.75rem, 3.5vw, 3rem); }
+.about-capabilities-title { margin: 0; font-size: clamp(1.8rem, 3.4vw, 2.7rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.12; }
+.about-capabilities-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
+.about-capabilities-panel { min-width: 0; }
+.about-capabilities-label { margin: 0 0 .55rem; color: var(--accent-text); font-size: .67rem; font-weight: 600; letter-spacing: .15em; line-height: 1.5; }
+.about-capabilities-subtitle { margin: 0 0 1.35rem; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 600; line-height: 1.2; }
+.about-skill-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.about-skill-item { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: .75rem; padding: .95rem 0; border-top: 1px solid var(--line); transition: border-color .2s ease; }
+.about-skill-item:hover { border-color: var(--accent); }
+.about-skill-number { padding-top: .18rem; color: var(--accent-text); font-size: .72rem; font-weight: 600; letter-spacing: .06em; }
+.about-skill-item h5 { margin: 0; font-size: .98rem; font-weight: 600; line-height: 1.35; }
+.about-skill-item p { margin: .32rem 0 0; color: var(--muted); font-size: .875rem; line-height: 1.55; }
+.about-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.about-tool-grid > span { display: flex; min-width: 0; min-height: 4.25rem; align-items: center; gap: .65rem; padding: .75rem .65rem; border-top: 1px solid var(--line); color: var(--ink); font-size: .78rem; font-weight: 500; line-height: 1.35; transition: border-color .2s ease, color .2s ease; }
+.about-tool-grid > span:hover { border-color: var(--accent); color: var(--accent-text); }
+.about-tool-grid .tool-ico { width: 1.55rem; height: 1.55rem; flex: 0 0 1.55rem; object-fit: contain; margin: 0; }
+@media (min-width: 640px) and (max-width: 959px) { .about-tool-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; } }
+@media (min-width: 960px) {
+  .about-capabilities-grid { grid-template-columns: minmax(0, 1.15fr) minmax(16rem, .85fr); gap: clamp(1.75rem, 3vw, 3rem); }
+  .about-tools-panel { padding-left: clamp(1.5rem, 3vw, 3rem); border-left: 1px solid var(--line); }
+  .about-capabilities-grid.is-tools-only { grid-template-columns: minmax(0, 1fr); }
+  .about-capabilities-grid.is-tools-only .about-tools-panel { padding-left: 0; border-left: 0; }
+}
 .about-cta { margin-top: 2rem; }
 
 /* ---------- Services page ---------- */

@@ -485,13 +485,27 @@
     /* Compétences & Outils */
     var skillsWrap = doc.querySelector('[data-hub="skills-list"]');
     if (skillsWrap && Array.isArray(data.skills)) {
-      var skSec = skillsWrap.closest ? skillsWrap.closest('.about-section') : null;
+      var skillDescriptions = {
+        'Branding & identité visuelle': 'Conception d’univers de marque cohérents et reconnaissables.',
+        'Design graphique': 'Création de supports visuels adaptés aux objectifs de communication.',
+        'Direction artistique': 'Définition d’une intention visuelle et cohérence de l’ensemble des créations.',
+        'Packaging': 'Conception graphique et mise en valeur des produits à travers leur emballage.',
+        'Design digital & UI/UX': 'Conception d’interfaces et d’expériences numériques claires et fonctionnelles.',
+        'Création 3D (Blender)': 'Modélisation et création de visuels tridimensionnels.'
+      };
+      var skSec = skillsWrap.closest ? (skillsWrap.closest('.about-capabilities-panel') || skillsWrap.closest('.about-section')) : null;
+      var capabilitiesGrid = skillsWrap.closest ? skillsWrap.closest('.about-capabilities-grid') : null;
       if (!data.skills.length && skSec) {
         skSec.style.display = 'none';
+        if (capabilitiesGrid) capabilitiesGrid.classList.add('is-tools-only');
       } else {
         if (skSec) skSec.style.display = '';
-        skillsWrap.innerHTML = data.skills.map(function (sk) {
-          return '<span>' + esc(sk) + '</span>';
+        if (capabilitiesGrid) capabilitiesGrid.classList.remove('is-tools-only');
+        skillsWrap.innerHTML = data.skills.map(function (sk, idx) {
+          var num = String(idx + 1).padStart(2, '0');
+          var delay = (0.05 + idx * 0.07).toFixed(2).replace(/0$/, '') + 's';
+          var desc = skillDescriptions[sk] || '';
+          return '<li class="about-skill-item reveal reveal-up" style="--d:' + delay + '"><span class="about-skill-number">' + num + '</span><div><h5>' + esc(sk) + '</h5>' + (desc ? '<p>' + esc(desc) + '</p>' : '') + '</div></li>';
         }).join('');
       }
     }

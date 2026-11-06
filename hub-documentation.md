@@ -27,7 +27,7 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 | Projets | Création et modification du statut, année, nature, catégories, client, rôle, accroche, présentation et galerie. Couverture et galerie se choisissent visuellement dans la médiathèque ou s’importent directement depuis l’appareil; plus besoin de saisir les chemins. Création de pages pour les nouveaux projets publiés. |
 | Contenus | Accroche, présentation, services, processus, champs d’intervention, textes À propos et Contact, supports et profils sociaux; les champs structurés avancés sont éditables en JSON. Le processus de la page À propos (`about.workProcess`) comprend ses trois étapes et la citation de conclusion. |
 | Médiathèque | Import multiple vers `assets/hub-uploads/`, suppression de fichiers, recherche et texte alternatif. L’import est téléversé automatiquement lors du commit. Les sélecteurs de couverture, galerie, image Open Graph et portrait réutilisent cette bibliothèque. |
-| Compétences | Listes de compétences et outils. |
+| Compétences | Listes de compétences et outils. Sur la page À propos, les six expertises sont présentées avec leurs descriptions éditoriales et les six logiciels avec leurs logos officiels déjà présents dans le dépôt. |
 | SEO & partage | Title, description, image OG et URL canonique par page. |
 | Publication | État de synchronisation, checklist et export JSON de secours. |
 | Surveillance | Vérifications manuelles lancées depuis le navigateur, avec état/progression visibles et délai maximal par page; ce n’est pas une surveillance serveur continue. |
