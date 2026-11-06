@@ -879,8 +879,8 @@ html,.home-v2{overflow-x:clip}
 @keyframes h2slideRev{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 @media (prefers-reduced-motion: reduce){.h2-track,.h2-track-rev{animation:none}.h2-marquee{overflow-x:auto}}
 .h2-card{flex:0 0 min(31rem,76vw);text-decoration:none;color:inherit;display:block}
-.h2-card-media{display:block;aspect-ratio:16/9;background:#0B0B0E;border:1px solid rgba(22,21,19,.12);overflow:hidden}
-.h2-card-media img{width:100%;height:100%;object-fit:contain;display:block}
+.h2-card-media{display:block;aspect-ratio:16/9;background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.h2-card-media img{width:100%;height:100%;object-fit:cover;display:block}
 .h2-card-t{display:block;font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.2rem,1.8vw,1.7rem);text-transform:uppercase;margin:1.1rem 0 .45rem;letter-spacing:-0.01em}
 .h2-card:hover .h2-card-t{text-decoration:underline;text-underline-offset:.18em}
 .h2-card-d{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.8rem;line-height:1.5}
