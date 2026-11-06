@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-06T08:15:00.000Z"
+    "updatedAt": "2026-11-06T08:49:33.046Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -84,11 +84,6 @@
       "title": "Design de Packaging",
       "desc": "Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.",
       "foot": "Maquettes & mockups de présentation"
-    },
-    {
-      "title": "Conception d'Interfaces & UI/UX",
-      "desc": "Conception d'interfaces web et mobiles avec une réflexion attentive sur l'expérience utilisateur, la lisibilité et la hiérarchie du contenu.",
-      "foot": "Maquettes & prototypes Figma"
     },
     {
       "title": "Modélisation & Visualisation 3D",
