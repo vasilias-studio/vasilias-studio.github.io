@@ -8,7 +8,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Josefin+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    DESIGN SYSTEM HUB v3 — palette cahier des charges adaptée WCAG AA
@@ -16,13 +16,15 @@
    avec textes foncés AA ; #E5A000 jamais en texte sur blanc)
 ============================================================ */
 :root{
-  --bg:#F7F8FA; --surface:#FFFFFF; --ink:#17191C; --sub:#646C76;
-  --line:#E8EAED; --accent:#1C2E1F; --accent-soft:#E3EDE4;
-  --ok:#0E6B45; --ok-bg:#E8F5EE; --ok-dot:#16A36A;
+  --bg:#FFFFFF; --surface:#F7F6F4; --ink:#161513; --sub:#6A665C;
+  --line:rgba(22,21,19,.12); --line-strong:rgba(22,21,19,.35);
+  --accent:#161513; --accent-soft:#F7F6F4;
+  --bronze:#BF814B; --bronze-text:#8F5A22;
+  --ok:#0E6B45; --ok-bg:#EAF4EE; --ok-dot:#16A36A;
   --warn:#7A5800; --warn-bg:#FBF3DD; --warn-dot:#A97600;
   --err:#9B2C2C; --err-bg:#FBEAEA; --err-dot:#DC4545;
-  --mut:#4A5560; --mut-bg:#EEF0F3;
-  --r:8px; --shadow:0 1px 2px rgba(23,25,28,.05);
+  --mut:#57534A; --mut-bg:#F1EFEB;
+  --r:2px; --shadow:none;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:var(--bg)}
@@ -197,6 +199,134 @@ pre.exp{background:#101418;color:#C9D4C2;padding:.9rem;border-radius:8px;overflo
 @media(max-width:420px){
   #quickExport{padding-left:.7rem;padding-right:.7rem}
 }
+
+/* ============================================================
+   THÈME ÉDITORIAL v4 — aligné sur le site public
+   (Josefin Sans, blanc + filets fins, majuscules espacées,
+   angles quasi droits, accent bronze, aucune ombre)
+============================================================ */
+body{font-family:'Josefin Sans','Segoe UI',system-ui,sans-serif;font-size:16px;line-height:1.55;background:var(--bg)}
+html{background:var(--bg)}
+h1,h2,h3{letter-spacing:-.01em}
+a{color:var(--bronze-text);font-weight:600}
+a:hover{text-decoration:underline;text-underline-offset:.18em}
+:focus-visible{outline:2px solid var(--bronze-text);outline-offset:2px;border-radius:2px}
+small.mut,.help{font-size:.875rem}
+
+/* Libellés « eyebrow » */
+.nav-label,th,label.lbl,.field label,.stat .l,.social-card .u,.sessionexp{font-family:'Josefin Sans',sans-serif;text-transform:uppercase;letter-spacing:.1em;font-weight:600}
+.nav-label{font-size:.75rem;color:var(--sub);padding:1.4rem .75rem .4rem}
+th{font-size:.75rem;color:var(--sub);border-bottom:1px solid var(--ink);padding:.6rem .6rem}
+label.lbl,.field label{font-size:.75rem;color:var(--sub);margin-bottom:.45rem}
+label.lbl{margin-top:1rem}
+.sessionexp{font-size:.6875rem}
+
+/* Écran d'accès */
+#lock{background:var(--bg)}
+#lock .panel{border-radius:2px;border:1px solid var(--line);box-shadow:none;max-width:420px;padding:2.5rem 2rem}
+#lock .logo{display:block;font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1;text-transform:uppercase}
+#lock .logo span{color:var(--bronze) !important}
+#lock .tag{margin:.9rem 0 0;padding:0;border-radius:0;background:none;color:var(--sub);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.12em;padding-bottom:1.1rem;border-bottom:1px solid var(--line);display:block}
+#lock .small{font-size:1rem !important}
+.field input{border-radius:2px;background:var(--bg);border:1px solid var(--line-strong);font-size:1rem;padding:.8rem .9rem}
+.field input:focus{outline:2px solid var(--bronze-text);border-color:var(--ink)}
+.field .eye{border-radius:2px}
+.spin{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+
+/* Barre latérale */
+.sidebar{width:248px;background:var(--bg);border-right:1px solid var(--line);padding:1.5rem 1rem 1rem}
+.main{margin-left:248px}
+.sidebar .brand{display:block;padding:.2rem .75rem 1.1rem;margin-bottom:.25rem;border-bottom:1px solid var(--line)}
+.sidebar .brand .wm{display:block;font-weight:700;font-size:1.35rem;letter-spacing:-.02em;text-transform:uppercase;line-height:1.1}
+.sidebar .brand .sub{display:block;margin-top:.3rem;font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--sub)}
+.nav-btn{border-radius:2px;font-size:.9375rem;font-weight:500;letter-spacing:.02em;padding:.55rem .75rem;color:var(--sub);position:relative}
+.nav-btn:hover{background:var(--surface);color:var(--ink)}
+.nav-btn.active,.nav-btn[aria-current="page"]{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:inset 2px 0 0 var(--bronze)}
+.userbox{border-top:1px solid var(--line);padding:1rem .75rem 0}
+.userbox .btn{width:100%}
+
+/* Barre supérieure */
+.topbar{background:#fff;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:1px solid var(--line);padding:1rem 2rem}
+.topbar h1{font-size:1.25rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.topbar .date{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--sub);padding-left:.9rem;border-left:1px solid var(--line)}
+#burger{border-radius:2px;background:#fff}
+#notifPill{background:var(--surface) !important;border:1px solid var(--line) !important}
+.content{padding:2.5rem 2rem 4rem;max-width:1160px}
+
+/* Cartes & chiffres clés */
+.card{border-radius:2px;box-shadow:none;border:1px solid var(--line);padding:1.5rem;background:var(--bg)}
+.card h2{font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--sub);padding-bottom:.9rem;margin-bottom:1rem;border-bottom:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:2px;margin-bottom:1.5rem}
+@media(min-width:1100px){.stats{grid-template-columns:repeat(5,1fr)}}
+.stats .stat:last-child:nth-child(odd){grid-column:span 2}
+@media(min-width:1100px){.stats .stat:last-child:nth-child(odd){grid-column:auto}}
+.stat{border:0;border-radius:0;box-shadow:none;background:var(--bg);padding:1.4rem 1.25rem;transition:background .2s}
+.stat:hover{background:var(--surface);border-color:transparent}
+.stat .v{font-size:2.6rem;font-weight:700;letter-spacing:-.02em;line-height:1;margin-bottom:.55rem}
+.stat .l{font-size:.6875rem;color:var(--sub)}
+
+/* Boutons */
+.btn{border-radius:2px;font-family:'Josefin Sans',sans-serif;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:.8rem 1.4rem;transition:all .25s ease}
+.btn-sm{padding:.5rem .95rem;font-size:.6875rem}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-primary:hover{background:var(--bronze-text);border-color:var(--bronze-text);opacity:1}
+.btn-ghost{background:transparent;border-color:var(--ink);color:var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn-danger{background:transparent;color:var(--err);border-color:var(--err)}
+.btn-danger:hover{background:var(--err);color:#fff}
+
+/* Pastilles de statut */
+.pill{border-radius:2px;font-size:.6875rem;text-transform:uppercase;letter-spacing:.08em;padding:.22rem .6rem}
+.pill.info{color:var(--ink);background:var(--surface);border-color:var(--line)}
+
+/* Tableaux, listes */
+table{font-size:1rem}
+td{padding:.8rem .6rem}
+.item{font-size:1rem;padding:.8rem 0}
+.empty{border-radius:2px;border:1px dashed var(--line-strong);font-size:1rem}
+.check .txt{font-size:1rem}
+.progress{height:4px;border-radius:0;background:var(--mut-bg)}
+.progress > div{background:var(--ink)}
+.check input{accent-color:var(--ink)}
+
+/* Formulaires */
+input[type=text],input[type=url],input[type=password],input[type=number],select,textarea{border-radius:2px;border:1px solid var(--line-strong);background:var(--bg);font-size:1rem;padding:.65rem .85rem}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--bronze-text);outline-offset:1px;border-color:var(--ink)}
+::placeholder{color:#8a867c}
+
+/* Médiathèque, aperçus */
+.mtile{border-radius:2px;box-shadow:none}
+.mtile:hover{border-color:var(--ink)}
+.mtile .thumb{background-color:var(--surface)}
+.mtile .nm{font-size:.8125rem}
+.mtile .pz{font-size:.75rem}
+.social-card{border-radius:2px}
+.social-card .img{background-color:var(--surface)}
+pre.exp{border-radius:2px;background:#161513;color:#E9E4D8}
+details.technical summary,.lock-more summary{text-transform:uppercase;letter-spacing:.08em;font-size:.75rem}
+
+/* Fenêtres, toasts, bandeau */
+.modal-bg{background:rgba(22,21,19,.5)}
+.modal{border-radius:2px;box-shadow:none;border:1px solid var(--ink)}
+.modal h3{font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;padding-bottom:.8rem;border-bottom:1px solid var(--line);margin-bottom:1rem}
+.modal img{border-radius:2px}
+.toast{border-radius:2px;box-shadow:none;font-size:.95rem;border-left-width:3px}
+.banner{border-radius:2px}
+.skip{border-radius:2px;background:var(--ink)}
+.scrim{background:rgba(22,21,19,.5)}
+.skel{background:linear-gradient(90deg,var(--mut-bg) 25%,var(--surface) 50%,var(--mut-bg) 75%);background-size:200% 100%;border-radius:2px}
+
+@media(max-width:860px){
+  .sidebar{width:min(300px,86vw);transform:translateX(-102%)}
+  .sidebar.open{transform:none;box-shadow:none;border-right:1px solid var(--ink)}
+  .main{margin-left:0}
+  .topbar{padding:.75rem 1rem}
+  .topbar h1{font-size:1.05rem}
+  .content{padding:1.25rem 1rem 3rem}
+  .card{padding:1.15rem}
+  .stat .v{font-size:2.1rem}
+  #lock .panel{padding:2rem 1.5rem}
+}
 </style>
 </head>
 <body>
@@ -204,7 +334,7 @@ pre.exp{background:#101418;color:#C9D4C2;padding:.9rem;border-radius:8px;overflo
 <!-- ============ ÉCRAN D'ACCÈS ============ -->
 <div id="lock">
   <div class="panel">
-    <span class="logo">Vasilías <span style="color:var(--sub)">·</span> Hub</span>
+    <span class="logo">Vasilias <span>Hub</span></span>
     <span class="tag">Espace privé</span>
     <p class="small mut" style="font-size:.875rem;color:var(--sub);margin-top:.75rem">Espace de gestion du portfolio. Accès réservé à l'administrateur.</p>
     <div class="field">
@@ -227,7 +357,7 @@ pre.exp{background:#101418;color:#C9D4C2;padding:.9rem;border-radius:8px;overflo
 <div id="app" class="hidden">
   <a class="skip" href="#view">Aller au contenu</a>
   <nav class="sidebar" id="sidebar" aria-label="Navigation du hub">
-    <span class="brand"><span class="sq">V</span> Vasilías · Hub</span>
+    <span class="brand"><span class="wm">Vasilias</span><span class="sub">Hub · Espace privé</span></span>
     <button class="nav-btn" data-view="dashboard"><span class="ic" data-ic="grid_view"></span> Vue d'ensemble</button>
     <p class="nav-label">Contenu</p>
     <button class="nav-btn" data-view="projects"><span class="ic" data-ic="folder_open"></span> Projets</button>
