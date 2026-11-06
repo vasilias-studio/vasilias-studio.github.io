@@ -1141,11 +1141,14 @@ html,.home-v2{overflow-x:clip}
 @media(prefers-reduced-motion:reduce){.quote-progress-track span,.quote-category-card,.quote-drop-zone,.quote-spinner,.quote-step:not([hidden]){transition:none;animation:none}.quote-modal-open{scroll-behavior:auto}}
 
 /* ---------- Devis intégré sur la page Services ---------- */
-.quote-inline{display:block;margin:clamp(3rem,6vw,5rem) 0}
-.quote-inline .quote-dialog{width:min(850px,100%);height:auto;max-height:none;overflow:visible;margin:0 auto;box-shadow:none}
+.quote-section{margin-top:clamp(5rem,9vw,8rem);padding-top:clamp(2.5rem,5vw,4.5rem);border-top:1px solid var(--line)}
+.quote-section-head{gap:clamp(1.25rem,4vw,4rem);margin-bottom:clamp(2rem,4vw,3.25rem)}
+.quote-section-intro{max-width:43rem;margin:0;color:var(--muted);font-size:1rem;line-height:1.7}
+.quote-inline{display:block;margin:0}
+.quote-inline .quote-dialog{width:100%;max-width:none;height:auto;max-height:none;overflow:visible;margin:0;padding:0;border:0;background:transparent;box-shadow:none}
 .quote-inline .quote-close{display:none}
 .quote-inline .quote-form-footer{position:static}
-@media(max-width:760px){.quote-inline .quote-dialog{width:100%;height:auto;max-height:none;overflow:visible;border:1px solid var(--ink);padding:1rem;box-shadow:none}}
+@media(max-width:760px){.quote-inline .quote-dialog{width:100%;height:auto;max-height:none;overflow:visible;padding:0;border:0;box-shadow:none}}
 
 /* ---------- Carrousel d'images de couverture (pages projet) ---------- */
 .case-slider { position: relative; }
