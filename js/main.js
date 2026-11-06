@@ -213,4 +213,14 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
+  /* ---------- Accueil : section vide = même hauteur que la section « moi » ---------- */
+  var moiSec = document.getElementById('moi');
+  var spacerSec = document.querySelector('.h2-spacer');
+  if (moiSec && spacerSec) {
+    var syncSpacer = function () { spacerSec.style.height = moiSec.offsetHeight + 'px'; };
+    syncSpacer();
+    window.addEventListener('resize', syncSpacer);
+    window.addEventListener('load', syncSpacer);
+    if ('ResizeObserver' in window) new ResizeObserver(syncSpacer).observe(moiSec);
+  }
 });
