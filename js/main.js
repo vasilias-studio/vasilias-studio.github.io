@@ -250,4 +250,36 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('load', syncSpacer);
     if ('ResizeObserver' in window) new ResizeObserver(syncSpacer).observe(moiSec);
   }
+  /* ---------- Carrousel des images de couverture (pages projet) ---------- */
+  document.querySelectorAll('[data-slider]').forEach(function (slider) {
+    var track = slider.querySelector('.slider-track');
+    var slides = track ? track.children : [];
+    var prev = slider.querySelector('.slider-prev');
+    var next = slider.querySelector('.slider-next');
+    var count = slides.length, index = 0;
+    if (count < 2) { slider.classList.add('is-single'); return; }
+    function go(i) {
+      index = (i + count) % count;
+      track.style.transform = 'translateX(' + (-100 * index) + '%)';
+      for (var k = 0; k < count; k++) {
+        slides[k].setAttribute('aria-hidden', k === index ? 'false' : 'true');
+      }
+    }
+    prev.addEventListener('click', function () { go(index - 1); });
+    next.addEventListener('click', function () { go(index + 1); });
+    slider.setAttribute('tabindex', '0');
+    slider.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { go(index - 1); }
+      else if (e.key === 'ArrowRight') { go(index + 1); }
+    });
+    var x0 = null;
+    slider.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend', function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
+      x0 = null;
+    });
+    go(0);
+  });
 });

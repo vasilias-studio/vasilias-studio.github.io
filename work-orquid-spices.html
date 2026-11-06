@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=43">
+  <link rel="stylesheet" href="css/style.css?v=44">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -80,7 +80,14 @@
       <div style="grid-column:span 2;"><p class="k">Rôles &amp; Disciplines</p><p class="v">Branding · Packaging Design · Direction Artistique</p></div>
     </div>
 
-    <div class="case-hero reveal reveal-right"><img src="assets/projects/orquid-spices/Cover.jpg" alt="Bannière packaging ORQUID SPICES" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async"></div>
+    <div class="case-hero case-slider reveal reveal-right" data-slider aria-roledescription="carrousel">
+      <div class="slider-track">
+        <img src="assets/projects/orquid-spices/Cover.jpg" alt="Bannière packaging ORQUID SPICES" width="1920" height="1080" loading="eager" fetchpriority="high" decoding="async">
+        <img src="assets/projects/orquid-spices/6.jpg" alt="Présentation ORQUID SPICES" width="1920" height="1080" loading="lazy" decoding="async">
+      </div>
+      <button type="button" class="slider-btn slider-prev" aria-label="Image précédente"><svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <button type="button" class="slider-btn slider-next" aria-label="Image suivante"><svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
 
     <div class="case-overview reveal reveal-down">
       <h2>Aperçu du Projet</h2>
@@ -154,6 +161,6 @@
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-  <script src="js/main.js?v=5"></script>
+  <script src="js/main.js?v=6"></script>
 </body>
 </html>
