@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=50">
+  <link rel="stylesheet" href="css/style.css?v=51">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -139,6 +139,30 @@
       </div>
     </section>
 
+    <section class="quote-callout" aria-labelledby="quote-callout-title">
+      <div class="quote-callout-copy">
+        <h2 id="quote-callout-title">Vous avez un projet particulier ?</h2>
+        <p class="quote-callout-price">Sur devis</p>
+        <p class="quote-callout-intro">Chaque marque a ses propres besoins. Si nos packs ne correspondent pas exactement à votre projet, nous pouvons concevoir une solution entièrement personnalisée.</p>
+        <ul class="quote-offer-list">
+          <li>Identité visuelle et refonte</li>
+          <li>Packaging, étiquettes et supports imprimés</li>
+          <li>Réseaux sociaux, direction artistique et projets multidisciplinaires</li>
+        </ul>
+        <button class="btn btn-dark quote-open" id="quoteOpen" type="button">Construire mon devis <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="quote-callout-art" aria-hidden="true">
+        <svg viewBox="0 0 300 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="52" y="34" width="170" height="184" stroke="currentColor" stroke-width="1.4"/>
+          <rect x="78" y="59" width="170" height="184" stroke="#BF814B" stroke-width="1.4"/>
+          <path d="M104 101h92M104 121h70M104 151h92M104 171h56" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="211" cy="75" r="19" fill="#BF814B"/>
+          <path d="M202 75h18M211 66v18" stroke="#161513" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Votre projet,<br>à votre mesure.</span>
+      </div>
+    </section>
+
     <div class="cta-banner reveal reveal-zoom-out">
       <div>
         <h3>Vous avez un projet spécifique ?</h3>
@@ -146,6 +170,128 @@
       </div>
       <a href="contact.html" class="btn btn-accent">Démarrer un projet <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
     </div>
+
+    <div class="quote-modal" id="quoteModal" hidden aria-hidden="true">
+      <div class="quote-backdrop" data-quote-close></div>
+      <section class="quote-dialog" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle" aria-describedby="quoteModalDescription" tabindex="-1">
+        <header class="quote-modal-head">
+          <div><p class="quote-modal-kicker">Vasilías Studio · Devis personnalisé</p><h2 id="quoteModalTitle">Construisons votre projet</h2></div>
+          <button class="quote-close" type="button" id="quoteClose" aria-label="Fermer le formulaire">×</button>
+        </header>
+        <p id="quoteModalDescription" class="quote-modal-description">Votre demande se remplit en six étapes. Vous pourrez vérifier et modifier les informations avant l’envoi.</p>
+
+        <div class="quote-progress-wrap">
+          <div class="quote-progress-meta"><span id="quoteStepCounter">Étape 1 sur 6</span><span id="quoteStepName">Informations du client</span></div>
+          <div class="quote-progress-track" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><span id="quoteProgressFill"></span></div>
+        </div>
+        <p class="quote-live-message" id="quoteLiveMessage" role="status" aria-live="polite"></p>
+
+        <form id="quoteWizard" novalidate>
+          <div class="quote-honeypot" aria-hidden="true"><label for="quoteFax">Ne pas remplir ce champ</label><input type="text" id="quoteFax" name="quoteFax" tabindex="-1" autocomplete="off"></div>
+          <section class="quote-step" data-quote-step="1" aria-labelledby="quoteStep1Title">
+            <h3 id="quoteStep1Title">Commençons par faire connaissance.</h3>
+            <p class="quote-step-description">Quelques informations pour savoir avec qui nous allons collaborer.</p>
+            <div class="quote-fields quote-fields-2">
+              <label class="quote-field">Nom et prénom <span aria-hidden="true">*</span><input type="text" name="clientName" autocomplete="name" required maxlength="120"></label>
+              <label class="quote-field">Adresse e-mail <span aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required maxlength="254"></label>
+              <label class="quote-field">Numéro WhatsApp <span aria-hidden="true">*</span><input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" pattern="[+0-9() .-]{7,24}" title="Saisissez un numéro de téléphone valide." required maxlength="24"></label>
+              <label class="quote-field">Entreprise ou marque <span aria-hidden="true">*</span><input type="text" name="company" autocomplete="organization" required maxlength="120"></label>
+              <label class="quote-field quote-field-wide">Site web ou réseau social <span class="quote-optional">Facultatif</span><input type="url" name="website" placeholder="https://" maxlength="500"></label>
+            </div>
+          </section>
+
+          <section class="quote-step" data-quote-step="2" aria-labelledby="quoteStep2Title" hidden>
+            <h3 id="quoteStep2Title">Quel est votre projet ?</h3>
+            <p class="quote-step-description">Sélectionnez une ou plusieurs catégories de prestation.</p>
+            <div class="quote-category-grid">
+              <label class="quote-category-card"><input type="checkbox" name="category" value="identity"><span class="quote-category-icon" aria-hidden="true">◉</span><strong>Identité visuelle</strong><span>Logo, identité complète ou refonte, brandboard et charte graphique.</span></label>
+              <label class="quote-category-card"><input type="checkbox" name="category" value="graphic"><span class="quote-category-icon" aria-hidden="true">▤</span><strong>Design graphique</strong><span>Affiches, flyers, brochures, cartes, catalogues et supports imprimés.</span></label>
+              <label class="quote-category-card"><input type="checkbox" name="category" value="packaging"><span class="quote-category-icon" aria-hidden="true">□</span><strong>Packaging</strong><span>Packaging produit, étiquette, boîte, emballage et contenant.</span></label>
+              <label class="quote-category-card"><input type="checkbox" name="category" value="social"><span class="quote-category-icon" aria-hidden="true">◎</span><strong>Réseaux sociaux</strong><span>Templates, couvertures, bannières et visuels publicitaires.</span></label>
+              <label class="quote-category-card"><input type="checkbox" name="category" value="other"><span class="quote-category-icon" aria-hidden="true">✳</span><strong>Autres prestations</strong><span>Direction artistique, présentation ou demande spécifique.</span></label>
+            </div>
+            <label class="quote-field quote-other-project" id="quoteOtherProjectWrap" hidden>Précisez votre autre projet <span aria-hidden="true">*</span><textarea id="quoteOtherProject" name="otherProject" rows="3" maxlength="1000"></textarea></label>
+          </section>
+
+          <section class="quote-step" data-quote-step="3" aria-labelledby="quoteStep3Title" hidden>
+            <h3 id="quoteStep3Title">Précisons vos besoins.</h3>
+            <p class="quote-step-description">Les options ci-dessous s’adaptent aux catégories choisies.</p>
+            <div class="quote-services-options" id="quoteServicesOptions"></div>
+            <label class="quote-field quote-field-spaced">Décrivez précisément les livrables souhaités <span class="quote-optional">Facultatif</span><textarea id="quoteDeliverables" name="deliverables" rows="4" maxlength="2500" placeholder="Formats, quantités, supports ou autres précisions…"></textarea></label>
+          </section>
+
+          <section class="quote-step" data-quote-step="4" aria-labelledby="quoteStep4Title" hidden>
+            <h3 id="quoteStep4Title">Parlons de votre budget.</h3>
+            <p class="quote-step-description">Cela nous permettra de vous proposer une solution adaptée. Aucun prix final n’est calculé à partir de votre sélection.</p>
+            <fieldset class="quote-choice-group"><legend>Budget estimé <span aria-hidden="true">*</span></legend><div class="quote-budget-grid">
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Moins de 200 000 Ar" required><span>Moins de 200 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="200 000 à 450 000 Ar" required><span>200 000 à 450 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="450 000 à 800 000 Ar" required><span>450 000 à 800 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="800 000 à 1 500 000 Ar" required><span>800 000 à 1 500 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Plus de 1 500 000 Ar" required><span>Plus de 1 500 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Je souhaite recevoir une recommandation" required><span>Je souhaite recevoir une recommandation</span></label>
+            </div></fieldset>
+            <fieldset class="quote-choice-group quote-deadline-group"><legend>Délai souhaité <span aria-hidden="true">*</span></legend><div class="quote-deadline-grid">
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dès que possible" required><span>Dès que possible</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans une semaine" required><span>Dans une semaine</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans deux semaines" required><span>Dans deux semaines</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans un mois" required><span>Dans un mois</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Date flexible" required><span>Date flexible</span></label>
+            </div></fieldset>
+            <label class="quote-field quote-field-spaced">Avez-vous une date précise en tête ? <span class="quote-optional">Facultatif</span><input type="date" name="targetDate"></label>
+          </section>
+
+          <section class="quote-step" data-quote-step="5" aria-labelledby="quoteStep5Title" hidden>
+            <h3 id="quoteStep5Title">Faisons connaissance avec votre univers.</h3>
+            <p class="quote-step-description">Partagez vos inspirations pour nous aider à comprendre votre vision.</p>
+            <div class="quote-fields">
+              <label class="quote-field">Description générale du projet <span aria-hidden="true">*</span><textarea id="quoteProjectDescription" name="projectDescription" rows="4" required maxlength="3000"></textarea></label>
+              <label class="quote-field">Objectifs du projet <span class="quote-optional">Facultatif</span><textarea id="quoteObjectives" name="objectives" rows="3" maxlength="1500"></textarea></label>
+              <label class="quote-field">Public cible <span class="quote-optional">Facultatif</span><textarea id="quoteAudience" name="audience" rows="2" maxlength="1000"></textarea></label>
+            </div>
+            <fieldset class="quote-choice-group quote-style-group"><legend>Style graphique souhaité <span class="quote-optional">Plusieurs choix possibles</span></legend><div class="quote-style-grid">
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Minimaliste"><span>Minimaliste</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Moderne"><span>Moderne</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Élégant"><span>Élégant</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Premium / Luxe"><span>Premium / Luxe</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Créatif"><span>Créatif</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Audacieux"><span>Audacieux</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Corporate"><span>Corporate</span></label>
+              <label class="quote-style-choice"><input type="checkbox" name="style" value="Autre"><span>Autre</span></label>
+            </div></fieldset>
+            <div class="quote-field quote-field-spaced">
+              <span class="quote-field-title">Références visuelles <span class="quote-optional">Facultatif · 5 fichiers max · 3 Mo par fichier · 8 Mo au total</span></span>
+              <label class="quote-drop-zone" id="quoteDropZone" for="quoteFiles"><span class="quote-upload-icon" aria-hidden="true">＋</span><span>Glissez vos fichiers ici ou <u>parcourez votre appareil</u></span><span class="quote-optional">Images, PDF ou présentations PowerPoint</span><input type="file" id="quoteFiles" accept=".jpg,.jpeg,.png,.webp,.pdf,.ppt,.pptx,image/jpeg,image/png,image/webp,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple></label>
+              <ul class="quote-file-list" id="quoteFileList" aria-live="polite"></ul>
+              <p class="quote-field-error" id="quoteFileError" role="status"></p>
+            </div>
+          </section>
+
+          <section class="quote-step" data-quote-step="6" aria-labelledby="quoteStep6Title" hidden>
+            <h3 id="quoteStep6Title">Vérifions votre demande.</h3>
+            <p class="quote-step-description">Vous pouvez revenir à chaque étape pour modifier les informations.</p>
+            <div class="quote-summary" id="quoteSummary"></div>
+            <label class="quote-consent"><input type="checkbox" id="quoteConsent" required><span>J’accepte que mes informations soient utilisées pour traiter ma demande de devis. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité (brouillon)</a></span></label>
+            <div class="quote-setup-notice" id="quoteSetupNotice" role="status">L’envoi n’est pas encore activé : l’intégration Google Apps Script et la politique de confidentialité doivent être configurées et validées.</div>
+          </section>
+
+          <footer class="quote-form-footer">
+            <button class="btn btn-outline" id="quotePrevious" type="button" disabled>Précédent</button>
+            <div class="quote-footer-actions"><button class="btn btn-outline" id="quoteContinue" type="button">Continuer <span aria-hidden="true">→</span></button><button class="btn btn-dark" id="quoteSubmit" type="button" hidden disabled>Envoyer ma demande de devis</button></div>
+          </footer>
+        </form>
+
+        <section class="quote-confirmation" id="quoteConfirmation" hidden aria-live="polite">
+          <span class="quote-confirmation-mark" aria-hidden="true">✓</span>
+          <h3 tabindex="-1">Votre demande a bien été envoyée !</h3>
+          <p>Merci de faire confiance à Vasilías Studio. Votre projet a bien été transmis. Nous allons examiner votre demande afin de vous proposer une solution adaptée à vos besoins.</p>
+          <p class="quote-confirmation-detail" id="quoteConfirmationDetail"></p>
+          <a class="btn btn-dark" href="index.html">Retour au portfolio</a>
+        </section>
+      </section>
+    </div>
+    <iframe class="quote-transport-frame" id="quoteResponseFrame" name="quoteResponseFrame" title="Réponse du formulaire de devis"></iframe>
+    <form class="quote-transport-form" id="quoteTransport" method="post" target="quoteResponseFrame"><input type="hidden" name="payload" id="quotePayload"></form>
   </div>
 
   <footer class="site-footer">
@@ -169,6 +315,8 @@
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="js/hub-sync.js?v=1"></script>
   <script src="js/main.js?v=8"></script>
+  <script src="js/quote-config.js?v=1"></script>
+  <script src="js/quote-form.js?v=1"></script>
 
 
 

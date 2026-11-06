@@ -752,7 +752,7 @@
       + '  <link rel="preconnect" href="https://fonts.googleapis.com">\n'
       + '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
       + '  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">\n'
-      + '  <link rel="stylesheet" href="css/style.css?v=50">\n'
+      + '  <link rel="stylesheet" href="css/style.css?v=51">\n'
       + '  <meta property="og:type" content="website">\n'
       + '  <meta property="og:site_name" content="Vasilías Studio">\n'
       + '  <meta property="og:locale" content="fr_FR">\n'

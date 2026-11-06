@@ -410,6 +410,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
 
 <div id="toasts" aria-live="polite"></div>
 
+<script src="js/quote-config.js?v=1"></script>
 <script src="js/hub-sync.js?v=1"></script>
 <script>
 'use strict';
@@ -1137,12 +1138,16 @@ function snap(label){
 /* ==================== PARAMÈTRES ==================== */
 function viewSettings(){
   var used=0;Object.keys(localStorage).forEach(function(k){if(k.indexOf('hub2_')===0)used+=(localStorage.getItem(k)||'').length});
+  var quoteSheetUrl=(window.VAS_QUOTE_CONFIG&&window.VAS_QUOTE_CONFIG.adminSheetUrl)||'';
+  var quoteSheetHref=quoteSheetUrl.indexOf('https://docs.google.com/spreadsheets/d/')===0?quoteSheetUrl:'';
   var h='<div class="card"><h2>Accès</h2>'
     +'<p style="font-size:.875rem;margin-bottom:.7rem">Pour changer le code d\'accès : calculez le SHA-256 du nouveau code (terminal : <code>printf N | sha256sum</code> ou un générateur en ligne) et remplacez la constante <code>ACCESS_SHA256</code> en tête du script de <code>hub.html</code>. Le code n\'est jamais stocké en clair.</p></div>';
   h+='<div class="grid2"><div class="card"><h2>Session</h2><p style="font-size:.875rem">Durée : '+SESSION_HOURS+' h, conservée uniquement dans l\'onglet (sessionStorage). Elle se termine aussi à la fermeture ou via « Se déconnecter ».</p>'
     +'<button class="btn btn-ghost btn-sm" id="stLogout" style="margin-top:.7rem">Terminer la session</button></div>';
   h+='<div class="card"><h2>Données locales</h2><p style="font-size:.875rem">'+fmtBytes(used)+' utilisés par le hub dans ce navigateur (brouillons, journal, checklist, sauvegardes).</p>'
     +'<button class="btn btn-danger btn-sm" id="stWipe" style="margin-top:.7rem">Réinitialiser les données locales…</button></div></div>';
+  h+='<div class="card"><h2>Demandes de devis</h2><p style="font-size:.875rem">Les demandes et pièces jointes seront conservées dans votre Google Drive privé. Les statuts, notes, filtres et tris se gèrent dans la feuille Google dédiée.</p>'
+    +(quoteSheetHref?'<p style="margin-top:.75rem"><a class="btn btn-primary btn-sm" href="'+esc(quoteSheetHref)+'" target="_blank" rel="noopener noreferrer">Ouvrir la feuille privée</a></p>':'<p class="help" style="margin-top:.75rem">Lien disponible après la configuration du projet Apps Script dans <code>js/quote-config.js</code>.</p>')+'</div>';
   h+='<div class="card"><h2>Publication automatique — GitHub</h2><p class="help">'+(ghToken()?'Token enregistré sur cet appareil. Les modifications sont envoyées automatiquement à '+GH_OWNER+'/'+GH_REPO+' (branche '+GH_BRANCH+').':'Aucun token enregistré : les modifications restent locales jusqu’à la connexion.')+'</p><div class="toolbar"><input type="password" id="settingsGhToken" autocomplete="off" placeholder="'+(ghToken()?'Remplacer le token GitHub':'Coller un token GitHub (Contents: Read and write)')+'"><button class="btn btn-primary btn-sm" id="saveSettingsGh">Enregistrer</button><button class="btn btn-ghost btn-sm" id="removeSettingsGh">Supprimer le token</button><button class="btn btn-ghost btn-sm" id="syncNow">Synchroniser maintenant</button></div><p class="help">Le token n’est jamais écrit dans le dépôt. Toute personne ayant accès à ce navigateur peut toutefois l’utiliser.</p></div>'
     +'<div class="card"><h2>Architecture (publication depuis le navigateur)</h2><ul style="margin-left:1.2rem;font-size:.875rem;line-height:2">'
     +'<li><strong>Hébergement :</strong> GitHub Pages (statique) — <a href="https://vasilias-studio.github.io/" target="_blank" rel="noopener">site public</a></li>'
