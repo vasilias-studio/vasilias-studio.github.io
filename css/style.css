@@ -688,15 +688,16 @@ button { font-family: inherit; cursor: pointer; }
 .about-section.border { padding-top: 2rem; border-top: 1px solid var(--line); }
 .about-method { margin-top: clamp(3rem, 7vw, 5.5rem); padding-top: clamp(2rem, 4vw, 3rem) !important; }
 .about-method-head { max-width: 48rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
-.about-method-eyebrow { margin: 0 0 .85rem; color: var(--accent-text); font-size: .8125rem; font-weight: 600; letter-spacing: .12em; line-height: 1.5; text-transform: uppercase; }
-.about-method-title, .about-capabilities-title { margin: 0; font-family: 'Josefin Sans', sans-serif; font-size: clamp(1.3rem, 2vw, 1.7rem); font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; line-height: 1.08; }
+.about-method-eyebrow { margin: 0 0 .85rem; color: var(--accent-text); font-size: .9375rem; font-weight: 600; letter-spacing: .12em; line-height: 1.5; text-transform: uppercase; }
+.about-method-title, .about-capabilities-title { margin: 0; font-family: 'Josefin Sans', sans-serif; font-size: clamp(1.75rem, 2.8vw, 2.15rem); font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; line-height: 1.08; }
 .about-method-intro { max-width: 39rem; margin: 1rem 0 0; color: var(--muted); font-size: 1.125rem; line-height: 1.7; }
 @media (min-width: 640px) { .about-method-intro { font-size: 1.25rem; } }
 .about-method-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0; padding: 0; list-style: none; }
-.about-method-step { min-width: 0; padding: 1.5rem 0 1.75rem; border-top: 1px solid var(--line); transition: border-color .25s ease; }
+.about-method-step { display: flex; min-width: 0; flex-direction: column; padding: 1.5rem 0 1.75rem; border-top: 1px solid var(--line); transition: border-color .25s ease; }
 .about-method-step:hover { border-color: var(--accent); }
 .about-method-number { display: block; margin-bottom: 1.2rem; color: var(--accent-text); font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 500; letter-spacing: -.06em; line-height: .9; }
-.about-method-step-title, .about-capabilities-subtitle { margin: 0; font-size: clamp(1.125rem, 1.4vw, 1.25rem); font-weight: 600; line-height: 1.25; }
+.about-method-step-title { margin: 0; font-size: clamp(1.3rem, 1.7vw, 1.5rem); font-weight: 600; line-height: 1.2; }
+.about-capabilities-subtitle { margin: 0; font-size: clamp(1.125rem, 1.4vw, 1.25rem); font-weight: 600; line-height: 1.25; }
 .about-method-hook { margin: .65rem 0 1.1rem; color: var(--muted); font-size: 1rem; line-height: 1.7; }
 .about-method-list { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; color: rgba(22,21,19,.82); font-size: 1rem; line-height: 1.7; }
 .about-method-list li { position: relative; padding-left: 1rem; }
@@ -709,6 +710,7 @@ button { font-family: inherit; cursor: pointer; }
   .about-method-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .about-method-step { padding: 1.5rem 1.5rem 1.75rem 0; }
   .about-method-step + .about-method-step { padding-left: 1.5rem; border-left: 1px solid var(--line); }
+  .about-method-goal { flex: 0 0 8rem; height: 8rem; margin-top: auto; }
 }
 .about-h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 1rem; }
 @media (min-width: 640px) { .about-h2 { font-size: 2rem; } }
