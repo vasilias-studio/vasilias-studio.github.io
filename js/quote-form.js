@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.remove('quote-modal-open');
     if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
   }
-  function updateStep(step) {
+  function updateStep(step, quiet) {
     currentStep = Math.max(1, Math.min(stepPanels.length, step));
     stepPanels.forEach(function (panel) { panel.hidden = Number(panel.getAttribute('data-quote-step')) !== currentStep; });
     stepCounter.textContent = 'Étape ' + currentStep + ' sur ' + stepPanels.length;
@@ -105,7 +105,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (currentStep === 3) renderServiceOptions();
     if (currentStep === 6) renderSummary();
     var heading = stepPanels[currentStep - 1].querySelector('h3');
-    if (heading) { heading.setAttribute('tabindex', '-1'); window.setTimeout(function () { heading.focus({ preventScroll: true }); }, 0); }
+    if (heading && !quiet) {
+      heading.setAttribute('tabindex', '-1');
+      window.setTimeout(function () {
+        if (inlineMode) modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        heading.focus({ preventScroll: true });
+      }, 0);
+    }
     dialog.scrollTop = 0;
   }
   function invalidField(panel) {
@@ -372,5 +378,5 @@ document.addEventListener('DOMContentLoaded', function () {
     setLive('');
   });
   if (setupNotice) setupNotice.hidden = !!(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
-  if (inlineMode) updateStep(1);
+  if (inlineMode) updateStep(1, true);
 });
