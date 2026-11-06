@@ -843,7 +843,7 @@ html,.home-v2{overflow-x:clip}
 .h2-word{animation:h2WordIn 1.1s cubic-bezier(.22,1,.36,1) .55s backwards;position:absolute;left:50%;bottom:-0.14em;transform:translateX(-50%);margin:0;font-family:'Josefin Sans',sans-serif;font-weight:800;font-size:23vw;line-height:.8;letter-spacing:-0.02em;color:#161513;white-space:nowrap;z-index:1;user-select:none}
 .h2-statue{position:absolute;left:50%;bottom:-13%;animation:h2StatueIn 1.3s cubic-bezier(.22,1,.36,1) .25s backwards;transform:translateX(-50%);height:88%;z-index:2;margin:0;display:block}
 .h2-statue img{height:100%;width:auto;max-width:none;max-height:none;display:block}
-@media(max-width:720px){.h2-word{font-size:27vw;bottom:-0.26em}.h2-statue{height:70%;bottom:-5%}}
+@media(max-width:720px){.h2-word{font-size:27vw;bottom:-0.26em;bottom:calc(100lvh - 100svh - 0.26em)}.h2-statue{height:70%;bottom:-5%;height:70svh;bottom:calc(100lvh - 100svh - 5svh)}}
 
 /* --- Moi --- */
 .h2-moi-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,4vw,5rem);align-items:center}
