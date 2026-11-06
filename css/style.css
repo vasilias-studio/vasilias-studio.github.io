@@ -688,22 +688,23 @@ button { font-family: inherit; cursor: pointer; }
 .about-section.border { padding-top: 2rem; border-top: 1px solid var(--line); }
 .about-method { margin-top: clamp(3rem, 7vw, 5.5rem); padding-top: clamp(2rem, 4vw, 3rem) !important; }
 .about-method-head { max-width: 48rem; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
-.about-method-eyebrow { margin: 0 0 .85rem; color: var(--accent-text); font-size: .72rem; font-weight: 600; letter-spacing: .16em; line-height: 1.4; }
-.about-method-title { margin: 0; font-size: clamp(2rem, 4.3vw, 3.6rem); line-height: 1.08; letter-spacing: -.035em; font-weight: 600; }
-.about-method-intro { max-width: 39rem; margin: 1rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.7; }
+.about-method-eyebrow { margin: 0 0 .85rem; color: var(--accent-text); font-size: .8125rem; font-weight: 600; letter-spacing: .12em; line-height: 1.5; text-transform: uppercase; }
+.about-method-title, .about-capabilities-title { margin: 0; font-family: 'Josefin Sans', sans-serif; font-size: clamp(1.3rem, 2vw, 1.7rem); font-weight: 700; text-transform: uppercase; letter-spacing: -.01em; line-height: 1.08; }
+.about-method-intro { max-width: 39rem; margin: 1rem 0 0; color: var(--muted); font-size: 1.125rem; line-height: 1.7; }
+@media (min-width: 640px) { .about-method-intro { font-size: 1.25rem; } }
 .about-method-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0; padding: 0; list-style: none; }
 .about-method-step { min-width: 0; padding: 1.5rem 0 1.75rem; border-top: 1px solid var(--line); transition: border-color .25s ease; }
 .about-method-step:hover { border-color: var(--accent); }
 .about-method-number { display: block; margin-bottom: 1.2rem; color: var(--accent-text); font-size: clamp(2.8rem, 5vw, 4rem); font-weight: 500; letter-spacing: -.06em; line-height: .9; }
-.about-method-step-title { margin: 0; font-size: clamp(1.35rem, 2vw, 1.65rem); font-weight: 600; line-height: 1.2; }
-.about-method-hook { margin: .65rem 0 1.1rem; color: var(--muted); font-size: 1rem; line-height: 1.55; }
-.about-method-list { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; color: rgba(22,21,19,.82); font-size: .95rem; line-height: 1.65; }
+.about-method-step-title, .about-capabilities-subtitle { margin: 0; font-size: clamp(1.125rem, 1.4vw, 1.25rem); font-weight: 600; line-height: 1.25; }
+.about-method-hook { margin: .65rem 0 1.1rem; color: var(--muted); font-size: 1rem; line-height: 1.7; }
+.about-method-list { display: grid; gap: .7rem; margin: 0; padding: 0; list-style: none; color: rgba(22,21,19,.82); font-size: 1rem; line-height: 1.7; }
 .about-method-list li { position: relative; padding-left: 1rem; }
 .about-method-list li::before { position: absolute; top: .72em; left: 0; width: .32rem; height: 1px; background: var(--accent); content: ""; }
-.about-method-goal { margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--ink); font-size: .94rem; font-weight: 500; line-height: 1.6; }
-.about-method-goal span { display: block; margin-bottom: .35rem; color: var(--accent-text); font-size: .68rem; font-weight: 600; letter-spacing: .13em; text-transform: uppercase; }
+.about-method-goal { margin: 1.5rem 0 0; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--ink); font-size: 1rem; font-weight: 500; line-height: 1.7; }
+.about-method-goal span { display: block; margin-bottom: .35rem; color: var(--accent-text); font-size: .8125rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 .about-method-quote { max-width: 52rem; margin: clamp(2.5rem, 5vw, 4rem) 0 0; padding: .15rem 0 .15rem clamp(1.1rem, 3vw, 2rem); border-left: 2px solid var(--accent); }
-.about-method-quote p { margin: 0; font-size: clamp(1.25rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -.02em; line-height: 1.5; }
+.about-method-quote p { margin: 0; font-size: clamp(1.25rem, 2.2vw, 1.8rem); font-weight: 500; letter-spacing: -.02em; line-height: 1.6; }
 @media (min-width: 960px) {
   .about-method-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .about-method-step { padding: 1.5rem 1.5rem 1.75rem 0; }
@@ -721,19 +722,18 @@ button { font-family: inherit; cursor: pointer; }
 .about-tools span { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid #161513; border-radius: 2px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .about-capabilities { margin-top: clamp(3rem, 6vw, 5rem); }
 .about-capabilities-head { margin-bottom: clamp(1.75rem, 3.5vw, 3rem); }
-.about-capabilities-title { margin: 0; font-size: clamp(1.8rem, 3.4vw, 2.7rem); font-weight: 600; letter-spacing: -.03em; line-height: 1.12; }
 .about-capabilities-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.75rem; }
 .about-capabilities-panel { min-width: 0; }
-.about-capabilities-label { margin: 0 0 .55rem; color: var(--accent-text); font-size: .67rem; font-weight: 600; letter-spacing: .15em; line-height: 1.5; }
-.about-capabilities-subtitle { margin: 0 0 1.35rem; font-size: clamp(1.25rem, 2vw, 1.55rem); font-weight: 600; line-height: 1.2; }
+.about-capabilities-label { margin: 0 0 .55rem; color: var(--accent-text); font-size: .8125rem; font-weight: 600; letter-spacing: .12em; line-height: 1.5; text-transform: uppercase; }
+.about-capabilities-subtitle { margin: 0 0 1.35rem; }
 .about-skill-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
 .about-skill-item { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: .75rem; padding: .95rem 0; border-top: 1px solid var(--line); transition: border-color .2s ease; }
 .about-skill-item:hover { border-color: var(--accent); }
-.about-skill-number { padding-top: .18rem; color: var(--accent-text); font-size: .72rem; font-weight: 600; letter-spacing: .06em; }
-.about-skill-item h5 { margin: 0; font-size: .98rem; font-weight: 600; line-height: 1.35; }
-.about-skill-item p { margin: .32rem 0 0; color: var(--muted); font-size: .875rem; line-height: 1.55; }
+.about-skill-number { padding-top: .18rem; color: var(--accent-text); font-size: .8125rem; font-weight: 600; letter-spacing: .06em; }
+.about-skill-item h5 { margin: 0; font-size: 1rem; font-weight: 600; line-height: 1.4; }
+.about-skill-item p { margin: .32rem 0 0; color: var(--muted); font-size: .9375rem; line-height: 1.6; }
 .about-tool-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
-.about-tool-grid > span { display: flex; min-width: 0; min-height: 4.25rem; align-items: center; gap: .65rem; padding: .75rem .65rem; border-top: 1px solid var(--line); color: var(--ink); font-size: .78rem; font-weight: 500; line-height: 1.35; transition: border-color .2s ease, color .2s ease; }
+.about-tool-grid > span { display: flex; min-width: 0; min-height: 4.25rem; align-items: center; gap: .65rem; padding: .75rem .65rem; border-top: 1px solid var(--line); color: var(--ink); font-size: .875rem; font-weight: 500; line-height: 1.45; transition: border-color .2s ease, color .2s ease; }
 .about-tool-grid > span:hover { border-color: var(--accent); color: var(--accent-text); }
 .about-tool-grid .tool-ico { width: 1.55rem; height: 1.55rem; flex: 0 0 1.55rem; object-fit: contain; margin: 0; }
 @media (min-width: 640px) and (max-width: 959px) { .about-tool-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; } }
