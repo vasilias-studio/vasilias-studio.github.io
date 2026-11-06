@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=58">
+  <link rel="stylesheet" href="css/style.css?v=59">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -91,10 +91,14 @@
           <div class="quote-progress-track" role="progressbar" aria-label="Progression du formulaire" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1"><span id="quoteProgressFill"></span></div>
         </div>
         <p class="quote-live-message" id="quoteLiveMessage" role="status" aria-live="polite"></p>
+        <div class="quote-sending-overlay" id="quoteSendingOverlay" role="status" aria-live="polite" hidden>
+          <div class="quote-sending-card"><span class="quote-loading-spinner" aria-hidden="true"></span><strong>Transmission en cours</strong><span>Votre demande est envoyée de façon sécurisée. Merci de patienter quelques instants.</span></div>
+        </div>
 
         <form id="quoteWizard" action="https://script.google.com/macros/s/AKfycbwS2Qd5kICacR3d5aE31csYqFzZaRawAlKT8LIl0qWnT_nBoC5RsdMGAA_BlJX0w84iwA/exec" method="POST" enctype="application/x-www-form-urlencoded" novalidate="">
           <div class="quote-honeypot" aria-hidden="true"><label for="quoteFax">Ne pas remplir ce champ</label><input type="text" id="quoteFax" name="_honey" tabindex="-1" autocomplete="off"></div>
           <input type="hidden" name="formType" value="quote">
+          <input type="hidden" name="clientNonce" value="">
           <input type="hidden" name="attachmentCount" value="0">
           <input type="hidden" name="resume_detaille" id="quotePayload">
           <section class="quote-step" data-quote-step="1" aria-labelledby="quoteStep1Title">
@@ -188,6 +192,7 @@
             <div class="quote-footer-actions"><button class="btn btn-outline" id="quoteContinue" type="button">Continuer <span aria-hidden="true">→</span></button><button class="btn btn-dark" id="quoteSubmit" type="button" hidden="" disabled="">Envoyer ma demande de devis</button></div>
           </footer>
         </form>
+        <iframe id="quoteSubmissionFrame" name="quoteSubmissionFrame" title="Transmission du devis" class="form-post-frame" aria-hidden="true" tabindex="-1"></iframe>
 
         <section class="quote-confirmation" id="quoteConfirmation" hidden="" aria-live="polite">
           <span class="quote-confirmation-mark" aria-hidden="true">✓</span>
@@ -234,9 +239,9 @@
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="js/forms-config.js?v=1"></script>
   <script src="js/hub-sync.js?v=6"></script>
-  <script src="js/main.js?v=9"></script>
+  <script src="js/main.js?v=10"></script>
   <script src="js/quote-config.js?v=4"></script>
-  <script src="js/quote-form.js?v=7"></script>
+  <script src="js/quote-form.js?v=8"></script>
 
 
 

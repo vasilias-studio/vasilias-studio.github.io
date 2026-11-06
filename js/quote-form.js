@@ -23,11 +23,17 @@ document.addEventListener('DOMContentLoaded', function () {
   var dropZone = document.getElementById('quoteDropZone');
   var summary = document.getElementById('quoteSummary');
   var payloadInput = document.getElementById('quotePayload');
+  var clientNonceInput = wizard.querySelector('[name="clientNonce"]');
+  var sendingOverlay = document.getElementById('quoteSendingOverlay');
+  var confirmation = document.getElementById('quoteConfirmation');
+  var submissionFrame = document.getElementById('quoteSubmissionFrame');
   var setupNotice = document.getElementById('quoteSetupNotice');
   var config = window.VAS_QUOTE_CONFIG || {};
   var currentStep = 1;
   var lastFocus = null;
   var sending = false;
+  var activeNonce = '';
+  var sendTimeout = null;
   var files = [];
   var previewUrls = new WeakMap();
   var selectedDeliverables = new Set();
@@ -55,6 +61,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function isAppsScriptEndpoint(value) {
     return /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(value || ''));
+  }
+  function newClientNonce() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) + '-' + Math.random().toString(36).slice(2);
+  }
+  function isAppsScriptOrigin(origin) {
+    if (origin === 'null') return true;
+    try {
+      var host = new URL(origin).hostname;
+      return host === 'script.google.com' || host === 'script.googleusercontent.com' || host.endsWith('.script.googleusercontent.com');
+    } catch (error) { return false; }
   }
   function setLive(text, isError) {
     liveMessage.textContent = text || '';
@@ -341,17 +358,51 @@ document.addEventListener('DOMContentLoaded', function () {
       wizard.method = 'POST';
       wizard.enctype = 'application/x-www-form-urlencoded';
       payloadInput.value = collectPayload();
-      wizard.target = '_self';
-      setLive('Envoi de votre demande en cours…');
+      activeNonce = newClientNonce();
+      clientNonceInput.value = activeNonce;
+      wizard.target = submissionFrame.name;
+      sendingOverlay.hidden = false;
+      setLive('Transmission sécurisée en cours…');
+      var requestNonce = activeNonce;
+      sendTimeout = window.setTimeout(function () {
+        if (!sending || activeNonce !== requestNonce) return;
+        sending = false;
+        sendingOverlay.hidden = true;
+        submitButton.disabled = false;
+        previousButton.disabled = currentStep === 1;
+        setLive('La réponse tarde à arriver. Vérifiez votre e-mail avant de renvoyer la demande, afin d’éviter un doublon.', true);
+      }, 120000);
       wizard.submit();
     } catch (error) {
       sending = false;
+      sendingOverlay.hidden = true;
+      if (sendTimeout) window.clearTimeout(sendTimeout);
       submitButton.disabled = false;
       previousButton.disabled = false;
       submitButton.textContent = 'Réessayer l’envoi';
       setLive(error.message || 'La préparation de la demande a échoué. Réessayez.', true);
     }
   }
+
+  window.addEventListener('message', function (event) {
+    var data = event.data || {};
+    if (!isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
+    if (sendTimeout) window.clearTimeout(sendTimeout);
+    sending = false;
+    sendingOverlay.hidden = true;
+    if (data.success) {
+      wizard.hidden = true;
+      confirmation.hidden = false;
+      setLive('');
+      confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      var heading = confirmation.querySelector('h3');
+      if (heading) heading.focus({ preventScroll: true });
+    } else {
+      submitButton.disabled = false;
+      previousButton.disabled = currentStep === 1;
+      setLive('L’envoi n’a pas abouti. Vos informations restent dans le formulaire; corrigez ou réessayez.', true);
+    }
+  });
 
   if (openButton) openButton.addEventListener('click', openModal);
   if (closeButton) closeButton.addEventListener('click', closeModal);

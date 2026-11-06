@@ -188,6 +188,22 @@ document.addEventListener('DOMContentLoaded', function () {
   var formError = document.getElementById('formError');
   var submitBtn = document.getElementById('submitBtn');
   var formAgain = document.getElementById('formAgain');
+  var contactSendingOverlay = document.getElementById('contactSendingOverlay');
+  var contactResponseFrame = document.getElementById('contactSubmissionFrame');
+  var contactNonceInput = form && form.querySelector('[name="clientNonce"]');
+  var activeContactNonce = '';
+  var contactTimeout = null;
+  function newFormNonce() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) + '-' + Math.random().toString(36).slice(2);
+  }
+  function isFormsScriptOrigin(origin) {
+    if (origin === 'null') return true;
+    try {
+      var host = new URL(origin).hostname;
+      return host === 'script.google.com' || host === 'script.googleusercontent.com' || host.endsWith('.script.googleusercontent.com');
+    } catch (error) { return false; }
+  }
 
   if (form) {
     var packLabels = {
@@ -211,13 +227,31 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function (e) {
       var action = form.getAttribute('action') || '';
       if (/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(action)) {
+        e.preventDefault();
         if (formError) formError.style.display = 'none';
+        activeContactNonce = newFormNonce();
+        if (contactNonceInput) contactNonceInput.value = activeContactNonce;
+        form.target = contactResponseFrame.name;
+        form.method = 'POST';
+        form.enctype = 'application/x-www-form-urlencoded';
         if (submitBtn) {
           submitBtn.disabled = true;
           var nativeText = submitBtn.firstChild;
           if (nativeText) nativeText.textContent = 'Envoi… ';
         }
-        return; // Laisse le navigateur poster le formulaire à Apps Script, sans fetch/CORS.
+        if (contactSendingOverlay) contactSendingOverlay.hidden = false;
+        var requestNonce = activeContactNonce;
+        contactTimeout = window.setTimeout(function () {
+          if (activeContactNonce !== requestNonce) return;
+          if (contactSendingOverlay) contactSendingOverlay.hidden = true;
+          if (formError) {
+            formError.textContent = 'La réponse tarde à arriver. Vérifiez votre e-mail avant de renvoyer votre message, afin d’éviter un doublon.';
+            formError.style.display = 'block';
+          }
+          if (submitBtn) { submitBtn.disabled = false; if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Réessayer l’envoi '; }
+        }, 120000);
+        form.submit();
+        return;
       }
       e.preventDefault();
       if (submitBtn) {
@@ -227,7 +261,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (txt) submitBtn.childNodes[0].textContent = 'Envoi… ';
       }
       if (formError) formError.style.display = 'none';
-      var action = form.getAttribute('action');
       var data = new FormData(form);
       fetch(action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
         .then(function (res) {
@@ -245,10 +278,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
   }
+  window.addEventListener('message', function (event) {
+    var data = event.data || {};
+    if (!isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
+    if (contactTimeout) window.clearTimeout(contactTimeout);
+    if (contactSendingOverlay) contactSendingOverlay.hidden = true;
+    if (data.success) {
+      if (form) form.classList.add('hidden');
+      if (formSuccess) {
+        formSuccess.classList.remove('hidden');
+        formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    } else {
+      if (formError) {
+        formError.textContent = 'L’envoi n’a pas abouti. Vos informations restent dans le formulaire; corrigez ou réessayez.';
+        formError.style.display = 'block';
+      }
+      if (submitBtn) { submitBtn.disabled = false; if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Réessayer l’envoi '; }
+    }
+  });
   if (formAgain) {
     formAgain.addEventListener('click', function () {
       if (form) { form.classList.remove('hidden'); form.reset(); }
       if (formSuccess) formSuccess.classList.add('hidden');
+      if (submitBtn) { submitBtn.disabled = false; if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Envoyer le message '; }
     });
   }
   window.addEventListener('pageshow', function () {

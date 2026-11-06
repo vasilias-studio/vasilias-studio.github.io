@@ -63,9 +63,10 @@ function setupStorage() {
 function doPost(e) {
   var p = (e && e.parameter) || {};
   var type = field_(p, 'formType').toLowerCase();
+  var clientNonce = field_(p, 'clientNonce').slice(0, 100);
 
-  // Honeypot: bots receive a generic success page, but no data is stored or emailed.
-  if (field_(p, '_honey')) return responsePage_(true, type);
+  // Honeypot: bots receive a generic success result, but no data is stored or emailed.
+  if (field_(p, '_honey')) return responsePage_(true, type, clientNonce);
 
   try {
     if (type !== 'quote' && type !== 'contact') throw new Error('Invalid form type');
@@ -81,11 +82,11 @@ function doPost(e) {
       sendContact_(p, senderEmail);
     }
 
-    return responsePage_(true, type);
+    return responsePage_(true, type, clientNonce);
   } catch (err) {
     // Do not log form contents or email addresses.
     console.error('Form processing failed: ' + String((err && err.message) || 'unknown error'));
-    return responsePage_(false, type);
+    return responsePage_(false, type, clientNonce);
   }
 }
 
@@ -368,19 +369,23 @@ function getFolderFromProperty_(key) {
   return DriveApp.getFolderById(id);
 }
 
-function responsePage_(success, type) {
+function responsePage_(success, type, clientNonce) {
+  var safeType = type === 'quote' || type === 'contact' ? type : 'unknown';
+  var nonce = String(clientNonce || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 100);
   var title = success ? 'Demande transmise' : 'Envoi non confirmé';
   var message = success
     ? 'Merci. Votre demande a été transmise à Vasilías Studio.'
     : 'L’envoi n’a pas pu être confirmé. Réessayez plus tard ou contactez-nous par e-mail.';
-  var siteLink = type === 'quote'
+  var siteLink = safeType === 'quote'
     ? 'https://vasilias-studio.github.io/services.html'
     : 'https://vasilias-studio.github.io/contact.html';
+  var response = JSON.stringify({ source: 'vasilias-apps-script', success: !!success, formType: safeType, clientNonce: nonce });
   var html = '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
     '<title>' + title + ' — Vasilías Studio</title>' +
     '<style>body{margin:0;background:#f5f2ed;color:#24211e;font:16px/1.6 Arial,sans-serif;display:grid;min-height:100vh;place-items:center}.card{background:#fff;max-width:560px;margin:24px;padding:36px;border:1px solid #ded8d1;border-radius:16px}h1{font-size:1.7rem;margin:0 0 12px}a{color:#8a552b}.mark{color:#BF814B;font-size:2rem}</style></head>' +
-    '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main></body></html>';
+    '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main>' +
+    '<script>(function(){try{window.top.postMessage(' + response + ',"https://vasilias-studio.github.io");}catch(e){}})();</script></body></html>';
   return HtmlService.createHtmlOutput(html).setTitle(title + ' — Vasilías Studio');
 }
 

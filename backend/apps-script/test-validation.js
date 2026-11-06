@@ -8,6 +8,9 @@ const sandbox = {
     base64Decode(value) { return Array.from(Buffer.from(value, 'base64')); },
     newBlob(bytes, type, name) { return { bytes, type, name, getName() { return name; } }; },
     DigestAlgorithm: { SHA_256: 'SHA_256' }
+  },
+  HtmlService: {
+    createHtmlOutput(html) { return { html, setTitle(title) { this.title = title; return this; } }; }
   }
 };
 vm.createContext(sandbox);
@@ -40,4 +43,8 @@ assert.match(source, /consent !== 'accepté'/);
 assert.match(source, /function setupStorage\(\)/);
 assert.match(source, /function purgeOldSubmissions\(\)/);
 assert.match(source, /MailApp\.sendEmail/);
-console.log('Apps Script static/unit checks passed: validation, safe fields, file type/count handling, consent, storage, retention, and email paths.');
+const response = sandbox.responsePage_(true, 'quote', 'nonce-123');
+assert.match(response.html, /window\.top\.postMessage/);
+assert.match(response.html, /vasilias-studio\.github\.io/);
+assert.match(response.html, /nonce-123/);
+console.log('Apps Script static/unit checks passed: validation, safe fields, file type/count handling, consent, storage, retention, email, and postMessage response.');

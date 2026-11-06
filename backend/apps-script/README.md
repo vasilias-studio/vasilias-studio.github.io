@@ -27,6 +27,7 @@ La durée configurée est de trois mois. Le déclencheur quotidien supprime les 
 
 - Le devis exige le consentement, conserve le résumé complet de la demande, et accepte jusqu’à cinq fichiers JPG/JPEG, PNG, WebP, PDF, PPT ou PPTX, de 3 Mo par fichier et 8 Mo au total.
 - Les fichiers sont transportés du navigateur à Apps Script en Base64 puis recréés comme blobs en mémoire; aucune étape ne les rend publics. La taille réelle maximale doit être vérifiée lors d’un test navigateur sur le site.
+- Les formulaires se soumettent dans une iframe invisible. Pendant l’attente, la page affiche un écran de chargement; Apps Script renvoie un statut par `postMessage` avec un nonce aléatoire, puis le site affiche sa confirmation intégrée. Si le message ne revient pas, un délai maximal affiche un avertissement sans ouvrir la page Apps Script.
 - Une limite de fréquence de cinq soumissions par heure et par adresse e-mail, plus un honeypot, est en place. Apps Script ne reçoit pas ici de limitation robuste par IP; en cas de spam persistant, ajouter une protection anti-robot validée côté serveur.
 - Les soumissions de test peuvent créer une ligne, un e-mail et, pour le devis, un fichier Drive. Identifier clairement les tests et supprimer leurs traces après validation.
 - Le code ne stocke pas de valeurs de formulaire dans les journaux. Ne jamais journaliser le corps d’une demande ni ses pièces jointes.
