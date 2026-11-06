@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=56">
+  <link rel="stylesheet" href="css/style.css?v=57">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -92,13 +92,10 @@
         </div>
         <p class="quote-live-message" id="quoteLiveMessage" role="status" aria-live="polite"></p>
 
-        <form id="quoteWizard" action="https://formsubmit.co/ericotlauranto34@gmail.com" method="POST" enctype="multipart/form-data" novalidate="">
+        <form id="quoteWizard" action="https://script.google.com/macros/s/AKfycbwS2Qd5kICacR3d5aE31csYqFzZaRawAlKT8LIl0qWnT_nBoC5RsdMGAA_BlJX0w84iwA/exec" method="POST" enctype="application/x-www-form-urlencoded" novalidate="">
           <div class="quote-honeypot" aria-hidden="true"><label for="quoteFax">Ne pas remplir ce champ</label><input type="text" id="quoteFax" name="_honey" tabindex="-1" autocomplete="off"></div>
-          <input type="hidden" name="_subject" value="Nouvelle demande de devis — Vasilías Studio">
-          <input type="hidden" name="_replyto" id="quoteReplyTo">
-          <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_next" id="quoteNext" value="https://vasilias-studio.github.io/quote-received.html">
+          <input type="hidden" name="formType" value="quote">
+          <input type="hidden" name="attachmentCount" value="0">
           <input type="hidden" name="resume_detaille" id="quotePayload">
           <section class="quote-step" data-quote-step="1" aria-labelledby="quoteStep1Title">
             <h3 id="quoteStep1Title">Commençons par faire connaissance.</h3>
@@ -172,7 +169,7 @@
             </div></fieldset>
             <div class="quote-field quote-field-spaced">
               <span class="quote-field-title">Références visuelles <span class="quote-optional">Facultatif · 5 fichiers max · 3 Mo par fichier · 8 Mo au total</span></span>
-              <label class="quote-drop-zone" id="quoteDropZone" for="quoteFiles"><span class="quote-upload-icon" aria-hidden="true">＋</span><span>Glissez vos fichiers ici ou <u>parcourez votre appareil</u></span><span class="quote-optional">Images, PDF ou présentations PowerPoint</span><input type="file" id="quoteFiles" name="pieces_jointes[]" accept=".jpg,.jpeg,.png,.webp,.pdf,.ppt,.pptx,image/jpeg,image/png,image/webp,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple=""></label>
+              <label class="quote-drop-zone" id="quoteDropZone" for="quoteFiles"><span class="quote-upload-icon" aria-hidden="true">＋</span><span>Glissez vos fichiers ici ou <u>parcourez votre appareil</u></span><span class="quote-optional">Images, PDF ou présentations PowerPoint</span><input type="file" id="quoteFiles" accept=".jpg,.jpeg,.png,.webp,.pdf,.ppt,.pptx,image/jpeg,image/png,image/webp,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple=""></label>
               <ul class="quote-file-list" id="quoteFileList" aria-live="polite"></ul>
               <p class="quote-field-error" id="quoteFileError" role="status"></p>
             </div>
@@ -182,8 +179,8 @@
             <h3 id="quoteStep6Title">Vérifions votre demande.</h3>
             <p class="quote-step-description">Vous pouvez revenir à chaque étape pour modifier les informations.</p>
             <div class="quote-summary" id="quoteSummary"></div>
-            <label class="quote-consent"><input type="checkbox" id="quoteConsent" name="consentement" value="accepté" required=""><span>J’accepte que mes informations soient utilisées pour traiter ma demande de devis. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité (brouillon)</a></span></label>
-            <div class="quote-setup-notice" id="quoteSetupNotice" role="status">L’envoi par FormSubmit attend la validation de la politique de confidentialité et l’activation de l’adresse de réception. Les demandes seront transmises par e-mail, sans enregistrement dans le Hub, Google Sheets ou Drive.</div>
+            <label class="quote-consent"><input type="checkbox" id="quoteConsent" name="consentement" value="accepté" required=""><span>J’accepte que mes informations et fichiers soient traités conformément à la politique de confidentialité. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité</a></span></label>
+            <div class="quote-setup-notice" id="quoteSetupNotice" role="status">Les demandes seront enregistrées dans un Google Sheet privé et leurs pièces jointes dans un dossier Drive privé, puis transmises par e-mail. Elles seront supprimées après trois mois.</div>
           </section>
 
           <footer class="quote-form-footer">
@@ -235,10 +232,11 @@
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-  <script src="js/hub-sync.js?v=5"></script>
-  <script src="js/main.js?v=8"></script>
-  <script src="js/quote-config.js?v=3"></script>
-  <script src="js/quote-form.js?v=6"></script>
+  <script src="js/forms-config.js?v=1"></script>
+  <script src="js/hub-sync.js?v=6"></script>
+  <script src="js/main.js?v=9"></script>
+  <script src="js/quote-config.js?v=4"></script>
+  <script src="js/quote-form.js?v=7"></script>
 
 
 

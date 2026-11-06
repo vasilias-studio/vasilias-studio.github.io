@@ -539,7 +539,8 @@
     var mailBtn = doc.querySelector('.mail-actions a.btn-dark');
     if (mailBtn) mailBtn.setAttribute('href', 'mailto:' + email);
     var form = doc.querySelector('#contactForm');
-    if (form) form.setAttribute('action', 'https://formsubmit.co/' + email);
+    var formsEndpoint = window.VAS_FORMS_CONFIG && window.VAS_FORMS_CONFIG.endpoint;
+    if (form && formsEndpoint) form.setAttribute('action', formsEndpoint);
     var formErr = doc.querySelector('#formError');
     if (formErr) {
       formErr.textContent = 'Une erreur est survenue. Veuillez réessayer ou envoyer directement à ' + email + '.';

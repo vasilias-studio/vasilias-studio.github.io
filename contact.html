@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=53">
+  <link rel="stylesheet" href="css/style.css?v=57">
 <!-- Open Graph / Twitter Card -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Vasilías Studio">
@@ -92,11 +92,9 @@
 
       <div class="reveal reveal-zoom">
         <div class="form-card">
-          <form id="contactForm" action="https://formsubmit.co/ericotlauranto34@gmail.com" method="POST">
+          <form id="contactForm" action="https://script.google.com/macros/s/AKfycbwS2Qd5kICacR3d5aE31csYqFzZaRawAlKT8LIl0qWnT_nBoC5RsdMGAA_BlJX0w84iwA/exec" method="POST" enctype="application/x-www-form-urlencoded">
             <h3>Formulaire de Message</h3>
-            <input type="hidden" name="_subject" value="Nouveau message depuis le portfolio Vasilías">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="formType" value="contact">
             <input type="text" name="_honey" style="display:none;" tabindex="-1" autocomplete="off">
             <div class="form-group">
               <label for="name">Votre Nom ou Entreprise *</label>
@@ -114,6 +112,7 @@
               <label for="message">Votre Message *</label>
               <textarea id="message" name="message" rows="5" required="" placeholder="Décrivez brièvement votre projet et vos objectifs..."></textarea>
             </div>
+            <label class="quote-consent"><input type="checkbox" name="consentement" value="accepté" required=""><span>J’accepte que mes informations soient traitées conformément à la politique de confidentialité. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité</a></span></label>
             <button type="submit" class="btn btn-dark form-submit" id="submitBtn">Envoyer le message <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></button>
             <p class="form-status" id="formError" style="display:none;margin-top:1rem;font-size:.875rem;color:#b91c1c;">Une erreur est survenue. Veuillez réessayer ou envoyer directement à ericotlauranto34@gmail.com.</p>
           </form>
@@ -148,8 +147,9 @@
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-  <script src="js/hub-sync.js?v=5"></script>
-  <script src="js/main.js?v=8"></script>
+  <script src="js/forms-config.js?v=1"></script>
+  <script src="js/hub-sync.js?v=6"></script>
+  <script src="js/main.js?v=9"></script>
 
 
 

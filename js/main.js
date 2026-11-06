@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
   bindCopy('copyEmailFooter', 'emailFooter');
   bindCopy('copyEmailContact', 'emailContact');
 
-  /* ---------- Contact form (FormSubmit) ---------- */
+  /* ---------- Contact form (Google Apps Script or legacy fetch fallback) ---------- */
   var form = document.getElementById('contactForm');
   var formSuccess = document.getElementById('formSuccess');
   var formError = document.getElementById('formError');
@@ -209,6 +209,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
   if (form) {
     form.addEventListener('submit', function (e) {
+      var action = form.getAttribute('action') || '';
+      if (/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(action)) {
+        if (formError) formError.style.display = 'none';
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          var nativeText = submitBtn.firstChild;
+          if (nativeText) nativeText.textContent = 'Envoi… ';
+        }
+        return; // Laisse le navigateur poster le formulaire à Apps Script, sans fetch/CORS.
+      }
       e.preventDefault();
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -241,6 +251,12 @@ document.addEventListener('DOMContentLoaded', function () {
       if (formSuccess) formSuccess.classList.add('hidden');
     });
   }
+  window.addEventListener('pageshow', function () {
+    if (form && submitBtn) {
+      submitBtn.disabled = false;
+      if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Envoyer le message ';
+    }
+  });
 
   /* ---------- Work category filter (délégation d'événements pour cartes dynamiques) ---------- */
   var filterBar = document.getElementById('filterBar');

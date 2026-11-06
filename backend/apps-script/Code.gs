@@ -1,318 +1,408 @@
-/**
- * Vasilías Studio — devis personnalisés (Google Apps Script).
- * Le déploiement est volontairement manuel : le script doit être autorisé
- * par le propriétaire du compte Google qui recevra les demandes.
+/*
+ * Vasilías Studio — Google Apps Script form receiver.
+ * Stores submissions in a private Google Sheet, quote attachments in a private
+ * Drive folder, and sends notification emails. No data is written to the Hub.
+ *
+ * Run setupStorage() once from the Apps Script editor before deploying.
+ * The website integration will send URL-encoded fields, with quote file data
+ * encoded as base64 in gasFileNData fields.
  */
-var DEFAULT_ADMIN_EMAIL = 'ericotlauranto34@gmail.com';
-var SHEET_TITLE = 'Demandes de devis — Vasilías Studio';
-var ROOT_FOLDER_TITLE = 'Demandes de devis — pièces jointes privées';
-var SHEET_TAB = 'Demandes';
-var MAX_FILES = 5;
-var MAX_FILE_BYTES = 3 * 1024 * 1024;
-var MAX_TOTAL_BYTES = 8 * 1024 * 1024;
-var RATE_LIMIT_SECONDS = 60;
-var STATUSES = ['Nouvelle demande', 'En cours d’analyse', 'Devis envoyé', 'En attente de réponse', 'Projet accepté', 'Projet refusé'];
-var HEADERS = ['Identifiant', 'Reçue le', 'Statut', 'Notes internes', 'Nom', 'E-mail', 'WhatsApp', 'Entreprise / marque', 'Site / réseau', 'Catégories', 'Prestations sélectionnées', 'Autre projet', 'Livrables souhaités', 'Budget estimé', 'Délai souhaité', 'Date souhaitée', 'Description du projet', 'Objectifs', 'Public cible', 'Style graphique', 'Dossier privé (lien)', 'ID du dossier privé', 'Fichiers', 'État des notifications'];
-var CATEGORIES = { identity: 'Identité visuelle', graphic: 'Design graphique', packaging: 'Packaging', social: 'Réseaux sociaux', other: 'Autres prestations' };
-var OPTIONS = {
-  identity: ['Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète'],
-  graphic: ['Affiche publicitaire', 'Flyer', 'Brochure', 'Carte de visite', 'Catalogue', 'Supports imprimés'],
-  packaging: ['Design de boîte', 'Design d’étiquette', 'Design de bouteille ou contenant', 'Déclinaisons de packaging', 'Mockups de présentation'],
-  social: ['Templates de publications', 'Templates de stories', 'Couverture Facebook', 'Couverture et bannière', 'Visuels publicitaires', 'Templates promotionnels', 'Identité visuelle pour les réseaux sociaux'],
-  other: ['Direction artistique', 'Présentation professionnelle', 'Supports de communication spécifiques', 'Projet graphique complexe ou multidisciplinaire', 'Autre prestation']
+
+var FORM_CONFIG = {
+  recipient: 'ericotlauranto34@gmail.com',
+  parentFolderName: 'Vasilías Studio — Formulaires privés',
+  attachmentsFolderName: 'Pièces jointes devis',
+  spreadsheetName: 'Vasilías Studio — Demandes de formulaires',
+  maxFiles: 5,
+  maxFileBytes: 3 * 1024 * 1024,
+  maxTotalFileBytes: 8 * 1024 * 1024,
+  maxSubmissionsPerEmailPerHour: 5,
+  retentionMonths: 3,
+  allowedTypesByExtension: {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+    pdf: 'application/pdf',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+  }
 };
-var BUDGETS = ['Moins de 200 000 Ar', '200 000 à 450 000 Ar', '450 000 à 800 000 Ar', '800 000 à 1 500 000 Ar', 'Plus de 1 500 000 Ar', 'Je souhaite recevoir une recommandation'];
-var DEADLINES = ['Dès que possible', 'Dans une semaine', 'Dans deux semaines', 'Dans un mois', 'Date flexible'];
-var STYLES = ['Minimaliste', 'Moderne', 'Élégant', 'Premium / Luxe', 'Créatif', 'Audacieux', 'Corporate', 'Autre'];
 
-function setup() {
+var STORAGE_KEYS = {
+  parentFolder: 'VAS_FORM_PARENT_FOLDER_ID',
+  attachmentsFolder: 'VAS_FORM_ATTACHMENTS_FOLDER_ID',
+  spreadsheet: 'VAS_FORM_SPREADSHEET_ID'
+};
+
+var QUOTE_HEADERS = [
+  'ID demande', 'Date de réception', 'Nom et prénom', 'E-mail', 'WhatsApp',
+  'Entreprise ou marque', 'Site / réseau social', 'Résumé détaillé',
+  'Noms des fichiers', 'Liens privés Drive', 'Consentement'
+];
+var CONTACT_HEADERS = [
+  'ID demande', 'Date de réception', 'Nom / entreprise', 'E-mail', 'Sujet', 'Message', 'Consentement'
+];
+
+/** Run once manually. Creates private storage in the account deploying this script. */
+function setupStorage() {
   var props = PropertiesService.getScriptProperties();
-  var folderId = props.getProperty('QUOTE_ROOT_FOLDER_ID');
-  var rootFolder = folderId ? DriveApp.getFolderById(folderId) : DriveApp.createFolder(ROOT_FOLDER_TITLE);
-  if (!folderId) props.setProperty('QUOTE_ROOT_FOLDER_ID', rootFolder.getId());
+  var parent = getOrCreateFolder_(props, STORAGE_KEYS.parentFolder, FORM_CONFIG.parentFolderName);
+  var uploads = getOrCreateChildFolder_(props, STORAGE_KEYS.attachmentsFolder, parent, FORM_CONFIG.attachmentsFolderName);
+  var spreadsheet = getOrCreateSpreadsheet_(props, parent);
 
-  var spreadsheetId = props.getProperty('QUOTE_SPREADSHEET_ID');
-  var spreadsheet = spreadsheetId ? SpreadsheetApp.openById(spreadsheetId) : SpreadsheetApp.create(SHEET_TITLE);
-  if (!spreadsheetId) props.setProperty('QUOTE_SPREADSHEET_ID', spreadsheet.getId());
-  var sheet = spreadsheet.getSheetByName(SHEET_TAB) || spreadsheet.insertSheet(SHEET_TAB);
-  if (sheet.getLastRow() === 0) sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-  sheet.setFrozenRows(1);
-  sheet.getRange(1, 1, 1, HEADERS.length).setBackground('#161513').setFontColor('#FFFFFF').setFontWeight('bold').setWrap(true);
-  sheet.setRowHeight(1, 42);
-  sheet.setColumnWidth(1, 210); sheet.setColumnWidth(2, 155); sheet.setColumnWidth(3, 190); sheet.setColumnWidth(4, 260);
-  sheet.setColumnWidth(5, 180); sheet.setColumnWidth(6, 230); sheet.setColumnWidth(7, 170); sheet.setColumnWidth(8, 200);
-  sheet.setColumnWidth(21, 300); sheet.setColumnWidth(23, 260); sheet.setColumnWidth(24, 190);
-  if (!sheet.getFilter()) sheet.getRange(1, 1, Math.max(sheet.getMaxRows(), 2), HEADERS.length).createFilter();
-  var statusRule = SpreadsheetApp.newDataValidation().requireValueInList(STATUSES, true).setAllowInvalid(false).build();
-  sheet.getRange(2, 3, Math.max(sheet.getMaxRows() - 1, 1), 1).setDataValidation(statusRule);
-  sheet.getRange(2, 2, Math.max(sheet.getMaxRows() - 1, 1), 1).setNumberFormat('yyyy-mm-dd hh:mm');
-  if (!props.getProperty('ADMIN_EMAIL')) props.setProperty('ADMIN_EMAIL', DEFAULT_ADMIN_EMAIL);
-  if (!props.getProperty('PRIVACY_POLICY_APPROVED')) props.setProperty('PRIVACY_POLICY_APPROVED', 'false');
-  Logger.log('Feuille privée : ' + spreadsheet.getUrl());
-  Logger.log('Dossier privé : ' + rootFolder.getUrl());
-  Logger.log('Notifications : ' + props.getProperty('ADMIN_EMAIL'));
-  Logger.log('Le formulaire reste fermé jusqu’à validation de la notice et configuration du client.');
-  return { spreadsheetUrl: spreadsheet.getUrl(), folderUrl: rootFolder.getUrl() };
-}
+  ensureSheet_(spreadsheet, 'Devis', QUOTE_HEADERS);
+  ensureSheet_(spreadsheet, 'Contact', CONTACT_HEADERS);
+  installCleanupTrigger_();
 
-function doGet() {
-  return HtmlService.createHtmlOutput('<!doctype html><html lang="fr"><meta charset="utf-8"><title>Vasilías Studio</title><body style="font:16px sans-serif;padding:2rem"><h1>Service de devis Vasilías Studio</h1><p>Ce point d’accès reçoit les formulaires de devis. Il n’affiche aucune demande.</p></body></html>');
+  Logger.log('Stockage privé prêt. Sheet : ' + spreadsheet.getUrl());
+  Logger.log('Dossier privé : ' + parent.getUrl());
+  Logger.log('Pièces jointes : ' + uploads.getUrl());
 }
 
 function doPost(e) {
-  var requestId = '';
+  var p = (e && e.parameter) || {};
+  var type = field_(p, 'formType').toLowerCase();
+
+  // Honeypot: bots receive a generic success page, but no data is stored or emailed.
+  if (field_(p, '_honey')) return responsePage_(true, type);
+
   try {
-    if (!e || !e.parameter || !e.parameter.payload) throw new Error('Données de formulaire absentes.');
-    if (e.parameter.payload.length > 15000000) throw new Error('La demande dépasse la taille maximale autorisée.');
-    var payload = JSON.parse(e.parameter.payload);
-    requestId = String(payload.requestId || '');
-    if (PropertiesService.getScriptProperties().getProperty('PRIVACY_POLICY_APPROVED') !== 'true') throw new Error('Le formulaire est temporairement indisponible : la notice de confidentialité doit être validée.');
-    var parsed = validatePayload_(payload);
-    var props = PropertiesService.getScriptProperties();
-    var sheetId = props.getProperty('QUOTE_SPREADSHEET_ID');
-    var rootId = props.getProperty('QUOTE_ROOT_FOLDER_ID');
-    if (!sheetId || !rootId) throw new Error('Le service n’a pas terminé son installation. Contactez Vasilías Studio.');
-    var sheet = SpreadsheetApp.openById(sheetId).getSheetByName(SHEET_TAB);
-    if (!sheet) throw new Error('La feuille de réception est introuvable.');
+    if (type !== 'quote' && type !== 'contact') throw new Error('Invalid form type');
+    requireStorage_();
 
-    var lock = LockService.getScriptLock();
-    if (!lock.tryLock(10000)) throw new Error('Le service est occupé. Réessayez dans quelques instants.');
-    var rowNumber, folderId, notificationState, isNew = false;
-    try {
-      rowNumber = findRequestRow_(sheet, requestId);
-      if (rowNumber) {
-        var existing = sheet.getRange(rowNumber, 1, 1, HEADERS.length).getValues()[0];
-        notificationState = String(existing[23] || '');
-        if (notificationState.indexOf('admin=sent') !== -1 && notificationState.indexOf('client=sent') !== -1) {
-          lock.releaseLock();
-          return reply_(requestId, true, 'Votre demande a déjà été reçue.');
-        }
-        lock.releaseLock();
-        return reply_(requestId, false, 'Cette demande est déjà enregistrée. Si vous n’avez pas reçu de confirmation, contactez Vasilías Studio à ' + (PropertiesService.getScriptProperties().getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL) + '.');
-      } else {
-        var rateKey = 'quote-rate-' + digest_(parsed.client.email.toLowerCase());
-        var cache = CacheService.getScriptCache();
-        if (cache.get(rateKey)) throw new Error('Une demande vient déjà d’être envoyée avec cette adresse. Attendez une minute avant de réessayer.');
-        var root = DriveApp.getFolderById(rootId);
-        var folderName = requestId + ' — ' + safeFilePart_(parsed.client.company || parsed.client.name);
-        var requestFolder = root.createFolder(folderName);
-        folderId = requestFolder.getId();
-        parsed.attachments.forEach(function (file) { requestFolder.createFile(file.blob); });
-        var row = makeRow_(parsed, requestFolder);
-        sheet.appendRow(row);
-        rowNumber = sheet.getLastRow();
-        notificationState = 'admin=pending;client=pending';
-        sheet.getRange(rowNumber, 24).setValue(notificationState);
-        cache.put(rateKey, '1', RATE_LIMIT_SECONDS);
-        isNew = true;
-      }
-    } finally {
-      if (lock.hasLock()) lock.releaseLock();
+    var senderEmail = field_(p, 'email').toLowerCase();
+    if (!validEmail_(senderEmail)) throw new Error('Invalid email');
+    if (!allowRate_(senderEmail)) throw new Error('Rate limit');
+
+    if (type === 'quote') {
+      sendQuote_(p, (e && e.parameters) || {}, senderEmail);
+    } else {
+      sendContact_(p, senderEmail);
     }
 
-    var existingFolder = DriveApp.getFolderById(folderId);
-    var storedAttachments = isNew ? parsed.attachments : readStoredAttachments_(existingFolder);
-    var adminAlready = notificationState.indexOf('admin=sent') !== -1;
-    var clientAlready = notificationState.indexOf('client=sent') !== -1;
-    var sendResult = sendNotifications_(parsed, existingFolder, storedAttachments, !adminAlready, !clientAlready);
-    var state = 'admin=' + (sendResult.adminSent || adminAlready ? 'sent' : 'pending') + ';client=' + (sendResult.clientSent || clientAlready ? 'sent' : 'pending');
-    sheet.getRange(rowNumber, 24).setValue(state + (sendResult.errors.length ? ';error=' + sendResult.errors.join(' | ') : ''));
-    if (sendResult.adminSent || adminAlready) {
-      var note = (sendResult.clientSent || clientAlready) ? 'Votre demande est reçue.' : 'Votre demande est enregistrée et transmise au studio, mais l’e-mail de confirmation n’a pas pu être envoyé.';
-      return reply_(requestId, true, note);
-    }
-    return reply_(requestId, false, 'Votre demande a été enregistrée, mais la notification au studio a échoué. Elle est conservée; réessayez ou écrivez à ' + (props.getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL) + '.');
+    return responsePage_(true, type);
   } catch (err) {
-    return reply_(requestId, false, safeText_(err && err.message ? err.message : 'Une erreur inattendue est survenue.', 500));
+    // Do not log form contents or email addresses.
+    console.error('Form processing failed: ' + String((err && err.message) || 'unknown error'));
+    return responsePage_(false, type);
   }
 }
 
-function validatePayload_(p) {
-  if (!p || typeof p !== 'object') throw new Error('Demande invalide.');
-  var id = String(p.requestId || '');
-  if (!/^[A-Za-z0-9-]{10,80}$/.test(id)) throw new Error('Identifiant de demande invalide. Rechargez le formulaire.');
-  if (String(p.honeypot || '').trim()) throw new Error('La demande n’a pas pu être validée.');
-  var started = Number(p.startedAt || 0);
-  if (!started || Date.now() - started < 2500 || Date.now() - started > 43200000) throw new Error('Le formulaire a expiré ou a été envoyé trop rapidement. Réouvrez-le et réessayez.');
-  if (p.privacyAccepted !== true) throw new Error('Le consentement au traitement de la demande est requis.');
-  var client = p.client || {};
-  var name = safeText_(client.name, 120), email = safeText_(client.email, 254).toLowerCase();
-  var phone = safeText_(client.whatsapp, 24), company = safeText_(client.company, 120), website = safeText_(client.website, 500);
-  if (!name || !company) throw new Error('Le nom et le nom de l’entreprise sont obligatoires.');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('L’adresse e-mail n’est pas valide.');
-  if (!/^\+?[0-9() .-]{7,24}$/.test(phone) || phone.replace(/\D/g, '').length < 7) throw new Error('Le numéro WhatsApp n’est pas valide.');
-  if (website && !/^https?:\/\//i.test(website)) throw new Error('Le site ou profil doit commencer par http:// ou https://.');
+function sendQuote_(p, all, senderEmail) {
+  var name = field_(p, 'clientName');
+  var company = field_(p, 'company');
+  var phone = field_(p, 'whatsapp');
+  var website = field_(p, 'website');
+  var summary = field_(p, 'resume_detaille');
+  var consent = field_(p, 'consentement');
 
-  var categories = uniqueStrings_(p.categories, 5);
-  if (!categories.length || categories.some(function (c) { return !CATEGORIES[c]; })) throw new Error('Choisissez au moins une catégorie valide.');
-  var otherProject = safeText_(p.otherProject, 1000);
-  if (categories.indexOf('other') !== -1 && !otherProject) throw new Error('Précisez la catégorie « Autres prestations ».');
-  var deliverables = uniqueStrings_(p.deliverables, 60);
-  deliverables.forEach(function (item) {
-    var sep = item.indexOf('::'), cat = item.slice(0, sep), label = item.slice(sep + 2);
-    if (sep < 1 || categories.indexOf(cat) === -1 || !OPTIONS[cat] || OPTIONS[cat].indexOf(label) === -1) throw new Error('Une prestation sélectionnée n’est pas reconnue.');
-  });
-  var styles = uniqueStrings_(p.styles, STYLES.length);
-  if (styles.some(function (s) { return STYLES.indexOf(s) === -1; })) throw new Error('Une préférence de style n’est pas reconnue.');
-  var budget = safeText_(p.budget, 80), deadline = safeText_(p.deadline, 80);
-  if (BUDGETS.indexOf(budget) === -1) throw new Error('Choisissez un budget parmi les options proposées.');
-  if (DEADLINES.indexOf(deadline) === -1) throw new Error('Choisissez un délai parmi les options proposées.');
-  var targetDate = safeText_(p.targetDate, 20);
-  if (targetDate && !/^\d{4}-\d{2}-\d{2}$/.test(targetDate)) throw new Error('La date souhaitée n’est pas valide.');
-  var projectDescription = safeText_(p.projectDescription, 3000);
-  if (!projectDescription) throw new Error('La description du projet est obligatoire.');
-  var files = validateAttachments_(p.attachments || []);
-  return {
-    requestId: id, client: { name: name, email: email, whatsapp: phone, company: company, website: website },
-    categories: categories, otherProject: otherProject, deliverables: deliverables,
-    deliverablesDescription: safeText_(p.deliverablesDescription, 2500), budget: budget, deadline: deadline,
-    targetDate: targetDate, projectDescription: projectDescription, objectives: safeText_(p.objectives, 1500),
-    audience: safeText_(p.audience, 1000), styles: styles, attachments: files
-  };
-}
-
-function validateAttachments_(items) {
-  if (!Array.isArray(items) || items.length > MAX_FILES) throw new Error('Le nombre de fichiers joints dépasse la limite autorisée.');
-  var total = 0;
-  var allowed = {
-    jpg: ['image/jpeg'], jpeg: ['image/jpeg'], png: ['image/png'], webp: ['image/webp'],
-    pdf: ['application/pdf'], ppt: ['application/vnd.ms-powerpoint'],
-    pptx: ['application/vnd.openxmlformats-officedocument.presentationml.presentation']
-  };
-  return items.map(function (item) {
-    var original = String(item && item.name || '');
-    var ext = (original.split('.').pop() || '').toLowerCase();
-    if (!allowed[ext]) throw new Error('Type de fichier refusé : ' + safeText_(original, 100));
-    var mime = allowed[ext][0];
-    if (item.type && item.type !== mime) throw new Error('Le type MIME ne correspond pas au fichier ' + safeText_(original, 100) + '.');
-    var encoded = String(item.data || '');
-    if (!encoded || encoded.length > MAX_FILE_BYTES * 1.5) throw new Error('Un fichier est vide ou trop volumineux.');
-    var bytes;
-    try { bytes = Utilities.base64Decode(encoded); } catch (e) { throw new Error('Un fichier joint est illisible.'); }
-    if (!bytes.length || bytes.length > MAX_FILE_BYTES || Number(item.size) !== bytes.length) throw new Error('Un fichier dépasse la limite de 3 Mo ou sa taille est incorrecte.');
-    total += bytes.length;
-    if (total > MAX_TOTAL_BYTES) throw new Error('Les fichiers joints dépassent la limite totale de 8 Mo.');
-    if (!matchesFileSignature_(ext, bytes)) throw new Error('Le contenu du fichier ' + safeText_(original, 100) + ' ne correspond pas à son extension.');
-    var name = safeFilePart_(original);
-    return { name: name, type: mime, size: bytes.length, blob: Utilities.newBlob(bytes, mime, name) };
-  });
-}
-
-function matchesFileSignature_(ext, bytes) {
-  function b(i) { return bytes[i] & 255; }
-  if (ext === 'jpg' || ext === 'jpeg') return bytes.length > 3 && b(0) === 255 && b(1) === 216 && b(2) === 255;
-  if (ext === 'png') return bytes.length > 8 && b(0) === 137 && b(1) === 80 && b(2) === 78 && b(3) === 71 && b(4) === 13 && b(5) === 10 && b(6) === 26 && b(7) === 10;
-  if (ext === 'webp') return bytes.length > 12 && b(0) === 82 && b(1) === 73 && b(2) === 70 && b(3) === 70 && b(8) === 87 && b(9) === 69 && b(10) === 66 && b(11) === 80;
-  if (ext === 'pdf') return bytes.length > 5 && String.fromCharCode(b(0), b(1), b(2), b(3), b(4)) === '%PDF-';
-  if (ext === 'ppt') return bytes.length > 8 && b(0) === 208 && b(1) === 207 && b(2) === 17 && b(3) === 224;
-  if (ext === 'pptx') return bytes.length > 4 && b(0) === 80 && b(1) === 75 && b(2) === 3 && b(3) === 4;
-  return false;
-}
-
-function makeRow_(p, folder) {
-  var fileNames = p.attachments.map(function (f) { return f.name + ' (' + Math.round(f.size / 1024) + ' Ko)'; }).join('\n');
-  return [p.requestId, new Date(), 'Nouvelle demande', '', p.client.name, p.client.email, p.client.whatsapp, p.client.company, p.client.website,
-    p.categories.map(function (c) { return CATEGORIES[c]; }).join(', '), p.deliverables.map(function (d) { return d.split('::').slice(1).join('::'); }).join(', '),
-    p.otherProject, p.deliverablesDescription, p.budget, p.deadline, p.targetDate, p.projectDescription, p.objectives, p.audience, p.styles.join(', '),
-    folder.getUrl(), folder.getId(), fileNames, 'admin=pending;client=pending'].map(safeCell_);
-}
-
-function findRequestRow_(sheet, id) {
-  if (sheet.getLastRow() < 2) return 0;
-  var result = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).createTextFinder(id).matchEntireCell(true).findNext();
-  return result ? result.getRow() : 0;
-}
-
-/**
- * Suppression administrateur récupérable via la corbeille Drive.
- * À appeler uniquement depuis l’éditeur Apps Script après confirmation explicite :
- * deleteRequestAndFiles('ID_DE_LA_DEMANDE', 'SUPPRIMER ID_DE_LA_DEMANDE')
- */
-function deleteRequestAndFiles(requestId, confirmation) {
-  var id = safeText_(requestId, 80);
-  if (!id || confirmation !== 'SUPPRIMER ' + id) throw new Error('Confirmation requise : SUPPRIMER ' + id);
-  var props = PropertiesService.getScriptProperties();
-  var sheet = SpreadsheetApp.openById(props.getProperty('QUOTE_SPREADSHEET_ID')).getSheetByName(SHEET_TAB);
-  var lock = LockService.getScriptLock();
-  if (!lock.tryLock(10000)) throw new Error('Le service est occupé.');
-  try {
-    var row = findRequestRow_(sheet, id);
-    if (!row) throw new Error('Demande introuvable.');
-    var folderId = String(sheet.getRange(row, 22).getValue() || '');
-    var rootId = props.getProperty('QUOTE_ROOT_FOLDER_ID');
-    if (folderId && folderId !== rootId) DriveApp.getFolderById(folderId).setTrashed(true);
-    sheet.deleteRow(row);
-    return 'Demande supprimée et dossier joint déplacé dans la corbeille Drive.';
-  } finally {
-    if (lock.hasLock()) lock.releaseLock();
+  if (!name || !company || !phone || !summary || consent !== 'accepté') {
+    throw new Error('Missing quote fields');
   }
-}
+  if (name.length > 120 || company.length > 120 || phone.length > 40 || website.length > 500 || summary.length > 30000) {
+    throw new Error('Quote field too long');
+  }
 
-function sendNotifications_(p, folder, attachments, needAdmin, needClient) {
-  var props = PropertiesService.getScriptProperties();
-  var admin = props.getProperty('ADMIN_EMAIL') || DEFAULT_ADMIN_EMAIL;
-  var subject = 'Nouvelle demande de devis — Vasilías Studio';
-  var parts = [
-    ['Identifiant', p.requestId], ['Nom', p.client.name], ['E-mail', p.client.email], ['WhatsApp', p.client.whatsapp],
-    ['Entreprise / marque', p.client.company], ['Site / réseau', p.client.website],
-    ['Catégories', p.categories.map(function (c) { return CATEGORIES[c]; }).join(', ')],
-    ['Prestations', p.deliverables.map(function (d) { return d.split('::').slice(1).join('::'); }).join(', ')],
-    ['Autre projet', p.otherProject], ['Livrables souhaités', p.deliverablesDescription], ['Budget estimé', p.budget],
-    ['Délai souhaité', p.deadline], ['Date souhaitée', p.targetDate], ['Description', p.projectDescription],
-    ['Objectifs', p.objectives], ['Public cible', p.audience], ['Style graphique', p.styles.join(', ')],
-    ['Fichiers', p.attachments.map(function (f) { return f.name; }).join(', ') || 'Aucun']
+  var id = Utilities.getUuid();
+  var attachments = quoteAttachments_(p);
+  var saved = saveQuoteAttachments_(attachments, id);
+  var receivedAt = new Date();
+  var record = [
+    id, receivedAt, name, senderEmail, phone, company, website, summary,
+    saved.names.join('\n'), saved.links.join('\n'), consent
   ];
-  var plain = parts.map(function (pair) { return pair[0] + ': ' + (pair[1] || '—'); }).join('\n\n');
-  var html = '<h2>Nouvelle demande de devis</h2><table cellpadding="6" cellspacing="0" border="0">' + parts.map(function (pair) { return '<tr><th align="left" valign="top">' + htmlEscape_(pair[0]) + '</th><td>' + htmlEscape_(pair[1] || '—').replace(/\n/g, '<br>') + '</td></tr>'; }).join('') + '</table><p><a href="' + htmlEscape_(folder.getUrl()) + '">Ouvrir le dossier privé des références (accès Google requis)</a></p>';
-  var adminSent = false, clientSent = false, errors = [];
-  if (needAdmin) {
-    try { MailApp.sendEmail({ to: admin, subject: subject, body: plain + '\n\nDossier privé : ' + folder.getUrl(), htmlBody: html, attachments: attachments.map(function (f) { return f.copyBlob(); }) }); adminSent = true; }
-    catch (err) { errors.push('notification administrateur : ' + safeText_(err.message, 250)); }
-  }
-  if (needClient) {
-    try {
-      MailApp.sendEmail({ to: p.client.email, subject: 'Confirmation de votre demande — Vasilías Studio', body: 'Bonjour ' + p.client.name + ',\n\nMerci de faire confiance à Vasilías Studio. Votre demande a bien été transmise. Nous allons l’examiner afin de vous proposer une solution adaptée à vos besoins.\n\nCet e-mail confirme la réception de votre demande; il ne constitue pas un devis ni une confirmation de commande.\n\nVasilías Studio' });
-      clientSent = true;
-    } catch (err) { errors.push('confirmation client : ' + safeText_(err.message, 250)); }
-  }
-  return { adminSent: adminSent, clientSent: clientSent, errors: errors };
+  appendRecord_('Devis', record);
+
+  var attachmentNotes = saved.links.length
+    ? '\n\nFichiers enregistrés dans Drive (accès privé) :\n' + saved.links.join('\n')
+    : '\n\nAucune pièce jointe.';
+  var body = [
+    'Nouvelle demande de devis — Vasilías Studio',
+    '',
+    'ID : ' + id,
+    'Nom : ' + name,
+    'E-mail : ' + senderEmail,
+    'WhatsApp : ' + phone,
+    'Entreprise ou marque : ' + company,
+    'Site / réseau : ' + (website || '(non renseigné)'),
+    '',
+    'Résumé détaillé du projet :',
+    summary,
+    attachmentNotes,
+    '',
+    'Reçu le : ' + receivedAt.toISOString()
+  ].join('\n');
+
+  var mailOptions = {
+    to: FORM_CONFIG.recipient,
+    replyTo: senderEmail,
+    subject: '[SITE-FORM] Devis — ' + safeSubject_(name),
+    body: body
+  };
+  if (attachments.length) mailOptions.attachments = attachments;
+  MailApp.sendEmail(mailOptions);
 }
 
-function readStoredAttachments_(folder) {
-  var result = [], iterator = folder.getFiles();
-  while (iterator.hasNext()) {
-    var file = iterator.next();
-    result.push({ name: file.getName(), blob: file.getBlob() });
+function sendContact_(p, senderEmail) {
+  var name = field_(p, 'name');
+  var subject = field_(p, 'subject');
+  var message = field_(p, 'message');
+  var consent = field_(p, 'consentement');
+
+  if (!name || !message || consent !== 'accepté' || name.length > 120 || subject.length > 160 || message.length > 10000) {
+    throw new Error('Invalid contact fields');
   }
-  return result;
+
+  var id = Utilities.getUuid();
+  var receivedAt = new Date();
+  appendRecord_('Contact', [id, receivedAt, name, senderEmail, subject, message, consent]);
+
+  var body = [
+    'Nouveau message de contact — Vasilías Studio',
+    '',
+    'ID : ' + id,
+    'Nom / entreprise : ' + name,
+    'E-mail : ' + senderEmail,
+    'Sujet : ' + (subject || '(non précisé)'),
+    '',
+    'Message :',
+    message,
+    '',
+    'Reçu le : ' + receivedAt.toISOString()
+  ].join('\n');
+
+  MailApp.sendEmail({
+    to: FORM_CONFIG.recipient,
+    replyTo: senderEmail,
+    subject: '[SITE-FORM] Contact — ' + safeSubject_(subject || name),
+    body: body
+  });
 }
 
-function safeText_(value, max) {
-  var text = String(value == null ? '' : value).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, ' ').trim();
-  return text.slice(0, max || 3000);
+function quoteAttachments_(p) {
+  var count = Number(field_(p, 'attachmentCount') || '0');
+  if (!Number.isInteger(count) || count < 0 || count > FORM_CONFIG.maxFiles) {
+    throw new Error('Invalid attachment count');
+  }
+
+  var files = [];
+  var totalBytes = 0;
+  for (var i = 0; i < count; i++) {
+    var name = safeFilename_(field_(p, 'gasFile' + i + 'Name'));
+    var type = field_(p, 'gasFile' + i + 'Type').toLowerCase();
+    var data = field_(p, 'gasFile' + i + 'Data').replace(/^data:[^,]*;base64,/i, '').replace(/\s/g, '');
+    var extension = name.indexOf('.') === -1 ? '' : name.split('.').pop().toLowerCase();
+    var expectedType = FORM_CONFIG.allowedTypesByExtension[extension];
+
+    if (!name || !expectedType || !data) throw new Error('Invalid attachment');
+    if (type && type !== expectedType && !(extension === 'jpg' && type === 'image/pjpeg')) {
+      throw new Error('Attachment type mismatch');
+    }
+    if (data.length > Math.ceil(FORM_CONFIG.maxFileBytes * 4 / 3) + 16) {
+      throw new Error('Attachment too large');
+    }
+
+    var bytes = Utilities.base64Decode(data);
+    if (bytes.length > FORM_CONFIG.maxFileBytes) throw new Error('Attachment too large');
+    totalBytes += bytes.length;
+    if (totalBytes > FORM_CONFIG.maxTotalFileBytes) throw new Error('Attachments too large');
+    files.push(Utilities.newBlob(bytes, expectedType, name));
+  }
+  return files;
 }
+
+function saveQuoteAttachments_(blobs, requestId) {
+  var folder = getFolderFromProperty_(STORAGE_KEYS.attachmentsFolder);
+  var names = [];
+  var links = [];
+  blobs.forEach(function (blob, index) {
+    var fileName = requestId.slice(0, 8) + '_' + (index + 1) + '_' + safeFilename_(blob.getName());
+    var file = folder.createFile(blob.setName(fileName));
+    names.push(blob.getName());
+    links.push(file.getUrl());
+  });
+  return { names: names, links: links };
+}
+
+function appendRecord_(sheetName, row) {
+  var spreadsheet = getSpreadsheet_();
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  if (!sheet) throw new Error('Storage sheet missing');
+
+  var safeRow = row.map(function (value, index) {
+    if (index === 1 && value instanceof Date) return value;
+    return safeCell_(value);
+  });
+
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) throw new Error('Storage busy');
+  try {
+    sheet.appendRow(safeRow);
+    SpreadsheetApp.flush();
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+/** Daily cleanup: remove Sheet rows and Drive attachments older than 3 months,
+ * and move matching [SITE-FORM] Gmail threads older than 3 months to Trash.
+ * Gmail keeps trashed items recoverable for up to a further 30 days.
+ */
+function purgeOldSubmissions() {
+  var cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - FORM_CONFIG.retentionMonths);
+
+  var spreadsheet = getSpreadsheet_();
+  ['Devis', 'Contact'].forEach(function (sheetName) {
+    var sheet = spreadsheet.getSheetByName(sheetName);
+    if (!sheet || sheet.getLastRow() < 2) return;
+    var dates = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getValues();
+    for (var i = dates.length - 1; i >= 0; i--) {
+      var date = dates[i][0];
+      if (date instanceof Date && date < cutoff) sheet.deleteRow(i + 2);
+    }
+  });
+
+  var folder = getFolderFromProperty_(STORAGE_KEYS.attachmentsFolder);
+  var files = folder.getFiles();
+  while (files.hasNext()) {
+    var file = files.next();
+    if (file.getDateCreated() < cutoff) file.setTrashed(true);
+  }
+
+  // This query only targets messages created by these two forms.
+  var oldThreads;
+  do {
+    oldThreads = GmailApp.search('subject:SITE-FORM older_than:3m', 0, 100);
+    if (oldThreads.length) GmailApp.moveThreadsToTrash(oldThreads);
+  } while (oldThreads.length === 100);
+}
+
+function installCleanupTrigger_() {
+  var triggers = ScriptApp.getProjectTriggers();
+  var exists = triggers.some(function (trigger) {
+    return trigger.getHandlerFunction() === 'purgeOldSubmissions';
+  });
+  if (!exists) {
+    ScriptApp.newTrigger('purgeOldSubmissions').timeBased().everyDays(1).atHour(3).create();
+  }
+}
+
+function allowRate_(email) {
+  var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, email);
+  var key = 'form-rate-' + Utilities.base64EncodeWebSafe(digest).slice(0, 32);
+  var cache = CacheService.getScriptCache();
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(3000)) return false;
+  try {
+    var current = Number(cache.get(key) || '0');
+    if (current >= FORM_CONFIG.maxSubmissionsPerEmailPerHour) return false;
+    cache.put(key, String(current + 1), 3600);
+    return true;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getOrCreateFolder_(props, key, name) {
+  var id = props.getProperty(key);
+  if (id) return DriveApp.getFolderById(id);
+  var folder = DriveApp.createFolder(name);
+  props.setProperty(key, folder.getId());
+  return folder;
+}
+
+function getOrCreateChildFolder_(props, key, parent, name) {
+  var id = props.getProperty(key);
+  if (id) return DriveApp.getFolderById(id);
+  var folder = parent.createFolder(name);
+  props.setProperty(key, folder.getId());
+  return folder;
+}
+
+function getOrCreateSpreadsheet_(props, parent) {
+  var id = props.getProperty(STORAGE_KEYS.spreadsheet);
+  if (id) return SpreadsheetApp.openById(id);
+  var spreadsheet = SpreadsheetApp.create(FORM_CONFIG.spreadsheetName);
+  DriveApp.getFileById(spreadsheet.getId()).moveTo(parent);
+  props.setProperty(STORAGE_KEYS.spreadsheet, spreadsheet.getId());
+  return spreadsheet;
+}
+
+function ensureSheet_(spreadsheet, name, headers) {
+  var sheet = spreadsheet.getSheetByName(name);
+  if (!sheet) sheet = spreadsheet.insertSheet(name);
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    sheet.setFrozenRows(1);
+    return;
+  }
+  // Safely add newly introduced header columns without touching existing rows.
+  var width = Math.max(sheet.getLastColumn(), headers.length);
+  var current = sheet.getRange(1, 1, 1, width).getValues()[0];
+  for (var i = 0; i < headers.length; i++) {
+    if (!current[i]) current[i] = headers[i];
+  }
+  sheet.getRange(1, 1, 1, width).setValues([current]);
+}
+
+function requireStorage_() {
+  var props = PropertiesService.getScriptProperties();
+  if (!props.getProperty(STORAGE_KEYS.parentFolder) ||
+      !props.getProperty(STORAGE_KEYS.attachmentsFolder) ||
+      !props.getProperty(STORAGE_KEYS.spreadsheet)) {
+    throw new Error('Run setupStorage first');
+  }
+}
+
+function getSpreadsheet_() {
+  var id = PropertiesService.getScriptProperties().getProperty(STORAGE_KEYS.spreadsheet);
+  if (!id) throw new Error('Storage not initialized');
+  return SpreadsheetApp.openById(id);
+}
+
+function getFolderFromProperty_(key) {
+  var id = PropertiesService.getScriptProperties().getProperty(key);
+  if (!id) throw new Error('Storage folder not initialized');
+  return DriveApp.getFolderById(id);
+}
+
+function responsePage_(success, type) {
+  var title = success ? 'Demande transmise' : 'Envoi non confirmé';
+  var message = success
+    ? 'Merci. Votre demande a été transmise à Vasilías Studio.'
+    : 'L’envoi n’a pas pu être confirmé. Réessayez plus tard ou contactez-nous par e-mail.';
+  var siteLink = type === 'quote'
+    ? 'https://vasilias-studio.github.io/services.html'
+    : 'https://vasilias-studio.github.io/contact.html';
+  var html = '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<title>' + title + ' — Vasilías Studio</title>' +
+    '<style>body{margin:0;background:#f5f2ed;color:#24211e;font:16px/1.6 Arial,sans-serif;display:grid;min-height:100vh;place-items:center}.card{background:#fff;max-width:560px;margin:24px;padding:36px;border:1px solid #ded8d1;border-radius:16px}h1{font-size:1.7rem;margin:0 0 12px}a{color:#8a552b}.mark{color:#BF814B;font-size:2rem}</style></head>' +
+    '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main></body></html>';
+  return HtmlService.createHtmlOutput(html).setTitle(title + ' — Vasilías Studio');
+}
+
+function field_(params, name) {
+  var value = params && params[name];
+  if (Array.isArray(value)) value = value[0];
+  return String(value == null ? '' : value).trim();
+}
+
+function validEmail_(email) {
+  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function safeSubject_(value) {
+  return String(value || '').replace(/[\r\n]+/g, ' ').replace(/[^\p{L}\p{N} .,_-]/gu, '').slice(0, 100).trim() || 'Demande';
+}
+
+function safeFilename_(value) {
+  return String(value || '').replace(/[\r\n\u0000-\u001f]/g, '').replace(/[\\/]/g, '_').slice(0, 160).trim();
+}
+
 function safeCell_(value) {
-  var text = value instanceof Date ? value : String(value == null ? '' : value);
-  if (typeof text === 'string' && /^[=+@\-]/.test(text)) return "'" + text;
-  return text;
-}
-function safeFilePart_(name) {
-  var text = safeText_(name, 160).replace(/[\\/:*?"<>|\s]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  return text || 'reference';
-}
-function uniqueStrings_(value, limit) {
-  if (!Array.isArray(value)) return [];
-  var seen = {};
-  return value.slice(0, limit).map(function (x) { return safeText_(x, 200); }).filter(function (x) { if (!x || seen[x]) return false; seen[x] = true; return true; });
-}
-function htmlEscape_(value) {
-  return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-function digest_(text) {
-  return Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text)).replace(/=+$/g, '');
-}
-function reply_(requestId, ok, message) {
-  var data = JSON.stringify({ type: 'vasilias-quote-result', requestId: String(requestId || ''), ok: !!ok, message: String(message || '') }).replace(/</g, '\\u003c');
-  var html = '<!doctype html><html lang="fr"><meta charset="utf-8"><title>Réponse devis</title><body><p>Retour au formulaire…</p><script>window.parent.postMessage(' + data + ', "*");</script></body></html>';
-  return HtmlService.createHtmlOutput(html).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  var text = String(value == null ? '' : value);
+  return /^[=+\-@]/.test(text) ? "'" + text : text;
 }

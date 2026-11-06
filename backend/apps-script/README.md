@@ -1,70 +1,40 @@
-# Option de secours — Apps Script (non utilisée pour le formulaire actuel)
+# Formulaires Google Apps Script — configuration active
 
-## État actuel
+## État
 
-Le formulaire de devis est configuré pour FormSubmit, comme le formulaire Contact, et transmet les demandes par e-mail à `ericotlauranto34@gmail.com`; elles ne sont pas enregistrées dans le Hub, Sheets ou Drive. La notice indique une suppression des e-mails au plus tard six mois après réception. Aucun envoi réel de devis n’a encore été testé; si FormSubmit demande une confirmation de l’adresse à la première soumission, il faudra la confirmer avant de considérer l’acheminement opérationnel.
+Les formulaires **Contact** et **Devis** utilisent l’application Web Google Apps Script configurée dans `js/forms-config.js`. Le Web App s’exécute sous le compte propriétaire du script et accepte les soumissions publiques anonymes. Son URL `/exec` est publique et ne doit pas être considérée comme un secret.
 
-Les sections ci-dessous décrivent une ancienne option Apps Script + Sheets/Drive préparée auparavant. Ne pas suivre ces étapes pour le flux FormSubmit actuel. Ne reprendre Apps Script que si Vasilías Studio choisit ultérieurement de revenir à l’enregistrement privé dans le Hub.
+Le script envoie une notification à `ericotlauranto34@gmail.com`, inscrit les demandes dans les onglets `Contact` et `Devis` d’un Google Sheet privé, et place les pièces jointes de devis dans un dossier Drive privé. Les données ne sont pas écrites dans le Hub. La feuille, le dossier parent et le dossier de fichiers restent privés au compte propriétaire, sauf si ce compte partage ultérieurement ces ressources.
 
-## État de l’option Apps Script
+La durée configurée est de trois mois. Le déclencheur quotidien supprime les lignes anciennes du Sheet, déplace les fichiers du dossier de pièces jointes et les fils d’e-mails `[SITE-FORM]` vers la corbeille. Gmail/Drive peuvent conserver les éléments dans la corbeille jusqu’à 30 jours supplémentaires avant leur suppression définitive.
 
-Le code de stockage Sheets/Drive est conservé comme option de secours. Il n’est pas utilisé par le formulaire actuel.
+## Installation et stockage
 
-Le dépôt GitHub Pages est statique. Le script Apps Script doit être créé et autorisé depuis le compte Google de Vasilías Studio; le connecteur Drive ne peut pas accorder ces autorisations ni publier le Web App.
+1. Ouvrir le projet Apps Script avec le compte Google qui doit posséder les données.
+2. Copier `Code.gs` depuis ce dossier dans le projet Apps Script.
+3. Exécuter `setupStorage()` une fois et autoriser Google Sheets, Drive, Gmail, l’envoi d’e-mail et les déclencheurs. La fonction crée ou réutilise le dossier privé, son sous-dossier de pièces jointes, le classeur et le déclencheur de purge. Elle inscrit les identifiants dans les propriétés du projet, pas dans le code public.
+4. Le classeur contient les onglets `Devis` et `Contact`. Les demandes ajoutées au fil du temps y sont stockées; les pièces jointes sont enregistrées dans le sous-dossier privé et restent également attachées à la notification par e-mail.
+5. Déployer comme **Application Web**, exécution en tant que propriétaire, accès **Tout le monde**. Le consentement Gmail autorise le nettoyage des seuls fils dont l’objet contient `[SITE-FORM]`; l’autorisation Apps Script Gmail est techniquement plus large que cette requête.
 
-## Mise en place
+## Mise à jour d’un script déjà déployé
 
-1. Ouvrir [script.google.com](https://script.google.com/) avec le compte Google qui doit posséder les demandes, puis créer un projet Apps Script autonome.
-2. Remplacer le contenu de `Code.gs` par `backend/apps-script/Code.gs`.
-3. Dans **Paramètres du projet**, activer l’affichage du fichier manifeste et remplacer son contenu par `backend/apps-script/appsscript.json`.
-4. Dans l’éditeur, exécuter `setup()` et approuver les autorisations Google Sheets, Drive et e-mail. Le script crée une feuille et un dossier privés, puis affiche leurs URL dans le journal d’exécution. L’adresse de notification initiale est `ericotlauranto34@gmail.com`; la propriété de script `ADMIN_EMAIL` permet de la remplacer.
-5. Contrôler les propriétés de script `QUOTE_SPREADSHEET_ID`, `QUOTE_ROOT_FOLDER_ID`, `ADMIN_EMAIL` et laisser `PRIVACY_POLICY_APPROVED` à `false` pour le moment.
-6. Déployer comme **Application Web**, exécution en tant que propriétaire du déploiement, accès public anonyme afin que les clients puissent envoyer le formulaire. Si les règles du compte Google interdisent cet accès, ne pas tenter de contourner la politique de l’organisation : le déploiement doit rester en attente.
-7. Copier l’URL `/exec` du déploiement et l’URL de la feuille privée dans `js/quote-config.js` :
+1. Remplacer le contenu du fichier Apps Script `Code.gs` par cette version et enregistrer.
+2. Exécuter `setupStorage()` de nouveau si les en-têtes ou les ressources doivent être initialisés; les propriétés existantes évitent de recréer le dossier, le classeur ou le déclencheur.
+3. Dans **Déployer → Gérer les déploiements**, modifier le Web App existant, choisir **Nouvelle version** et déployer. Modifier le déploiement existant conserve normalement son URL `/exec`.
+4. Garder le point de terminaison public dans `js/forms-config.js`; n’ajouter aucun mot de passe, jeton API ou clé privée au code client.
 
-   ```js
-   window.VAS_QUOTE_CONFIG = Object.freeze({
-     endpoint: 'https://script.google.com/macros/s/ID_DU_DEPLOIEMENT/exec',
-     adminSheetUrl: 'https://docs.google.com/spreadsheets/d/ID_DE_LA_FEUILLE/edit',
-     privacyApproved: false
-   });
-   ```
+## Données et limites
 
-   Ces URL ne sont pas des secrets; **ne jamais placer de mot de passe, jeton API ou clé privée dans ce fichier public**. Le lien de la feuille peut être visible dans le code source, mais Drive continue d’en imposer les permissions.
+- Le devis exige le consentement, conserve le résumé complet de la demande, et accepte jusqu’à cinq fichiers JPG/JPEG, PNG, WebP, PDF, PPT ou PPTX, de 3 Mo par fichier et 8 Mo au total.
+- Les fichiers sont transportés du navigateur à Apps Script en Base64 puis recréés comme blobs en mémoire; aucune étape ne les rend publics. La taille réelle maximale doit être vérifiée lors d’un test navigateur sur le site.
+- Une limite de fréquence de cinq soumissions par heure et par adresse e-mail, plus un honeypot, est en place. Apps Script ne reçoit pas ici de limitation robuste par IP; en cas de spam persistant, ajouter une protection anti-robot validée côté serveur.
+- Les soumissions de test peuvent créer une ligne, un e-mail et, pour le devis, un fichier Drive. Identifier clairement les tests et supprimer leurs traces après validation.
+- Le code ne stocke pas de valeurs de formulaire dans les journaux. Ne jamais journaliser le corps d’une demande ni ses pièces jointes.
 
-## Notice de confidentialité et activation
+## Tests à effectuer après mise à jour
 
-`privacy.html` est volontairement marquée comme brouillon. La durée de conservation des demandes n’a pas été définie. Avant d’activer l’envoi :
-
-1. valider l’identité du responsable et le texte de la notice;
-2. choisir et publier la durée de conservation;
-3. mettre à jour `privacy.html` et faire relire le texte;
-4. seulement ensuite, passer `PRIVACY_POLICY_APPROVED` à `true` dans les propriétés Apps Script et `privacyApproved` à `true` dans `js/quote-config.js`;
-5. redéployer l’application Web si le code serveur a changé, puis republier le site.
-
-Le formulaire et le serveur vérifient chacun le consentement/état d’approbation; la configuration actuelle laisse le bouton final désactivé.
-
-## Données et gestion des demandes
-
-- La feuille privée comprend les coordonnées, les détails du projet, le budget, le délai, le statut, les notes internes et l’état des notifications. Les filtres Google Sheets servent à rechercher, filtrer et trier.
-- Les statuts sont : Nouvelle demande, En cours d’analyse, Devis envoyé, En attente de réponse, Projet accepté et Projet refusé. Une liste déroulante est créée par `setup()`.
-- Les fichiers vont dans un dossier Drive privé séparé par demande. Le classeur contient un lien nécessitant une connexion autorisée; le script ne rend pas ces fichiers publics.
-- Le client reçoit un e-mail de confirmation; l’administrateur reçoit les détails et les pièces jointes. Les quotas et règles anti-spam de Google peuvent retarder ou bloquer les e-mails.
-- Pour supprimer proprement une demande et son dossier, confirmer d’abord l’identifiant, puis appeler depuis l’éditeur Apps Script `deleteRequestAndFiles('ID', 'SUPPRIMER ID')`. Le dossier est déplacé dans la corbeille Drive et la ligne supprimée; ne partagez pas le classeur ou le dossier « avec toute personne disposant du lien ». Les statuts et notes ordinaires restent gérables directement dans la feuille.
-- Dans le Hub, le lien de gestion apparaît dans **Paramètres → Demandes de devis** après renseignement de `adminSheetUrl`.
-
-## Limites de sécurité à connaître
-
-Le serveur revérifie les champs, les choix autorisés, les formats MIME/signatures, les tailles, les noms de fichiers, le consentement et l’identifiant idempotent. La zone anti-robot utilise un honeypot, un délai minimum et une limite de fréquence par adresse e-mail. Apps Script ne fournit pas ici de limitation par IP ni de CAPTCHA : ce n’est pas une protection contre une attaque volumétrique. Si le formulaire reçoit du spam, il faudra ajouter un CAPTCHA côté serveur ou déplacer l’API vers un service disposant d’une protection adaptée.
-
-Les formats autorisés sont JPG/JPEG, PNG, WebP, PDF, PPT et PPTX; maximum 5 fichiers, 3 Mo par fichier et 8 Mo au total. Les fichiers sont contrôlés côté navigateur et serveur, puis restent privés dans Drive. La feuille et les e-mails contiennent des données personnelles : limitez l’accès au compte administrateur et définissez la durée de conservation.
-
-## Tests à effectuer après déploiement
-
-1. Laisser la politique non approuvée : vérifier que le bouton final demeure désactivé.
-2. Après validation, envoyer une demande de test avec un fichier valide; vérifier la ligne Sheet, le dossier Drive, l’e-mail admin, l’e-mail client et l’écran de confirmation.
-3. Tester les fichiers refusés, la taille maximale, le champ piège, les champs invalides et un second envoi avec le même identifiant.
-4. Confirmer que le dossier Drive et la feuille ne sont pas accessibles à un compte Google non autorisé.
-5. Parcourir les étapes sur 1440, 1280, 768, 390 et 360 px et vérifier les pièces jointes sur iOS et Android.
-
-Les tests de réception réels ne peuvent pas être déclarés réussis avant les autorisations, le déploiement Apps Script et un envoi de bout en bout depuis le site publié.
+1. Vérifier en navigation privée que `/exec` ne redirige plus vers une connexion Google. Un GET peut afficher un message indiquant que `doGet` n’est pas défini; le formulaire utilise `doPost`.
+2. Envoyer un test Contact avec consentement, puis contrôler la ligne `Contact` et l’e-mail de notification.
+3. Envoyer un test Devis avec un petit fichier, puis contrôler la ligne `Devis`, la présence du fichier dans Drive et l’e-mail avec pièce jointe.
+4. Après mise à jour du site, tester les deux formulaires depuis le navigateur, puis tester les limites de fichiers jusqu’à la taille maximale affichée.
+5. Confirmer dans Drive que le dossier, le classeur et les pièces jointes ne sont pas partagés publiquement.
