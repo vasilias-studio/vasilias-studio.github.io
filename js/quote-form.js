@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.addEventListener('message', function (event) {
     var data = event.data || {};
-    if (!submissionFrame || event.source !== submissionFrame.contentWindow || !isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
+    if (!isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
     if (sendTimeout) window.clearTimeout(sendTimeout);
     sending = false;
     sendingOverlay.hidden = true;

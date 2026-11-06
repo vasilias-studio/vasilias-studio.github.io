@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.addEventListener('message', function (event) {
     var data = event.data || {};
-    if (!contactResponseFrame || event.source !== contactResponseFrame.contentWindow || !isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
+    if (!isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
     if (contactTimeout) window.clearTimeout(contactTimeout);
     if (contactSendingOverlay) contactSendingOverlay.hidden = true;
     if (data.success) {
