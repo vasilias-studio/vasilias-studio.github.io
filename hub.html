@@ -617,7 +617,7 @@ function loadAll(cb){
       {label:'Déploiement terminé et page publique contrôlée',done:false,required:false}
     ]);
     store.watchCfg=lsGet(LS.watch,null)||base.watch.slice();
-    store.watchHist=lsGet(LS.hist,{});
+    store.watchHist=normalizeWatchHistory(lsGet(LS.hist,{}));
     store.alerts=lsGet(LS.alerts,[]);
     store.seo=lsGet(LS.seo,base.seo||store.data.seo||{});
     cb(null);
@@ -683,6 +683,7 @@ function confirmModal(title,text,yes){
 
 /* ==================== VUE D'ENSEMBLE ==================== */
 function viewDashboard(){
+  store.watchHist=normalizeWatchHistory(store.watchHist);
   var d=store.data,h='';
   if(!$('#dirtyPill').classList.contains('hidden'))h+='<div class="banner" role="status"><div class="txt"><strong>Des modifications ne sont pas encore en ligne</strong>'+(ghToken()?'Synchronisation automatique en attente ou en cours.':'Connectez GitHub dans Paramètres pour les publier automatiquement.')+'</div>'+(ghToken()?'<button class="btn btn-primary btn-sm" data-sync-now="1">Synchroniser maintenant</button>':'<button class="btn btn-primary btn-sm" data-goto="settings">Connecter GitHub</button>')+'<button class="btn btn-ghost btn-sm" data-goto="publish">État de publication</button></div>';
   var pub=d.projects.filter(function(p){return p.status==='published'}).length;
@@ -715,7 +716,7 @@ function viewDashboard(){
     h+='<div class="item"><span class="dot neut" style="margin-top:6px"></span><div><strong>'+esc(j.action)+'</strong>'+(j.target?' <span style="color:var(--sub)">'+esc(j.target)+'</span>':'')+'<small class="mut">'+new Date(j.ts).toLocaleString('fr-FR')+'</small></div></div>';
   });
   h+='<button class="btn btn-ghost btn-sm" data-goto="history" style="margin-top:.6rem">Voir l\'historique complet</button></div>';
-  var last=Object.keys(store.watchHist).map(function(u){return {u:u,r:store.watchHist[u]}}).filter(function(x){return x.r&&x.r.length}).map(function(x){return x.r[x.r.length-1]}).sort(function(a,b){return b.ts.localeCompare(a.ts)})[0];
+  var last=Object.keys(store.watchHist).map(function(u){return {u:u,r:store.watchHist[u]}}).filter(function(x){return x.r&&x.r.length}).map(function(x){return x.r[x.r.length-1]}).sort(function(a,b){return String(b.ts||'').localeCompare(String(a.ts||''))})[0];
   h+='<div class="card"><h2>Dernier contrôle</h2>';
   if(last){var kind=last.state==='accessible'?'ok':(last.state==='injoignable'?'err':'warn');
     h+='<p><span class="pill '+pillFor(kind)+'"><span class="dot '+kind+'"></span>'+esc(last.state)+'</span></p>'
@@ -997,11 +998,17 @@ function viewWatch(){
   drawWatch();
   $('#wRun').addEventListener('click',runWatch);
 }
-function lastWatchTs(){var ts=null;Object.keys(store.watchHist).forEach(function(u){var r=store.watchHist[u];if(r&&r.length){var t=r[r.length-1].ts;if(!ts||t>ts)ts=t}});return ts}
+function normalizeWatchHistory(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return {};
+  var out={};Object.keys(raw).forEach(function(url){var value=raw[url];if(Array.isArray(value)){out[url]=value.filter(function(x){return x&&typeof x==='object'})}else if(value&&typeof value==='object'&&Array.isArray(value.records)){out[url]=value.records.filter(function(x){return x&&typeof x==='object'})}else if(value&&typeof value==='object'){out[url]=[value]}else{out[url]=[]}});return out;
+}
+function watchRows(url){var value=store.watchHist&&store.watchHist[url];if(Array.isArray(value))return value;if(value&&typeof value==='object')return [value];return []}
+function lastWatchTs(){var ts=null;store.watchHist=normalizeWatchHistory(store.watchHist);Object.keys(store.watchHist).forEach(function(u){var r=watchRows(u);if(r.length){var t=r[r.length-1].ts;if(t&&(!ts||t>ts))ts=t}});return ts}
 function drawWatch(){
+  store.watchHist=normalizeWatchHistory(store.watchHist);
   var t='<table><thead><tr><th>État</th><th>URL</th><th>HTTP</th><th>Temps</th><th>Dernier contrôle</th></tr></thead><tbody>';
   store.watchCfg.forEach(function(u){
-    var r=(store.watchHist[u]||[]).slice(-1)[0];
+    var r=watchRows(u).slice(-1)[0];
     var pill='<span class="pill neut"><span class="dot neut"></span>jamais contrôlé</span>';
     if(r){var k=r.state==='accessible'?'ok':(r.state==='injoignable'?'err':'warn');pill='<span class="pill '+pillFor(k)+'"><span class="dot '+k+'"></span>'+esc(r.state)+'</span>'}
     t+='<tr><td>'+pill+'</td><td style="word-break:break-all"><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u.replace(/^https?:\/\/[^/]+/,'')||'/')+'</a></td>'
@@ -1026,7 +1033,7 @@ function runWatch(){
   }
   next();
 }
-function pushWatch(u,r){var h=store.watchHist[u]||[];h.push(r);if(h.length>50)h.splice(0,h.length-50);store.watchHist[u]=h}
+function pushWatch(u,r){store.watchHist=normalizeWatchHistory(store.watchHist);var h=watchRows(u);h.push(r);if(h.length>50)h.splice(0,h.length-50);store.watchHist[u]=h}
 
 /* ==================== PUBLICATION ==================== */
 function viewPublish(){
