@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (reduced) {
       preloader.remove();
     } else {
+      if (cameByLink) preloader.classList.add('from-nav');
+      /* Laisse la barre de chargement se remplir avant de lever le rideau */
       setTimeout(function () {
         preloader.classList.add('hide');
-        setTimeout(function () { preloader.remove(); }, 750);
-      }, cameByLink ? 250 : 500);
+        setTimeout(function () { preloader.remove(); }, 1100);
+      }, cameByLink ? 650 : 1000);
     }
   }
 
@@ -31,14 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
     if (url.pathname === location.pathname && url.search === location.search) return; /* ancre sur la même page */
     ev.preventDefault();
     var cover = document.createElement('div');
-    cover.className = 'preloader hide';
+    cover.className = 'preloader exit hide';
     cover.setAttribute('aria-hidden', 'true');
     cover.innerHTML = '<img class="preloader-logo" src="assets/logo-vasilias.svg" alt="" width="317" height="178">';
     document.body.appendChild(cover);
     void cover.offsetWidth;
     cover.classList.remove('hide');
     try { sessionStorage.setItem('vasilias_nav', '1'); } catch (e) {}
-    setTimeout(function () { location.href = url.href; }, 650);
+    setTimeout(function () { location.href = url.href; }, 700);
   });
   /* Retour arrière (cache du navigateur) : retirer un rideau resté affiché */
   window.addEventListener('pageshow', function (e) {

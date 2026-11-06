@@ -226,22 +226,89 @@ button { font-family: inherit; cursor: pointer; }
 .menu-foot p { margin: 0.25rem 0 0; }
 .menu-foot .label { color: var(--bg); letter-spacing: 0.12em; }
 
-/* ---------- Preloader ---------- */
+/* ---------- Preloader : apparition, chargement, disparition ---------- */
 .preloader {
   position: fixed;
   inset: 0;
   z-index: 60;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1.75rem;
   background: var(--ink);
   color: var(--bg);
   user-select: none;
+  --bar-from: 0%;
+  --bar-to: 100%;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
-.preloader.hide { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
-.preloader .preloader-logo { width: 9rem; height: auto; display: block; }
+/* Disparition : le logo et la barre s'effacent, puis le rideau se lève */
+.preloader.hide {
+  clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.22s;
+}
+.preloader .preloader-logo {
+  width: 9rem; height: auto; display: block;
+  animation: preloaderLogoIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both,
+             preloaderPulse 1.6s ease-in-out 0.9s infinite;
+}
 @media (min-width: 640px) { .preloader .preloader-logo { width: 13rem; } }
+/* Espaceur symétrique : garde le logo centré malgré la barre */
+.preloader::before { content: ""; height: 2px; flex: none; }
+/* Barre de chargement */
+.preloader::after {
+  content: "";
+  flex: none;
+  width: 7rem;
+  height: 2px;
+  background:
+    linear-gradient(var(--accent), var(--accent)) left center / 0% 100% no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16)) left center / 100% 100% no-repeat;
+  animation: preloaderBar 0.8s cubic-bezier(0.45, 0, 0.2, 1) 0.2s both;
+}
+@media (min-width: 640px) { .preloader::after { width: 9rem; } }
+/* Arrivée par un lien : la barre reprend où le rideau de sortie l'a laissée */
+.preloader.from-nav { --bar-from: 52%; }
+.preloader.from-nav::after { animation-duration: 0.5s; animation-delay: 0s; }
+.preloader.from-nav .preloader-logo { animation: preloaderPulse 1.6s ease-in-out infinite; }
+/* Rideau de sortie : la barre avance jusqu'à la moitié */
+.preloader.exit { --bar-to: 52%; }
+.preloader.exit::after { animation-duration: 0.65s; }
+.preloader.hide .preloader-logo { animation: preloaderLogoOut 0.32s cubic-bezier(0.55, 0, 0.8, 0.3) both; }
+.preloader.hide::after { animation: preloaderBarOut 0.25s ease both; }
+.preloader.exit.hide .preloader-logo { animation: none; opacity: 0; }
+.preloader.exit.hide::after { animation: none; opacity: 0; }
+
+@keyframes preloaderLogoIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.96); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes preloaderPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.72; }
+}
+@keyframes preloaderLogoOut {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(-14px) scale(1.03); }
+}
+@keyframes preloaderBar {
+  from {
+    background-size: var(--bar-from) 100%, 100% 100%;
+  }
+  to {
+    background-size: var(--bar-to) 100%, 100% 100%;
+  }
+}
+@keyframes preloaderBarOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .preloader, .preloader.hide { transition: none; }
+  .preloader .preloader-logo, .preloader::after { animation: none; }
+}
 
 /* ---------- Hero ---------- */
 .hero {
