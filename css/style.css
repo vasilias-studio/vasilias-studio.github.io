@@ -908,3 +908,44 @@ html,.home-v2{overflow-x:clip}
   .h2-row.even .h2-row-t{order:0;text-align:start;justify-self:start}
   .h2-row.even .h2-row-d{order:2}
 }
+
+/* ================= HARMONISATION pages intérieures avec l'accueil (v2) ================= */
+/* Mêmes marges latérales que les sections de l'accueil, sans débordement horizontal */
+.page{padding-left:5.5vw;padding-right:5.5vw;overflow-x:clip}
+
+/* Titres de section en majuscules, gras, comme l'accueil */
+.media-title,.about-h3,.form-card h3,.work-card-title,.media-card-title,.service-title,.contact-grid .about-h2{font-family:'Josefin Sans',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.01em;line-height:1.08}
+.media-title{font-size:clamp(1.9rem,3.4vw,3.3rem)}
+.about-h3{font-size:clamp(1.3rem,2vw,1.7rem)}
+.about-h2{font-family:'Josefin Sans',sans-serif;font-weight:700;line-height:1.1;letter-spacing:-0.015em}
+.contact-grid .about-h2{font-size:clamp(1.7rem,3vw,2.6rem)}
+.work-card:hover .work-card-title{color:inherit;text-decoration:underline;text-underline-offset:.18em}
+
+/* Services : lignes ouvertes à filets (comme « Champs d'intervention ») au lieu de cartes encadrées */
+.services-grid{display:block;margin-top:clamp(2.5rem,5vw,4rem)}
+.service-card{display:grid;grid-template-columns:1.15fr 1fr;grid-template-areas:"num desc" "title desc" "title foot";column-gap:2rem;align-content:start;padding:clamp(2.2rem,3.4vw,3.6rem) 0;background:transparent;border:0;border-top:1px solid rgba(22,21,19,.25);border-radius:0;transition:background .2s ease}
+.service-card:last-child{border-bottom:1px solid rgba(22,21,19,.25)}
+.service-card:hover{background:rgba(242,233,216,.35)}
+.service-card>div:first-child{display:contents}
+.service-num{grid-area:num}
+.service-title{grid-area:title;font-size:clamp(1.35rem,2.6vw,2.5rem);margin:.4rem 0 0;transition:transform .25s ease}
+.service-card:hover .service-title{transform:translateX(6px)}
+.service-desc{grid-area:desc;margin:0;font-size:.95rem;line-height:1.6;color:var(--muted);max-width:30rem}
+.service-foot{grid-area:foot;padding-top:1.1rem}
+.service-card:nth-child(even){grid-template-columns:1fr 1.15fr;grid-template-areas:"desc num" "desc title" "foot title"}
+.service-card:nth-child(even) .service-num,.service-card:nth-child(even) .service-title{justify-self:end;text-align:end}
+@media(max-width:860px){
+  .service-card,.service-card:nth-child(even){grid-template-columns:1fr;grid-template-areas:"num" "title" "desc" "foot";row-gap:0}
+  .service-card:nth-child(even) .service-num,.service-card:nth-child(even) .service-title{justify-self:start;text-align:start}
+  .service-desc{margin-top:.9rem}
+}
+
+/* Contact : filets au lieu de cadres */
+.mail-box{padding:1.5rem 0;background:transparent;border:0;border-top:1px solid rgba(22,21,19,.25);border-bottom:1px solid rgba(22,21,19,.25);border-radius:0}
+.social-list{margin-top:0}
+.social-item{padding:1.1rem 0;background:transparent;border:0;border-bottom:1px solid rgba(22,21,19,.16);border-radius:0;margin-bottom:0}
+.social-item:hover{border-color:rgba(22,21,19,.16);background:rgba(242,233,216,.35)}
+.form-card{padding:0;background:transparent;border:0;border-radius:0}
+@media(min-width:1024px){.form-card{padding-left:clamp(0rem,2vw,2rem)}}
+.services-grid{margin-top:0}
+.service-card:first-child{border-top:0}
