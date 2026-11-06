@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var modal = document.getElementById('quoteModal');
   var openButton = document.getElementById('quoteOpen');
   var closeButton = document.getElementById('quoteClose');
+  var inlineMode = !!(modal && modal.hasAttribute('data-inline'));
   var dialog = modal && modal.querySelector('.quote-dialog');
   var wizard = document.getElementById('quoteWizard');
   if (!modal || !wizard || !dialog) return;
@@ -69,6 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
     return field ? field.value.trim() : '';
   }
   function openModal() {
+    if (inlineMode) {
+      modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      dialog.focus({ preventScroll: true });
+      return;
+    }
     lastFocus = document.activeElement;
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
@@ -78,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.setTimeout(function () { dialog.focus(); }, 0);
   }
   function closeModal() {
-    if (sending) return;
+    if (inlineMode || sending) return;
     modal.hidden = true;
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('quote-modal-open');
@@ -310,8 +316,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  openButton.addEventListener('click', openModal);
-  closeButton.addEventListener('click', closeModal);
+  if (openButton) openButton.addEventListener('click', openModal);
+  if (closeButton) closeButton.addEventListener('click', closeModal);
   modal.querySelectorAll('[data-quote-close]').forEach(function (el) { el.addEventListener('click', closeModal); });
   continueButton.addEventListener('click', function () { if (validateCurrentStep()) updateStep(currentStep + 1); });
   previousButton.addEventListener('click', function () { if (currentStep > 1 && !sending) updateStep(currentStep - 1); });
@@ -347,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
     dropZone.addEventListener('drop', function (event) { addFiles(event.dataTransfer && event.dataTransfer.files); });
   }
   document.addEventListener('keydown', function (event) {
-    if (modal.hidden) return;
+    if (inlineMode || modal.hidden) return;
     if (event.key === 'Escape') { event.preventDefault(); closeModal(); }
     if (event.key === 'Tab') {
       var focusable = Array.prototype.slice.call(dialog.querySelectorAll('button:not([disabled]):not([hidden]),input:not([disabled]):not([hidden]),textarea:not([disabled]):not([hidden]),a[href]')).filter(function (el) { return !el.closest('[hidden]'); });
@@ -366,4 +372,5 @@ document.addEventListener('DOMContentLoaded', function () {
     setLive('');
   });
   if (setupNotice) setupNotice.hidden = !!(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
+  if (inlineMode) updateStep(1);
 });

@@ -155,14 +155,8 @@
       setMeta(doc, 'meta[property="og:description"]', 'content', seo.ogDesc || seo.desc);
       setMeta(doc, 'meta[name="twitter:description"]', 'content', seo.ogDesc || seo.desc);
     }
-    var shareImage = seo.img;
-    if (!shareImage && /^work-[^/]+\.html$/i.test(pageFile)) {
-      var slug = pageFile.replace(/^work-/i, '').replace(/\.html$/i, '');
-      var project = ((data && data.projects) || []).find(function (p) {
-        return p && (p.slug === slug || projectHref(p) === pageFile);
-      });
-      if (project) shareImage = project.cover;
-    }
+    var globalSeo = ((data && data.seo) || {})['index.html'] || {};
+    var shareImage = seo.img || globalSeo.img;
     if (shareImage) {
       var imgUrl = fullUrl(shareImage);
       setMeta(doc, 'meta[property="og:image"]', 'content', imgUrl);
@@ -745,7 +739,8 @@
     var pageTitle = seo.title || (project.title + ' — Vasilías');
     var pageDesc = seo.desc || project.tagline || project.overview || ('Étude de cas ' + project.title + ' par Vasilías Studio.');
     var coverAsset = normalizeAssetPath(project.cover);
-    var ogImage = fullUrl(seo.img || coverAsset || 'assets/og/og-image.png');
+    var globalShareImage = (((data && data.seo) || {})['index.html'] || {}).img;
+    var ogImage = fullUrl(seo.img || globalShareImage || coverAsset || 'assets/og/og-image.png');
     var canonical = seo.canonical || (SITE_ORIGIN + file);
     var alts = (data && data.alts) || {};
     var coverRel = relAssetPath(coverAsset);

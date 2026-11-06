@@ -1140,6 +1140,13 @@ html,.home-v2{overflow-x:clip}
 @media(max-width:560px){.quote-callout{padding:1.25rem}.quote-fields-2,.quote-category-grid,.quote-budget-grid,.quote-deadline-grid,.quote-style-grid,.quote-service-option-grid{grid-template-columns:minmax(0,1fr)}.quote-category-card{min-height:0}.quote-category-card>span:last-child{grid-column:2}.quote-progress-meta{font-size:.6875rem}.quote-file-item{grid-template-columns:2.5rem minmax(0,1fr) auto;gap:.45rem}.quote-file-preview{width:2.5rem;height:2.5rem}.quote-file-remove{font-size:.6875rem}.quote-form-footer{gap:.5rem}.quote-form-footer .btn{padding:.7rem .65rem;font-size:.6875rem;letter-spacing:.04em}.quote-footer-actions{gap:.45rem}.quote-summary-row{grid-template-columns:1fr;gap:.1rem}}
 @media(prefers-reduced-motion:reduce){.quote-progress-track span,.quote-category-card,.quote-drop-zone,.quote-spinner,.quote-step:not([hidden]){transition:none;animation:none}.quote-modal-open{scroll-behavior:auto}}
 
+/* ---------- Devis intégré sur la page Services ---------- */
+.quote-inline{display:block;margin:clamp(3rem,6vw,5rem) 0}
+.quote-inline .quote-dialog{width:min(850px,100%);height:auto;max-height:none;overflow:visible;margin:0 auto;box-shadow:none}
+.quote-inline .quote-close{display:none}
+.quote-inline .quote-form-footer{position:static}
+@media(max-width:760px){.quote-inline .quote-dialog{width:100%;height:auto;max-height:none;overflow:visible;border:1px solid var(--ink);padding:1rem;box-shadow:none}}
+
 /* ---------- Carrousel d'images de couverture (pages projet) ---------- */
 .case-slider { position: relative; }
 .case-slider .slider-track { display: flex; width: 100%; aspect-ratio: 16 / 9; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); touch-action: pan-y; }
