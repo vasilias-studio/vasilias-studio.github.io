@@ -1,4 +1,4 @@
-/* Devis personnalisé — parcours multi-étapes. L'envoi reste fermé tant que le backend et la notice ne sont pas activés. */
+/* Devis personnalisé — envoi natif multipart via FormSubmit, après activation et validation de la notice. */
 document.addEventListener('DOMContentLoaded', function () {
   var modal = document.getElementById('quoteModal');
   var openButton = document.getElementById('quoteOpen');
@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', function () {
   var dropZone = document.getElementById('quoteDropZone');
   var summary = document.getElementById('quoteSummary');
   var confirmation = document.getElementById('quoteConfirmation');
-  var transport = document.getElementById('quoteTransport');
   var transportFrame = document.getElementById('quoteResponseFrame');
   var payloadInput = document.getElementById('quotePayload');
+  var replyToInput = document.getElementById('quoteReplyTo');
+  var nextInput = document.getElementById('quoteNext');
   var setupNotice = document.getElementById('quoteSetupNotice');
   var config = window.VAS_QUOTE_CONFIG || {};
   var currentStep = 1;
@@ -58,8 +59,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var stepNames = ['Informations du client', 'Type de projet', 'Détails des prestations', 'Budget et délais', 'Univers et références', 'Récapitulatif'];
   var toSafeText = function (value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (ch) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]; }); };
 
-  function isAppsScriptEndpoint(value) {
-    return /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(value || ''));
+  function isFormSubmitEndpoint(value) {
+    return /^https:\/\/formsubmit\.co\/[^/?#]+$/.test(String(value || ''));
   }
   function setLive(text, isError) {
     liveMessage.textContent = text || '';
@@ -213,7 +214,25 @@ document.addEventListener('DOMContentLoaded', function () {
     fileError.textContent = '';
     return true;
   }
+  function syncNativeFileInput() {
+    if (!fileInput) return true;
+    try {
+      var transfer = new DataTransfer();
+      files.forEach(function (file) { transfer.items.add(file); });
+      fileInput.files = transfer.files;
+      return true;
+    } catch (error) {
+      fileInput.value = '';
+      return files.length === 0;
+    }
+  }
   function renderFiles() {
+    var inputWarning = '';
+    if (!syncNativeFileInput() && files.length) {
+      files = [];
+      syncNativeFileInput();
+      inputWarning = 'Ce navigateur ne permet pas de joindre les fichiers sélectionnés. Vous pouvez continuer sans pièce jointe.';
+    }
     fileList.textContent = '';
     files.forEach(function (file, index) {
       var li = document.createElement('li'); li.className = 'quote-file-item';
@@ -237,6 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
       li.appendChild(preview); li.appendChild(details); li.appendChild(remove); fileList.appendChild(li);
     });
     validateFiles();
+    if (inputWarning) fileError.textContent = inputWarning;
   }
   function addFiles(incoming) {
     var list = Array.prototype.slice.call(incoming || []);
@@ -248,9 +268,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (files.reduce(function (sum, current) { return sum + current.size; }, file.size) > maxTotalBytes) { problem = 'Le poids total dépasserait 8 Mo.'; return; }
       files.push(file);
     });
-    fileError.textContent = problem;
     renderFiles();
-    if (fileInput) fileInput.value = '';
+    if (problem) fileError.textContent = problem;
   }
   function summaryRow(label, value) {
     return '<div class="quote-summary-row"><dt>' + toSafeText(label) + '</dt><dd>' + (value ? toSafeText(value).replace(/\n/g, '<br>') : '<span class="quote-empty-value">Non renseigné</span>') + '</dd></div>';
@@ -268,36 +287,19 @@ document.addEventListener('DOMContentLoaded', function () {
       summarySection('Projet', 2, [summaryRow('Catégories', cats), summaryRow('Autre projet', fieldValue('otherProject')), summaryRow('Prestations', services), summaryRow('Livrables souhaités', fieldValue('deliverables')), summaryRow('Description', fieldValue('projectDescription')), summaryRow('Objectifs', fieldValue('objectives')), summaryRow('Public cible', fieldValue('audience'))]) +
       summarySection('Budget et délais', 4, [summaryRow('Budget estimé', selectedValues('budget')[0] || ''), summaryRow('Délai souhaité', selectedValues('deadline')[0] || ''), summaryRow('Date précise', fieldValue('targetDate'))]) +
       summarySection('Univers et références', 5, [summaryRow('Style graphique', styles), summaryRow('Fichiers joints', fileNames)]);
-    submitButton.disabled = !(isAppsScriptEndpoint(config.endpoint) && config.privacyApproved && !sending);
-    setupNotice.hidden = !!(isAppsScriptEndpoint(config.endpoint) && config.privacyApproved);
-  }
-  function readFileAsDataUrl(file) {
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function () { resolve(String(reader.result || '')); };
-      reader.onerror = function () { reject(new Error('Lecture impossible pour ' + file.name)); };
-      reader.readAsDataURL(file);
-    });
+    submitButton.disabled = !(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved && !sending);
+    setupNotice.hidden = !!(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
   }
   function collectPayload() {
-    return Promise.all(files.map(function (file) {
-      return readFileAsDataUrl(file).then(function (dataUrl) {
-        return { name: file.name, type: file.type || allowedTypes[fileExtension(file.name)][0], data: dataUrl.split(',').pop(), size: file.size };
-      });
-    })).then(function (attachments) {
-      return {
-        requestId: nonce,
-        startedAt: startedAt,
-        honeypot: (wizard.querySelector('[name="quoteFax"]') || {}).value || '',
-        privacyAccepted: !!document.getElementById('quoteConsent').checked,
-        client: { name: fieldValue('clientName'), email: fieldValue('email'), whatsapp: fieldValue('whatsapp'), company: fieldValue('company'), website: fieldValue('website') },
-        categories: selectedValues('category'), otherProject: fieldValue('otherProject'),
-        deliverables: Array.from(selectedDeliverables), deliverablesDescription: fieldValue('deliverables'),
-        budget: selectedValues('budget')[0] || '', deadline: selectedValues('deadline')[0] || '', targetDate: fieldValue('targetDate'),
-        projectDescription: fieldValue('projectDescription'), objectives: fieldValue('objectives'), audience: fieldValue('audience'), styles: selectedValues('style'),
-        attachments: attachments
-      };
-    });
+    var categories = selectedValues('category').map(function (key) { return categoryLabels[key] || key; });
+    var services = Array.from(selectedDeliverables).map(function (entry) { return entry.split('::').slice(1).join('::'); });
+    return JSON.stringify({
+      client: { name: fieldValue('clientName'), email: fieldValue('email'), whatsapp: fieldValue('whatsapp'), company: fieldValue('company'), website: fieldValue('website') },
+      project: { categories: categories, otherProject: fieldValue('otherProject'), deliverables: services, deliverablesDescription: fieldValue('deliverables'), description: fieldValue('projectDescription'), objectives: fieldValue('objectives'), audience: fieldValue('audience') },
+      budget: selectedValues('budget')[0] || '', deadline: selectedValues('deadline')[0] || '', targetDate: fieldValue('targetDate'),
+      styles: selectedValues('style'), attachments: files.map(function (file) { return { name: file.name, size: humanSize(file.size) }; }),
+      consentement: 'accepté'
+    }, null, 2);
   }
   function showConfirmation(detail) {
     document.getElementById('quoteConfirmationDetail').textContent = detail && detail !== 'Votre demande est reçue.' && detail !== 'Votre demande a déjà été reçue.' ? detail : '';
@@ -310,8 +312,8 @@ document.addEventListener('DOMContentLoaded', function () {
     sending = false;
   }
   function sendRequest() {
-    if (!isAppsScriptEndpoint(config.endpoint) || !config.privacyApproved) {
-      setLive('L’envoi reste désactivé tant que l’URL Apps Script et la politique de confidentialité ne sont pas configurées et validées.', true);
+    if (!isFormSubmitEndpoint(config.endpoint) || !config.enabled || !config.privacyApproved) {
+      setLive('L’envoi reste désactivé tant que FormSubmit n’est pas activé et que la politique de confidentialité n’est pas validée.', true);
       return;
     }
     if (!document.getElementById('quoteConsent').checked) {
@@ -324,11 +326,13 @@ document.addEventListener('DOMContentLoaded', function () {
     submitButton.disabled = true;
     submitButton.innerHTML = '<span class="quote-spinner" aria-hidden="true"></span>Envoi en cours…';
     previousButton.disabled = true;
-    setLive('Transmission sécurisée de votre demande…');
-    collectPayload().then(function (payload) {
-      transport.action = config.endpoint;
-      payloadInput.value = JSON.stringify(payload);
-      transport.submit();
+    setLive('Transmission de votre demande via FormSubmit…');
+    try {
+      wizard.action = config.endpoint;
+      payloadInput.value = collectPayload();
+      replyToInput.value = fieldValue('email');
+      nextInput.value = 'https://vasilias-studio.github.io/quote-received.html?requestId=' + encodeURIComponent(nonce);
+      wizard.submit();
       sendTimer = window.setTimeout(function () {
         if (!sending) return;
         sending = false;
@@ -337,13 +341,13 @@ document.addEventListener('DOMContentLoaded', function () {
         previousButton.disabled = false;
         setLive('Aucune confirmation du serveur n’a été reçue. Votre demande n’est pas confirmée; réessayez ou écrivez à ericotlauranto34@gmail.com.', true);
       }, 45000);
-    }).catch(function (error) {
+    } catch (error) {
       sending = false;
       submitButton.disabled = false;
       previousButton.disabled = false;
       submitButton.textContent = 'Réessayer l’envoi';
-      setLive(error.message || 'La préparation des fichiers a échoué. Réessayez.', true);
-    });
+      setLive(error.message || 'La préparation de la demande a échoué. Réessayez.', true);
+    }
   }
 
   openButton.addEventListener('click', openModal);
@@ -394,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
   window.addEventListener('message', function (event) {
-    if (event.source !== transportFrame.contentWindow || !event.data || event.data.type !== 'vasilias-quote-result' || event.data.requestId !== nonce) return;
+    if (event.origin !== window.location.origin || event.source !== transportFrame.contentWindow || !event.data || event.data.type !== 'vasilias-quote-result' || event.data.requestId !== nonce) return;
     clearTimeout(sendTimer);
     sending = false;
     if (event.data.ok) {
@@ -406,5 +410,5 @@ document.addEventListener('DOMContentLoaded', function () {
       setLive(event.data.message || 'L’envoi a échoué. Vérifiez votre connexion ou réessayez.', true);
     }
   });
-  if (setupNotice) setupNotice.hidden = !!(isAppsScriptEndpoint(config.endpoint) && config.privacyApproved);
+  if (setupNotice) setupNotice.hidden = !!(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
 });

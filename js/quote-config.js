@@ -1,7 +1,6 @@
-/* Public client configuration for the quote wizard.
-   Do not put passwords, API keys or private tokens in this file. */
+/* Réglages publics du formulaire de devis. Aucun secret ne doit figurer ici. */
 window.VAS_QUOTE_CONFIG = Object.freeze({
-  endpoint: '',
-  adminSheetUrl: '',
+  endpoint: 'https://formsubmit.co/ericotlauranto34@gmail.com',
+  enabled: false,
   privacyApproved: false
 });

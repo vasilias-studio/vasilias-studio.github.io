@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Demande transmise — Vasilías Studio</title>
+  <link rel="stylesheet" href="css/style.css?v=52">
+  <style>
+    body{min-height:100vh;display:grid;place-items:center;padding:1.5rem;background:#f8f6f2;color:#201f1d;font-family:Arial,sans-serif}
+    main{max-width:42rem;padding:clamp(1.5rem,5vw,3rem);border:1px solid #ded9d1;background:#fff;text-align:center}
+    .mark{display:grid;width:3.5rem;height:3.5rem;place-items:center;margin:0 auto 1rem;border:1px solid #BF814B;border-radius:50%;color:#BF814B;font-size:1.8rem}
+    h1{margin:.5rem 0;font-size:clamp(1.6rem,4vw,2.4rem)}
+    p{line-height:1.7;color:#5d5954}
+    a{display:inline-block;margin-top:1rem;padding:.85rem 1.15rem;background:#201f1d;color:#fff;text-decoration:none}
+  </style>
+</head>
+<body>
+  <main>
+    <span class="mark" aria-hidden="true">✓</span>
+    <p>Vasilías Studio · Devis personnalisé</p>
+    <h1>Merci, votre demande a été transmise.</h1>
+    <p>Votre demande est en cours d’acheminement par e-mail. Si vous n’obtenez pas de confirmation, contactez-nous directement à <a href="mailto:ericotlauranto34@gmail.com">ericotlauranto34@gmail.com</a>.</p>
+    <a href="services.html#packs">Retour aux services</a>
+  </main>
+  <script>
+    (function () {
+      var requestId = new URLSearchParams(window.location.search).get('requestId');
+      if (requestId && window.parent !== window) {
+        window.parent.postMessage({ type: 'vasilias-quote-result', requestId: requestId, ok: true }, window.location.origin);
+      }
+    }());
+  </script>
+</body>
+</html>

@@ -1,8 +1,14 @@
-# Devis personnalisés — installation Google Apps Script
+# Option de secours — Apps Script (non utilisée pour le formulaire actuel)
 
-## État
+## État actuel
 
-Le parcours, la validation cliente, le stockage Sheets/Drive et le code d’envoi sont préparés. **Aucune demande ne part tant que le script n’est pas déployé, que la notice de confidentialité n’est pas approuvée et que `js/quote-config.js` n’est pas configuré.** Il n’y a donc pas encore de réception d’e-mail ou de conservation active à annoncer.
+Le parcours de devis est en cours de migration vers FormSubmit, comme le formulaire Contact. Le flux prévu est une transmission par e-mail à `ericotlauranto34@gmail.com`; les demandes ne sont pas enregistrées dans le Hub, Sheets ou Drive. La configuration publique du devis et la notice restent désactivées/en attente de validation. L’adresse FormSubmit doit également être confirmée à la première utilisation. Aucun envoi réel n’a été testé.
+
+Les sections ci-dessous décrivent une ancienne option Apps Script + Sheets/Drive préparée auparavant. Ne pas suivre ces étapes pour activer le flux FormSubmit. Ne reprendre Apps Script que si Vasilías Studio choisit ultérieurement de revenir à l’enregistrement privé dans le Hub.
+
+## État de l’option Apps Script
+
+Le code de stockage Sheets/Drive est conservé comme option de secours. Il n’est pas utilisé par le formulaire actuel.
 
 Le dépôt GitHub Pages est statique. Le script Apps Script doit être créé et autorisé depuis le compte Google de Vasilías Studio; le connecteur Drive ne peut pas accorder ces autorisations ni publier le Web App.
 
