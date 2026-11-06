@@ -448,6 +448,23 @@ var GH_OWNER='vasilias-studio',GH_REPO='vasilias-studio.github.io',GH_BRANCH='ma
 var pendingAssets={},pendingDeletes={},syncTimer=null,syncRunning=false,syncAgain=false;
 var hubChannel=typeof BroadcastChannel==='function'?new BroadcastChannel('vasilias_hub'):null;
 function ghToken(){return localStorage.getItem('hub2_gh_token')||''}
+var pendingImagePreviews={};
+function normalizedImagePath(path){if(!path||path==='none')return '';var x=String(path).trim();if(/^(https?:|data:|blob:|\/)/i.test(x))return x;return /^assets\//.test(x)?x:'assets/'+x.replace(/^\.?\//,'')}
+function imageLibraryOptions(selected,multiple){
+  var wanted=Array.isArray(selected)?selected.map(normalizedImagePath):[normalizedImagePath(selected)];var seen={};var out='';
+  if(!multiple)out+='<option value="">— Choisir une image —</option>';
+  (store.data.media||[]).forEach(function(m){var path=normalizedImagePath(m.path||m.file);if(!/\.(png|jpe?g|webp|gif|svg|avif)$/i.test(path)||seen[path])return;seen[path]=1;out+='<option value="'+esc(path)+'" '+(wanted.indexOf(path)>=0?'selected':'')+'>'+esc((path.split('/').pop()||path)+' · '+(m.used||'Médiathèque'))+'</option>'});
+  wanted.forEach(function(path){if(path&&!seen[path])out+='<option value="'+esc(path)+'" selected>'+esc(path.split('/').pop()+' · image actuelle')+'</option>'});
+  return out;
+}
+function queueHubImage(file){
+  var clean=file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');var path='assets/hub-uploads/'+Date.now()+'-'+Math.random().toString(36).slice(2,6)+'-'+clean;
+  pendingAssets[path]=file;pendingImagePreviews[path]=URL.createObjectURL(file);
+  var rel=path.replace(/^assets\//,'');var item={path:path,bytes:file.size,used:'Ajouté via Hub'};Object.defineProperty(item,'file',{value:rel,enumerable:false,writable:true,configurable:true});
+  store.data.media=store.data.media||[];store.data.media.push(item);return path;
+}
+function previewImageUrl(path){return pendingImagePreviews[path]||normalizedImagePath(path)}
+function addImageOption(select,path){var exists=Array.prototype.some.call(select.options,function(o){return o.value===path});if(!exists){var o=document.createElement('option');o.value=path;o.textContent=path.split('/').pop()+' · nouvel import';select.appendChild(o)}select.value=path}
 function ghHeaders(){return {'Authorization':'Bearer '+ghToken(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
 function ghApi(path,opts){opts=opts||{};opts.headers=Object.assign(ghHeaders(),opts.headers||{});return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+path,opts).then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('GitHub '+r.status+': '+(t||r.statusText).slice(0,300))});return r.status===204?null:r.json()})}
 function save(){store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();lsSet(LS.data,store.data);localStorage.setItem('hub2_pending_sync','1');store.dirty=true;$('#dirtyPill').classList.remove('hidden');if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});clearTimeout(syncTimer);syncTimer=setTimeout(syncGitHub,900)}
@@ -667,7 +684,7 @@ function confirmModal(title,text,yes){
 /* ==================== VUE D'ENSEMBLE ==================== */
 function viewDashboard(){
   var d=store.data,h='';
-  if(!$('#dirtyPill').classList.contains('hidden'))h+='<div class="banner" role="status"><div class="txt"><strong>Des modifications ne sont pas encore en ligne</strong>Exportez <code>hub-data.json</code>, remplacez-le dans le dépôt, puis commitez.</div><button class="btn btn-primary btn-sm" data-export="1">Exporter maintenant</button><button class="btn btn-ghost btn-sm" data-goto="publish">Voir la marche à suivre</button></div>';
+  if(!$('#dirtyPill').classList.contains('hidden'))h+='<div class="banner" role="status"><div class="txt"><strong>Des modifications ne sont pas encore en ligne</strong>'+(ghToken()?'Synchronisation automatique en attente ou en cours.':'Connectez GitHub dans Paramètres pour les publier automatiquement.')+'</div>'+(ghToken()?'<button class="btn btn-primary btn-sm" data-sync-now="1">Synchroniser maintenant</button>':'<button class="btn btn-primary btn-sm" data-goto="settings">Connecter GitHub</button>')+'<button class="btn btn-ghost btn-sm" data-goto="publish">État de publication</button></div>';
   var pub=d.projects.filter(function(p){return p.status==='published'}).length;
   var todo=d.projects.filter(function(p){return p.status==='incomplete'||p.status==='draft'});
   var ready=d.projects.filter(function(p){return p.status==='ready'}).length;
@@ -705,7 +722,7 @@ function viewDashboard(){
       +'<p style="margin-top:.5rem;font-size:.875rem;word-break:break-all">'+esc(last.url)+'</p>'
       +'<small class="mut">'+new Date(last.ts).toLocaleString('fr-FR')+' — HTTP '+(last.http||'—')+' · '+(last.ms||'?')+' ms</small>'
       +'<div style="margin-top:.8rem"><button class="btn btn-ghost btn-sm" data-goto="watch">Ouvrir la surveillance</button></div>';
-  }else h+='<div class="empty">Aucun contrôle effectué.<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-goto="watch">Lancer le premier contrôle</button></div></div>';
+  }else h+='<div class="empty">Aucun contrôle effectué.<div style="margin-top:.6rem"><button class="btn btn-primary btn-sm" data-goto="watch" data-run-watch="1">Lancer le premier contrôle</button></div></div>';
   h+='</div></div>';
   /* Notifications */
   h+='<div class="card"><h2>Notifications</h2>';
@@ -715,7 +732,7 @@ function viewDashboard(){
   });
   h+='</div>';
   $('#view').innerHTML=h;
-  $('#view').onclick=function(e){if(e.target.closest('[data-export]')){exportData();viewDashboard();return}var g=e.target.closest('[data-goto]');if(g){go(g.dataset.goto);return}var o=e.target.closest('[data-open]');if(o){sessionStorage.setItem('hub2_open',o.dataset.open);go('projects')}};
+  $('#view').onclick=function(e){if(e.target.closest('[data-export]')){exportData();viewDashboard();return}if(e.target.closest('[data-sync-now]')){syncGitHub();return}var g=e.target.closest('[data-goto]');if(g){go(g.dataset.goto);if(g.hasAttribute('data-run-watch'))setTimeout(runWatch,0);return}var o=e.target.closest('[data-open]');if(o){sessionStorage.setItem('hub2_open',o.dataset.open);go('projects')}};
 }
 function hasImage(p){var m=store.data.media||[];return m.some(function(x){return (x.used||'').indexOf(p.slug)>=0||!x.used})&&m.length>0||(p.cover&&p.cover!=='none')}
 
@@ -780,11 +797,11 @@ function projectModal(slug){
     +'<div><label class="lbl">Client / contexte</label><input type="text" id="fmC" value="'+esc(p?(p.client||''):'')+'"></div></div>'
     +'<label class="lbl req">Catégories</label><div style="display:flex;flex-wrap:wrap;gap:.35rem">'
     +CATEGORIES.map(function(c){var on=cats.includes(c);return '<button type="button" class="pill '+(on?'info':'neut')+'" data-cat="'+c+'" aria-pressed="'+on+'">'+(on?ic('check')+' ':'')+c+'</button>'}).join('')+'</div>'
-    +'<label class="lbl">Visuel de couverture (chemin dans assets/ ou « none »)</label><input type="text" id="fmCover" value="'+esc(p?(p.cover||'none'):'none')+'" placeholder="projects/projet/cover.webp">'
+    +'<label class="lbl">Image de couverture</label><div class="toolbar"><select id="fmCover" aria-label="Choisir l’image de couverture">'+imageLibraryOptions(p?(p.cover||''): '',false)+'</select><label class="btn btn-ghost btn-sm" for="fmCoverUpload">Importer une image</label><input id="fmCoverUpload" type="file" accept="image/*" hidden></div><img id="fmCoverPreview" alt="Aperçu de la couverture" style="display:block;max-width:100%;max-height:220px;object-fit:contain;border-radius:8px;margin:.5rem 0;background:var(--mut-bg)">'
     +'<label class="lbl">Rôle / contribution</label><input type="text" id="fmRole" value="'+esc(p?(p.role||''):'')+'">'
     +'<label class="lbl">Accroche</label><textarea id="fmTagline">'+esc(p?(p.tagline||''):'')+'</textarea>'
     +'<label class="lbl">Présentation du projet</label><textarea id="fmOverview">'+esc(p?(p.overview||''):'')+'</textarea>'
-    +'<label class="lbl">Galerie (chemins de fichiers JSON, liste)</label><textarea id="fmGallery" rows="4">'+esc(JSON.stringify(p?(p.gallery||[]):[]))+'</textarea>'
+    +'<label class="lbl">Images de la galerie</label><select id="fmGallery" multiple size="5" aria-label="Choisir plusieurs images" style="min-height:8rem">'+imageLibraryOptions(p?(p.gallery||[]):[],true)+'</select><label class="btn btn-ghost btn-sm" for="fmGalleryUpload" style="margin-top:.5rem">Importer des images dans la galerie</label><input id="fmGalleryUpload" type="file" accept="image/*" multiple hidden><p class="help">Sélectionnez une ou plusieurs images de la médiathèque, ou importez-les depuis votre appareil. Utilisez Ctrl/Cmd pour choisir plusieurs images.</p>'
     +'<p class="help">Les projets « Brouillon » et « À compléter » ne doivent pas apparaître sur le site public. « Prêt à publier » passe par la checklist de Publication.</p>';
   var pBtns=[{label:'Annuler',cls:'btn-ghost'}];
   if(p)pBtns.push({label:'Archiver',cls:'btn-danger',onClick:function(bg){bg.remove();confirmModal('Archiver '+p.title+' ?','Le projet restera dans le hub mais sera marqué archivé (retiré du site au prochain export).',function(){p.status='archived';log('Projet archivé',p.title);save();viewProjects();toast('Projet archivé','warn')})}});
@@ -799,10 +816,13 @@ function projectModal(slug){
         var base=slugify(t)||'projet',sl=base,k=2;
         while(store.data.projects.some(function(x){return x.slug===sl})){sl=base+'-'+k;k++}
         p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
-      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value.trim()||'none';p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();try{p.gallery=JSON.parse($('#fmGallery',bg).value||'[]');if(!Array.isArray(p.gallery))throw new Error('La galerie doit être une liste JSON.')}catch(e){toast('Galerie invalide : '+e.message,'err');return}
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value||'none';p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=Array.prototype.map.call($('#fmGallery',bg).selectedOptions,function(o){return o.value});
       if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — synchronisation automatique en cours.','ok');
     }});
-  modal(p?'Modifier « '+p.title+' »':'Nouveau projet',body,pBtns);
+  var projectDialog=modal(p?'Modifier « '+p.title+' »':'Nouveau projet',body,pBtns);
+  var coverSelect=$('#fmCover',projectDialog),coverPreview=$('#fmCoverPreview',projectDialog);function showCover(){var value=coverSelect.value;coverPreview.src=value?previewImageUrl(value):'';coverPreview.style.display=value?'block':'none'}coverSelect.addEventListener('change',showCover);showCover();
+  $('#fmCoverUpload',projectDialog).addEventListener('change',function(e){var file=e.target.files[0];if(!file)return;var path=queueHubImage(file);addImageOption(coverSelect,path);showCover();save();toast('Image ajoutée — téléversement automatique en cours.','ok')});
+  $('#fmGalleryUpload',projectDialog).addEventListener('change',function(e){Array.prototype.forEach.call(e.target.files,function(file){var path=queueHubImage(file);var option=document.createElement('option');option.value=path;option.textContent=path.split('/').pop()+' · nouvel import';option.selected=true;$('#fmGallery',projectDialog).appendChild(option)});if(e.target.files.length){save();toast('Images ajoutées à la galerie et à la médiathèque.','ok')}});
   $all('[data-cat]').forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.className='pill '+(!on?'info':'neut');b.innerHTML=(!on?ic('check')+' ':'')+esc(b.dataset.cat)})});
 }
 
@@ -824,10 +844,11 @@ function viewContent(){
     h+='<tr><td><strong>'+esc(pg.name)+'</strong></td><td><code style="font-size:.8rem">'+esc(pg.file)+'</code></td><td>'+(pg.inMenu===undefined?'<span class="pill neut">Non renseigné</span>':pg.inMenu?'<span class="pill ok">Oui</span>':'<span class="pill neut">Non</span>')+'</td><td>'+(flag?'<span class="pill ok">Renseigné</span>':'<span class="pill warn">À vérifier</span>')+'</td></tr>';
   });
   h+='</tbody></table></div><button class="btn btn-ghost btn-sm" data-goto="seo" style="margin-top:.6rem">Gérer le SEO de ces pages '+ic('arrow_forward')+'</button></div>';
-  h+='<div class="card"><h2>Autres contenus du site</h2><p class="help">Modifiez les champs de texte et listes. Le Hub applique ces données aux pages publiques lors de la synchronisation.</p><label class="lbl">Processus (JSON)</label><textarea id="cxProcess" rows="10">'+esc(JSON.stringify(d.process||{},null,2))+'</textarea><label class="lbl">Champs d’intervention (JSON)</label><textarea id="cxFields" rows="10">'+esc(JSON.stringify({heading:d.fieldsHeading||'',items:d.fields||[]},null,2))+'</textarea><label class="lbl">À propos (JSON)</label><textarea id="cxAbout" rows="10">'+esc(JSON.stringify(d.about||{},null,2))+'</textarea><label class="lbl">Contact (JSON)</label><textarea id="cxContact" rows="8">'+esc(JSON.stringify(d.contact||{},null,2))+'</textarea><label class="lbl">Supports et réseaux (JSON)</label><textarea id="cxSupports" rows="10">'+esc(JSON.stringify({supports:d.supports||[],profiles:d.profiles||[]},null,2))+'</textarea><button class="btn btn-primary btn-sm" id="cxSave">Enregistrer ces contenus</button></div>';
+  h+='<div class="card"><h2>Autres contenus du site</h2><p class="help">Modifiez les champs de texte et listes. Le Hub applique ces données aux pages publiques lors de la synchronisation.</p><label class="lbl">Processus (JSON)</label><textarea id="cxProcess" rows="10">'+esc(JSON.stringify(d.process||{},null,2))+'</textarea><label class="lbl">Champs d’intervention (JSON)</label><textarea id="cxFields" rows="10">'+esc(JSON.stringify({heading:d.fieldsHeading||'',items:d.fields||[]},null,2))+'</textarea><label class="lbl">À propos (JSON)</label><textarea id="cxAbout" rows="10">'+esc(JSON.stringify(d.about||{},null,2))+'</textarea><label class="lbl">Contact (JSON)</label><textarea id="cxContact" rows="8">'+esc(JSON.stringify(d.contact||{},null,2))+'</textarea><label class="lbl">Supports et réseaux (JSON)</label><textarea id="cxSupports" rows="10">'+esc(JSON.stringify({supports:d.supports||[],profiles:d.profiles||[]},null,2))+'</textarea><label class="lbl">Portrait de la page À propos</label><select id="cxPortrait">'+imageLibraryOptions((d.about||{}).portrait||'',false)+'</select><label class="btn btn-ghost btn-sm" for="cxPortraitUpload" style="margin-top:.5rem">Importer un portrait</label><input id="cxPortraitUpload" type="file" accept="image/*" hidden><button class="btn btn-primary btn-sm" id="cxSave">Enregistrer ces contenus</button></div>';
   $('#view').innerHTML=h;
   $('#ctSave').addEventListener('click',function(){d.pitch.tagline=$('#ctTag').value.trim();d.pitch.intro=$('#ctIntro').value.trim();log('Pitch mis à jour');save();toast('Textes d\'accroche enregistrés.','ok')});
-  $('#cxSave').addEventListener('click',function(){try{var pr=JSON.parse($('#cxProcess').value),fi=JSON.parse($('#cxFields').value),ab=JSON.parse($('#cxAbout').value),ct=JSON.parse($('#cxContact').value),sp=JSON.parse($('#cxSupports').value);if(!Array.isArray(fi.items)||!Array.isArray(sp.supports)||!Array.isArray(sp.profiles))throw new Error('Champs items/supports/profiles doivent être des listes JSON.');d.process=pr;d.fieldsHeading=fi.heading||'';d.fields=fi.items;d.about=ab;d.contact=ct;d.supports=sp.supports;d.profiles=sp.profiles;log('Contenus de pages mis à jour');save();toast('Contenus enregistrés — publication automatique en cours.','ok')}catch(e){toast('JSON invalide : '+e.message,'err')}});
+  $('#cxPortraitUpload').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var path=queueHubImage(f);addImageOption($('#cxPortrait'),path);save();toast('Portrait importé.','ok')});
+  $('#cxSave').addEventListener('click',function(){try{var pr=JSON.parse($('#cxProcess').value),fi=JSON.parse($('#cxFields').value),ab=JSON.parse($('#cxAbout').value),ct=JSON.parse($('#cxContact').value),sp=JSON.parse($('#cxSupports').value);if(!Array.isArray(fi.items)||!Array.isArray(sp.supports)||!Array.isArray(sp.profiles))throw new Error('Champs items/supports/profiles doivent être des listes JSON.');ab.portrait=$('#cxPortrait').value;d.process=pr;d.fieldsHeading=fi.heading||'';d.fields=fi.items;d.about=ab;d.contact=ct;d.supports=sp.supports;d.profiles=sp.profiles;log('Contenus de pages mis à jour');save();toast('Contenus enregistrés — publication automatique en cours.','ok')}catch(e){toast('JSON invalide : '+e.message,'err')}});
   $('#svAdd').addEventListener('click',function(){serviceModal(null)});
   $all('[data-sv]').forEach(function(b){b.addEventListener('click',function(){serviceModal(+b.dataset.sv)})});
   $all('[data-svdel]').forEach(function(b){b.addEventListener('click',function(){var s=d.services[+b.dataset.svdel];confirmModal('Retirer « '+s.title+' » ?','Il disparaîtra de la liste au prochain export.',function(){d.services.splice(+b.dataset.svdel,1);log('Service retiré',s.title);save();viewContent()})})});
@@ -921,7 +942,7 @@ function viewSeo(){
       +'<input type="text" id="sfT" maxlength="70" value="'+esc(cur.title||'')+'">'
       +'<label class="lbl req">Description (150–160 caractères) <span id="ctD" class="mut" style="text-transform:none;font-weight:400"></span></label>'
       +'<textarea id="sfD" maxlength="170">'+esc(cur.desc||'')+'</textarea>'
-      +'<label class="lbl">Image de partage (Open Graph)</label><input type="text" id="sfImg" value="'+esc(cur.img||'')+'" placeholder="assets/og/'+file.replace('.html','')+'.webp">'
+      +'<label class="lbl">Image de partage (Open Graph)</label><div class="toolbar"><select id="sfImg" aria-label="Choisir une image Open Graph">'+imageLibraryOptions(cur.img||'',false)+'</select><label class="btn btn-ghost btn-sm" for="sfImgUpload">Importer une image</label><input id="sfImgUpload" type="file" accept="image/*" hidden></div>'
       +'<label class="lbl">URL canonique</label><input type="text" id="sfC" value="'+esc(cur.canonical||('https://vasilias-studio.github.io/'+file))+'">'
       +'<p class="help">robots.txt et sitemap.xml : déjà présents à la racine et servis réellement par le site (vérifiés). Sitemap régénérable depuis Publication → Export.</p>'
       +'<button class="btn btn-primary btn-sm" id="seoSave">Enregistrer pour cette page</button></div>'
@@ -938,9 +959,9 @@ function viewSeo(){
       $('#pvD').textContent=dd||'Description…';$('#pvD2').textContent=dd||'Description…';
       $('#pvU').textContent=ca||'…';$('#pvU2').textContent=(ca||'vasilias-studio.github.io').replace(/^https?:\/\//,'');
       var bg=$('#pvImgBG');
-      if(im){bg.style.backgroundImage='url(\''+encodeURI(im)+'\')';bg.textContent=''}else{bg.style.backgroundImage='none';bg.textContent='Pas d\'image OG'}
+      if(im){bg.style.backgroundImage='url(\''+encodeURI(previewImageUrl(im))+'\')';bg.textContent=''}else{bg.style.backgroundImage='none';bg.textContent='Pas d\'image OG'}
     }
-    ['sfT','sfD','sfImg','sfC'].forEach(function(id){$('#'+id).addEventListener('input',sync)});sync();
+    ['sfT','sfD','sfImg','sfC'].forEach(function(id){$('#'+id).addEventListener(id==='sfImg'?'change':'input',sync)});$('#sfImgUpload').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;var path=queueHubImage(f);addImageOption($('#sfImg'),path);sync();save();toast('Image OG ajoutée à la médiathèque.','ok')});sync();
     $('#seoSave').addEventListener('click',function(){
       var t=$('#sfT').value.trim(),dd=$('#sfD').value.trim();
       if(!t||!dd){toast('Titre et description obligatoires.','err');return}
@@ -971,7 +992,7 @@ function viewWatch(){
   var d=store.data;
   var h='<div class="card"><h2>Contrôle des pages</h2><p class="help" style="margin-bottom:.8rem">Contrôles réels effectués depuis votre navigateur : code HTTP + temps de réponse mesuré au moment du clic. Pas de surveillance continue (site statique sans serveur).</p>'
     +'<div class="toolbar"><button class="btn btn-primary" id="wRun">'+ic('play_arrow')+' Tout contrôler maintenant</button><span class="pill neut" id="wLast">Dernier passage : '+(lastWatchTs()?new Date(lastWatchTs()).toLocaleString('fr-FR'):'jamais')+'</span></div>'
-    +'<div id="wTable" style="overflow-x:auto"></div></div>';
+    +'<p class="help" id="wProgress" role="status" aria-live="polite">Prêt à contrôler '+store.watchCfg.length+' page(s).</p><div id="wTable" style="overflow-x:auto"></div></div>';
   $('#view').innerHTML=h;
   drawWatch();
   $('#wRun').addEventListener('click',runWatch);
@@ -989,20 +1010,19 @@ function drawWatch(){
   $('#wTable').innerHTML=t+'</tbody></table>';
 }
 function runWatch(){
-  var btn=$('#wRun');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Contrôle en cours…';
-  var i=0;
+  if(!Array.isArray(store.watchCfg)||!store.watchCfg.length){toast('Aucune page à contrôler n’est configurée.','warn');return}
+  var btn=$('#wRun'),started=0,total=store.watchCfg.length,index=0;
+  btn.disabled=true;
+  var progress=$('#wProgress');if(progress)progress.textContent='Préparation du contrôle…';
+  function finish(){btn.disabled=false;btn.innerHTML=ic('play_arrow')+' Tout contrôler maintenant';$('#wLast').textContent='Dernier passage : '+new Date().toLocaleString('fr-FR');lsSet(LS.hist,store.watchHist);drawWatch();if(progress)progress.textContent='Contrôle terminé : '+total+' page(s) vérifiée(s).';toast('Contrôle des pages terminé.','ok');log('Surveillance lancée',total+' pages')}
   function next(){
-    if(i>=store.watchCfg.length){btn.disabled=false;btn.innerHTML=ic('play_arrow')+' Tout contrôler maintenant';$('#wLast').textContent='Dernier passage : '+new Date().toLocaleString('fr-FR');lsSet(LS.hist,store.watchHist);drawWatch();toast('Contrôle terminé.','ok');log('Surveillance lancée');return}
-    var u=store.watchCfg[i++],t0=performance.now();
-    fetch(u,{cache:'no-store',redirect:'follow'}).then(function(r){
-      var ms=Math.round(performance.now()-t0);
-      var state=r.redirected?'redirection':(r.ok?'accessible':'erreur HTTP');
-      pushWatch(u,{ts:new Date().toISOString(),url:u,state:state,http:r.status,ms:ms});
-      if(!r.ok)notify('Surveillance : '+u+' → HTTP '+r.status,'warn','watch');
-    }).catch(function(){
-      pushWatch(u,{ts:new Date().toISOString(),url:u,state:'injoignable',http:0,ms:0});
-      notify('Surveillance : '+u+' injoignable (réseau ou hébergement).','err','watch');
-    }).finally(function(){drawWatch();next()});
+    if(index>=total){finish();return}
+    var original=String(store.watchCfg[index++]),url;
+    try{url=new URL(original,location.origin==='null'?'https://vasilias-studio.github.io/':location.origin);if(url.protocol!=='http:'&&url.protocol!=='https:')throw new Error('Protocole non pris en charge')}catch(e){pushWatch(original,{ts:new Date().toISOString(),url:original,state:'URL invalide',http:0,ms:0});drawWatch();next();return}
+    var label=original;var t0=performance.now();if(progress)progress.textContent='Contrôle '+index+' / '+total+' : '+label;
+    var controller=typeof AbortController==='function'?new AbortController():null;var timeout=setTimeout(function(){if(controller)controller.abort()},12000);
+    var options={method:'GET',cache:'no-store',redirect:'follow'};if(controller)options.signal=controller.signal;
+    fetch(url.href,options).then(function(r){var ms=Math.round(performance.now()-t0);var state=r.redirected?'redirection':(r.ok?'accessible':'erreur HTTP');pushWatch(original,{ts:new Date().toISOString(),url:url.href,state:state,http:r.status,ms:ms});if(!r.ok)notify('Surveillance : '+url.pathname+' → HTTP '+r.status,'warn','watch')}).catch(function(e){var ms=Math.round(performance.now()-t0);var state=e&&e.name==='AbortError'?'délai dépassé':'injoignable';pushWatch(original,{ts:new Date().toISOString(),url:url.href,state:state,http:0,ms:ms});notify('Surveillance : '+url.pathname+' — '+state,'warn','watch')}).then(function(){clearTimeout(timeout);drawWatch();next()});
   }
   next();
 }

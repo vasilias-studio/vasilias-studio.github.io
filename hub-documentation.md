@@ -24,13 +24,13 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 | Section | Fonction |
 |---|---|
 | Vue d’ensemble | État du portfolio, activité, tâches et notifications locales. |
-| Projets | Création et modification du statut, année, nature, catégories, client, couverture, rôle, accroche, présentation et galerie; création de pages pour les nouveaux projets publiés. |
+| Projets | Création et modification du statut, année, nature, catégories, client, rôle, accroche, présentation et galerie. Couverture et galerie se choisissent visuellement dans la médiathèque ou s’importent directement depuis l’appareil; plus besoin de saisir les chemins. Création de pages pour les nouveaux projets publiés. |
 | Contenus | Accroche, présentation, services, processus, champs d’intervention, textes À propos et Contact, supports et profils sociaux; les champs structurés avancés sont éditables en JSON. |
-| Médiathèque | Import multiple vers `assets/hub-uploads/`, suppression de fichiers, recherche et texte alternatif. L’import est téléversé automatiquement lors du commit. |
+| Médiathèque | Import multiple vers `assets/hub-uploads/`, suppression de fichiers, recherche et texte alternatif. L’import est téléversé automatiquement lors du commit. Les sélecteurs de couverture, galerie, image Open Graph et portrait réutilisent cette bibliothèque. |
 | Compétences | Listes de compétences et outils. |
 | SEO & partage | Title, description, image OG et URL canonique par page. |
 | Publication | État de synchronisation, checklist et export JSON de secours. |
-| Surveillance | Vérifications manuelles lancées depuis le navigateur; ce n’est pas une surveillance serveur continue. |
+| Surveillance | Vérifications manuelles lancées depuis le navigateur, avec état/progression visibles et délai maximal par page; ce n’est pas une surveillance serveur continue. |
 | Historique & sauvegardes | Journal et instantanés locaux; ceux-ci sont propres au navigateur et ne remplacent pas l’historique Git. |
 | Paramètres | Token GitHub, synchronisation manuelle, session et données locales. |
 
