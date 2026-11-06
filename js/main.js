@@ -278,24 +278,45 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
   }
-  window.addEventListener('message', function (event) {
-    var data = event.data || {};
-    if (!isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
+  function handleContactResponse(success, formType, nonce) {
+    if (formType !== 'contact' || !activeContactNonce || nonce !== activeContactNonce) return;
     if (contactTimeout) window.clearTimeout(contactTimeout);
     if (contactSendingOverlay) contactSendingOverlay.hidden = true;
-    if (data.success) {
+    if (success) {
       if (form) form.classList.add('hidden');
       if (formSuccess) {
         formSuccess.classList.remove('hidden');
         formSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
+      activeContactNonce = '';
     } else {
       if (formError) {
         formError.textContent = 'L’envoi n’a pas abouti. Vos informations restent dans le formulaire; corrigez ou réessayez.';
         formError.style.display = 'block';
       }
       if (submitBtn) { submitBtn.disabled = false; if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Réessayer l’envoi '; }
+      activeContactNonce = '';
     }
+  }
+
+  function handleContactFrameLoad() {
+    if (!activeContactNonce || !contactResponseFrame) return;
+    try {
+      var responseUrl = new URL(contactResponseFrame.contentWindow.location.href);
+      if (responseUrl.origin !== window.location.origin || responseUrl.pathname !== '/form-response.html') return;
+      var params = responseUrl.searchParams;
+      if (params.get('source') !== 'vasilias-form-response') return;
+      handleContactResponse(params.get('success') === '1', params.get('formType'), params.get('clientNonce'));
+    } catch (error) { /* Ignore the cross-origin Apps Script response; the same-origin return page is handled on its next load. */ }
+  }
+  if (contactResponseFrame) contactResponseFrame.addEventListener('load', handleContactFrameLoad);
+
+  window.addEventListener('message', function (event) {
+    var data = event.data || {};
+    var trustedAppsScript = isFormsScriptOrigin(event.origin) && data.source === 'vasilias-apps-script';
+    var trustedSiteReturn = event.origin === window.location.origin && data.source === 'vasilias-form-response';
+    if ((!trustedAppsScript && !trustedSiteReturn) || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
+    handleContactResponse(!!data.success, data.formType, data.clientNonce);
   });
   if (formAgain) {
     formAgain.addEventListener('click', function () {

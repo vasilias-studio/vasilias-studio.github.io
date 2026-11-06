@@ -467,8 +467,12 @@ function responsePage_(success, type, clientNonce) {
     ? 'https://vasilias-studio.github.io/services.html'
     : 'https://vasilias-studio.github.io/contact.html';
   var response = JSON.stringify({ source: 'vasilias-apps-script', success: !!success, formType: safeType, clientNonce: nonce });
+  var returnUrl = 'https://vasilias-studio.github.io/form-response.html?source=vasilias-form-response&formType=' +
+    encodeURIComponent(safeType) + '&success=' + (success ? '1' : '0') + '&clientNonce=' + encodeURIComponent(nonce);
+  var htmlReturnUrl = returnUrl.replace(/&/g, '&amp;');
   var html = '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
+    '<meta http-equiv="refresh" content="0;url=' + htmlReturnUrl + '">' +
     '<title>' + title + ' — Vasilías Studio</title>' +
     '<style>body{margin:0;background:#f5f2ed;color:#24211e;font:16px/1.6 Arial,sans-serif;display:grid;min-height:100vh;place-items:center}.card{background:#fff;max-width:560px;margin:24px;padding:36px;border:1px solid #ded8d1;border-radius:16px}h1{font-size:1.7rem;margin:0 0 12px}a{color:#8a552b}.mark{color:#BF814B;font-size:2rem}</style></head>' +
     '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main>' +

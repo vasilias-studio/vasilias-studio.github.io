@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Transmission du formulaire — Vasilías Studio</title>
+  <style>
+    :root{color-scheme:light;--ink:#161513;--paper:#f7f5f1;--copper:#BF814B;--muted:#6a665c}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:var(--paper);color:var(--ink);font:16px/1.6 Arial,sans-serif}
+    main{width:min(100%,520px);padding:32px;background:#fff;border:1px solid rgba(22,21,19,.14);text-align:center}
+    .mark{color:var(--copper);font-size:32px;font-weight:700}
+    h1{margin:8px 0;font-size:22px;line-height:1.25}
+    p{margin:8px 0;color:var(--muted)}
+    a{display:inline-block;margin-top:14px;color:#8a552b}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark" aria-hidden="true">✓</div>
+    <h1>Transmission traitée</h1>
+    <p>Vous pouvez revenir au formulaire. Si vous avez reçu l’e-mail de confirmation, ne renvoyez pas la demande.</p>
+    <a href="services.html">Retourner au site</a>
+  </main>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var source = params.get('source');
+      var formType = params.get('formType');
+      var clientNonce = params.get('clientNonce') || '';
+      var status = params.get('success');
+      if (source !== 'vasilias-form-response' || (formType !== 'quote' && formType !== 'contact') || !/^[A-Za-z0-9_-]{1,100}$/.test(clientNonce) || (status !== '1' && status !== '0')) return;
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          source: 'vasilias-form-response',
+          success: status === '1',
+          formType: formType,
+          clientNonce: clientNonce
+        }, window.location.origin);
+      }
+    })();
+  </script>
+</body>
+</html>

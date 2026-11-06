@@ -384,16 +384,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  window.addEventListener('message', function (event) {
-    var data = event.data || {};
-    if (!isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
+  function handleQuoteResponse(success, formType, nonce) {
+    if (formType !== 'quote' || !activeNonce || nonce !== activeNonce) return;
     if (sendTimeout) window.clearTimeout(sendTimeout);
     sending = false;
     sendingOverlay.hidden = true;
-    if (data.success) {
+    if (success) {
       wizard.hidden = true;
       confirmation.hidden = false;
       setLive('');
+      activeNonce = '';
       confirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
       var heading = confirmation.querySelector('h3');
       if (heading) heading.focus({ preventScroll: true });
@@ -401,7 +401,28 @@ document.addEventListener('DOMContentLoaded', function () {
       submitButton.disabled = false;
       previousButton.disabled = currentStep === 1;
       setLive('L’envoi n’a pas abouti. Vos informations restent dans le formulaire; corrigez ou réessayez.', true);
+      activeNonce = '';
     }
+  }
+
+  function handleQuoteFrameLoad() {
+    if (!activeNonce) return;
+    try {
+      var responseUrl = new URL(submissionFrame.contentWindow.location.href);
+      if (responseUrl.origin !== window.location.origin || responseUrl.pathname !== '/form-response.html') return;
+      var params = responseUrl.searchParams;
+      if (params.get('source') !== 'vasilias-form-response') return;
+      handleQuoteResponse(params.get('success') === '1', params.get('formType'), params.get('clientNonce'));
+    } catch (error) { /* Ignore the cross-origin Apps Script response; the same-origin return page is handled on its next load. */ }
+  }
+  if (submissionFrame) submissionFrame.addEventListener('load', handleQuoteFrameLoad);
+
+  window.addEventListener('message', function (event) {
+    var data = event.data || {};
+    var trustedAppsScript = isAppsScriptOrigin(event.origin) && data.source === 'vasilias-apps-script';
+    var trustedSiteReturn = event.origin === window.location.origin && data.source === 'vasilias-form-response';
+    if ((!trustedAppsScript && !trustedSiteReturn) || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
+    handleQuoteResponse(!!data.success, data.formType, data.clientNonce);
   });
 
   if (openButton) openButton.addEventListener('click', openModal);
