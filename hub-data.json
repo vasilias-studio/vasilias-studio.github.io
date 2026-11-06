@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-06T08:57:45.300Z"
+    "updatedAt": "2026-11-06T09:03:09.822Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -134,6 +134,33 @@
     }
   ],
   "projects": [
+    {
+      "slug": "monreleve",
+      "title": "monrelevé",
+      "status": "published",
+      "year": 2026,
+      "nature": "Concept fictif",
+      "client": "",
+      "category": [
+        "Branding",
+        "Identité visuelle",
+        "Réseaux sociaux",
+        "UI/UX"
+      ],
+      "cover": "none",
+      "role": "",
+      "tagline": "",
+      "overview": "",
+      "gallery": [
+        "assets/about-portrait-v2.png",
+        "assets/hero-vasilias-v2.jpg",
+        "assets/logo-vasilias.svg",
+        "assets/moi-portrait.jpg",
+        "assets/moi-portrait.png",
+        "assets/social-2.jpg",
+        "assets/social-visuals.jpg"
+      ]
+    },
     {
       "id": "nebulo",
       "title": "Nébulo",
