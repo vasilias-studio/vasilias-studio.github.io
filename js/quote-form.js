@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var fileError = document.getElementById('quoteFileError');
   var dropZone = document.getElementById('quoteDropZone');
   var summary = document.getElementById('quoteSummary');
-  var confirmation = document.getElementById('quoteConfirmation');
-  var transportFrame = document.getElementById('quoteResponseFrame');
   var payloadInput = document.getElementById('quotePayload');
   var replyToInput = document.getElementById('quoteReplyTo');
   var nextInput = document.getElementById('quoteNext');
@@ -30,10 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var config = window.VAS_QUOTE_CONFIG || {};
   var currentStep = 1;
   var lastFocus = null;
-  var startedAt = 0;
-  var nonce = '';
   var sending = false;
-  var sendTimer = null;
   var files = [];
   var previewUrls = new WeakMap();
   var selectedDeliverables = new Set();
@@ -73,27 +68,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var field = wizard.querySelector('[name="' + name + '"]');
     return field ? field.value.trim() : '';
   }
-  function resetAfterSuccess() {
-    files.forEach(function (file) { var url = previewUrls.get(file); if (url) URL.revokeObjectURL(url); });
-    files = [];
-    selectedDeliverables.clear();
-    wizard.reset();
-    wizard.querySelectorAll('.is-selected').forEach(function (el) { el.classList.remove('is-selected'); });
-    wizard.hidden = false;
-    document.querySelector('.quote-progress-wrap').hidden = false;
-    confirmation.hidden = true;
-    nonce = '';
-    submitButton.textContent = 'Envoyer ma demande de devis';
-    renderFiles();
-    updateOtherProjectField();
-  }
   function openModal() {
-    if (!confirmation.hidden) resetAfterSuccess();
     lastFocus = document.activeElement;
     modal.hidden = false;
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('quote-modal-open');
-    startedAt = Date.now();
     updateStep(1);
     setLive('');
     window.setTimeout(function () { dialog.focus(); }, 0);
@@ -300,15 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
       consentement: 'accepté'
     }, null, 2);
   }
-  function showConfirmation(detail) {
-    document.getElementById('quoteConfirmationDetail').textContent = detail && detail !== 'Votre demande est reçue.' && detail !== 'Votre demande a déjà été reçue.' ? detail : '';
-    wizard.hidden = true;
-    document.querySelector('.quote-progress-wrap').hidden = true;
-    confirmation.hidden = false;
-    confirmation.querySelector('h3').focus();
-    clearTimeout(sendTimer);
-    sending = false;
-  }
   function sendRequest() {
     if (!isFormSubmitEndpoint(config.endpoint) || !config.enabled || !config.privacyApproved) {
       setLive('L’envoi reste désactivé tant que FormSubmit n’est pas activé et que la politique de confidentialité n’est pas validée.', true);
@@ -319,26 +289,18 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     if (!validateFiles()) { setLive(fileError.textContent, true); return; }
-    if (!nonce) nonce = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'q-' + Date.now() + '-' + Math.random().toString(36).slice(2);
     sending = true;
     submitButton.disabled = true;
     submitButton.innerHTML = '<span class="quote-spinner" aria-hidden="true"></span>Envoi en cours…';
     previousButton.disabled = true;
-    setLive('Transmission de votre demande via FormSubmit…');
+    setLive('Envoi de votre demande à FormSubmit…');
     try {
       wizard.action = config.endpoint;
       payloadInput.value = collectPayload();
       replyToInput.value = fieldValue('email');
-      nextInput.value = 'https://vasilias-studio.github.io/quote-received.html?requestId=' + encodeURIComponent(nonce);
+      nextInput.value = 'https://vasilias-studio.github.io/quote-received.html';
+      wizard.target = '_self';
       wizard.submit();
-      sendTimer = window.setTimeout(function () {
-        if (!sending) return;
-        sending = false;
-        submitButton.disabled = false;
-        submitButton.textContent = 'Réessayer l’envoi';
-        previousButton.disabled = false;
-        setLive('Aucune confirmation du serveur n’a été reçue. Votre demande n’est pas confirmée; réessayez ou écrivez à ericotlauranto34@gmail.com.', true);
-      }, 45000);
     } catch (error) {
       sending = false;
       submitButton.disabled = false;
@@ -395,18 +357,13 @@ document.addEventListener('DOMContentLoaded', function () {
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
-  window.addEventListener('message', function (event) {
-    if (event.origin !== window.location.origin || event.source !== transportFrame.contentWindow || !event.data || event.data.type !== 'vasilias-quote-result' || event.data.requestId !== nonce) return;
-    clearTimeout(sendTimer);
+  window.addEventListener('pageshow', function () {
+    if (modal.hidden) return;
     sending = false;
-    if (event.data.ok) {
-      showConfirmation(event.data.message);
-    } else {
-      submitButton.disabled = false;
-      submitButton.textContent = 'Réessayer l’envoi';
-      previousButton.disabled = false;
-      setLive(event.data.message || 'L’envoi a échoué. Vérifiez votre connexion ou réessayez.', true);
-    }
+    submitButton.textContent = 'Envoyer ma demande de devis';
+    submitButton.disabled = !(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
+    previousButton.disabled = currentStep === 1;
+    setLive('');
   });
   if (setupNotice) setupNotice.hidden = !!(isFormSubmitEndpoint(config.endpoint) && config.enabled && config.privacyApproved);
 });
