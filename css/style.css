@@ -240,13 +240,8 @@ button { font-family: inherit; cursor: pointer; }
   transition: clip-path 0.7s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .preloader.hide { clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
-.preloader .preloader-logo {
-  font-size: 2.25rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-}
-@media (min-width: 640px) { .preloader .preloader-logo { font-size: 3.5rem; } }
+.preloader .preloader-logo { width: 9rem; height: auto; display: block; }
+@media (min-width: 640px) { .preloader .preloader-logo { width: 13rem; } }
 
 /* ---------- Hero ---------- */
 .hero {

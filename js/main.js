@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var cover = document.createElement('div');
     cover.className = 'preloader hide';
     cover.setAttribute('aria-hidden', 'true');
-    cover.innerHTML = '<span class="preloader-logo">Vasilías</span>';
+    cover.innerHTML = '<img class="preloader-logo" src="assets/logo-vasilias.svg" alt="" width="317" height="178">';
     document.body.appendChild(cover);
     void cover.offsetWidth;
     cover.classList.remove('hide');
