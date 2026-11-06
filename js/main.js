@@ -4,21 +4,48 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', function () {
-  /* ---------- Preloader ---------- */
+  /* ---------- Preloader : affiché à chaque changement de page ---------- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var preloader = document.querySelector('.preloader');
+  var cameByLink = false;
+  try { cameByLink = sessionStorage.getItem('vasilias_nav') === '1'; sessionStorage.removeItem('vasilias_nav'); } catch (e) {}
   if (preloader) {
-    var hasVisited = sessionStorage.getItem('vasilias_visited');
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (hasVisited || reduced) {
+    if (reduced) {
       preloader.remove();
     } else {
       setTimeout(function () {
         preloader.classList.add('hide');
         setTimeout(function () { preloader.remove(); }, 750);
-        sessionStorage.setItem('vasilias_visited', 'true');
-      }, 500);
+      }, cameByLink ? 250 : 500);
     }
   }
+
+  /* Rideau de sortie : même écran qui se referme avant d'ouvrir la page suivante */
+  document.addEventListener('click', function (ev) {
+    if (reduced || ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    var a = ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+    var url;
+    try { url = new URL(a.href, location.href); } catch (e) { return; }
+    if (url.origin !== location.origin || (url.protocol !== 'http:' && url.protocol !== 'https:')) return;
+    if (url.pathname === location.pathname && url.search === location.search) return; /* ancre sur la même page */
+    ev.preventDefault();
+    var cover = document.createElement('div');
+    cover.className = 'preloader hide';
+    cover.setAttribute('aria-hidden', 'true');
+    cover.innerHTML = '<span class="preloader-logo">Vasilías</span>';
+    document.body.appendChild(cover);
+    void cover.offsetWidth;
+    cover.classList.remove('hide');
+    try { sessionStorage.setItem('vasilias_nav', '1'); } catch (e) {}
+    setTimeout(function () { location.href = url.href; }, 650);
+  });
+  /* Retour arrière (cache du navigateur) : retirer un rideau resté affiché */
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      document.querySelectorAll('.preloader').forEach(function (el) { el.remove(); });
+    }
+  });
 
   /* ---------- Reduced motion : figer les tracés SMIL du hero ---------- */
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
