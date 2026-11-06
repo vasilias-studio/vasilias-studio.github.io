@@ -1143,7 +1143,7 @@ html,.home-v2{overflow-x:clip}
 /* ---------- Devis intégré sur la page Services ---------- */
 .quote-section{margin-top:clamp(5rem,9vw,8rem);padding-top:clamp(2.5rem,5vw,4.5rem);border-top:1px solid var(--line)}
 .quote-section-head{gap:clamp(1.25rem,4vw,4rem);margin-bottom:clamp(2rem,4vw,3.25rem)}
-.quote-section-head .section-title{text-transform:uppercase}
+.quote-section-head .section-title{font-weight:700;text-transform:uppercase}
 .quote-section-intro{max-width:43rem;margin:0;color:var(--muted);font-size:1rem;line-height:1.7}
 .quote-inline{display:block;margin:0}
 .quote-inline .quote-dialog{position:relative;width:100%;max-width:none;height:auto;max-height:none;overflow:visible;margin:0;padding:0;border:0;background:transparent;box-shadow:none}
