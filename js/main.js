@@ -1,6 +1,6 @@
 /* ============================================================
-   PORTFOLIO VASILÍAS — Static HTML version
-   Interactions : préloader, header, menu, reveal, copie email, filtre
+   PORTFOLIO VASILÍAS — Static HTML + Hub Live Hydration
+   Interactions : préloader, header, menu, reveal, copie email, filtre, carrousel
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -78,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!overlay) return;
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
-    // stagger links
     overlay.querySelectorAll('.menu-links a').forEach(function (a, i) {
       a.style.transitionDelay = (0.1 + i * 0.08) + 's';
     });
@@ -95,11 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape') closeMenu();
   });
 
-  /* ---------- Reveal on scroll ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  var lineEls = document.querySelectorAll('.reveal-line');
+  /* ---------- Reveal on scroll (compatible hydratation dynamique) ---------- */
+  var io = null;
   if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
+    io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
           en.target.classList.add('in-view');
@@ -107,12 +105,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
     }, { rootMargin: '-40px', threshold: 0.05 });
-    revealEls.forEach(function (el) { io.observe(el); });
-    lineEls.forEach(function (el) { io.observe(el); });
-  } else {
-    revealEls.forEach(function (el) { el.classList.add('in-view'); });
-    lineEls.forEach(function (el) { el.classList.add('in-view'); });
   }
+  function observeReveals() {
+    var revealEls = document.querySelectorAll('.reveal:not(.in-view)');
+    var lineEls = document.querySelectorAll('.reveal-line:not(.in-view)');
+    if (io) {
+      revealEls.forEach(function (el) { io.observe(el); });
+      lineEls.forEach(function (el) { io.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add('in-view'); });
+      lineEls.forEach(function (el) { el.classList.add('in-view'); });
+    }
+  }
+  observeReveals();
 
   /* ---------- Word cycle animation (slogan) : lettre par lettre, toutes les 4s ---------- */
   var cycleWord = document.getElementById('cycleWord');
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
           clearInterval(iv);
           cb();
         }
-      }, 40); // efface ~1 lettre / 40ms
+      }, 40);
     }
 
     function typeLetterByLetter(word, cb) {
@@ -143,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
           clearInterval(iv);
           cb();
         }
-      }, 60); // écrit ~1 lettre / 60ms
+      }, 60);
     }
 
     function next() {
@@ -151,23 +156,22 @@ document.addEventListener('DOMContentLoaded', function () {
       var target = words[wi];
       eraseLetterByLetter(function () {
         typeLetterByLetter(target, function () {
-          setTimeout(next, 4000); // pause 4s avant le mot suivant
+          setTimeout(next, 4000);
         });
       });
     }
 
-    // Démarre le cycle après 4s
     setTimeout(next, 4000);
   }
 
-  /* ---------- Copy email ---------- */
+  /* ---------- Copy email (lecture live à chaque clic) ---------- */
   function bindCopy(btnId, textId) {
     var btn = document.getElementById(btnId);
     if (!btn) return;
-    var emailEl = document.getElementById(textId);
-    var email = emailEl ? emailEl.textContent.trim() : '';
     btn.addEventListener('click', function () {
-      if (navigator.clipboard) {
+      var emailEl = document.getElementById(textId);
+      var email = emailEl ? emailEl.textContent.trim() : '';
+      if (navigator.clipboard && email) {
         navigator.clipboard.writeText(email);
       }
       var original = btn.innerHTML;
@@ -220,66 +224,88 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ---------- Work category filter ---------- */
-  var filterBtns = document.querySelectorAll('[data-filter]');
-  var workCards = document.querySelectorAll('[data-categories]');
-  if (filterBtns.length) {
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        filterBtns.forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-        var cat = btn.getAttribute('data-filter');
-        workCards.forEach(function (card) {
-          var cats = card.getAttribute('data-categories') || '';
-          if (cat === 'Tous' || cats.indexOf(cat) !== -1) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
+  /* ---------- Work category filter (délégation d'événements pour cartes dynamiques) ---------- */
+  var filterBar = document.getElementById('filterBar');
+  function applyActiveWorkFilter() {
+    if (!filterBar) return;
+    var activeBtn = filterBar.querySelector('[data-filter].active');
+    var cat = activeBtn ? activeBtn.getAttribute('data-filter') : 'Tous';
+    document.querySelectorAll('[data-categories]').forEach(function (card) {
+      var cats = (card.getAttribute('data-categories') || '').split(/\s+/);
+      if (cat === 'Tous' || cats.indexOf(cat) !== -1) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
     });
   }
+  if (filterBar) {
+    filterBar.addEventListener('click', function (ev) {
+      var btn = ev.target.closest ? ev.target.closest('[data-filter]') : null;
+      if (!btn) return;
+      filterBar.querySelectorAll('[data-filter]').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyActiveWorkFilter();
+    });
+  }
+
   /* ---------- Accueil : section vide = même hauteur que la section « moi » ---------- */
   var moiSec = document.getElementById('moi');
   var spacerSec = document.querySelector('.h2-spacer');
+  var syncSpacer = function () {
+    if (moiSec && spacerSec) spacerSec.style.height = moiSec.offsetHeight + 'px';
+  };
   if (moiSec && spacerSec) {
-    var syncSpacer = function () { spacerSec.style.height = moiSec.offsetHeight + 'px'; };
     syncSpacer();
     window.addEventListener('resize', syncSpacer);
     window.addEventListener('load', syncSpacer);
     if ('ResizeObserver' in window) new ResizeObserver(syncSpacer).observe(moiSec);
   }
+
   /* ---------- Carrousel des images de couverture (pages projet) ---------- */
-  document.querySelectorAll('[data-slider]').forEach(function (slider) {
-    var track = slider.querySelector('.slider-track');
-    var slides = track ? track.children : [];
-    var prev = slider.querySelector('.slider-prev');
-    var next = slider.querySelector('.slider-next');
-    var count = slides.length, index = 0;
-    if (count < 2) { slider.classList.add('is-single'); return; }
-    function go(i) {
-      index = (i + count) % count;
-      track.style.transform = 'translateX(' + (-100 * index) + '%)';
-      for (var k = 0; k < count; k++) {
-        slides[k].setAttribute('aria-hidden', k === index ? 'false' : 'true');
+  function initSliders() {
+    document.querySelectorAll('[data-slider]').forEach(function (slider) {
+      if (slider.dataset.sliderBound === '1') return;
+      slider.dataset.sliderBound = '1';
+      var track = slider.querySelector('.slider-track');
+      var slides = track ? track.children : [];
+      var prev = slider.querySelector('.slider-prev');
+      var next = slider.querySelector('.slider-next');
+      var count = slides.length, index = 0;
+      if (count < 2) { slider.classList.add('is-single'); return; }
+      slider.classList.remove('is-single');
+      function go(i) {
+        index = (i + count) % count;
+        track.style.transform = 'translateX(' + (-100 * index) + '%)';
+        for (var k = 0; k < count; k++) {
+          slides[k].setAttribute('aria-hidden', k === index ? 'false' : 'true');
+        }
       }
-    }
-    prev.addEventListener('click', function () { go(index - 1); });
-    next.addEventListener('click', function () { go(index + 1); });
-    slider.setAttribute('tabindex', '0');
-    slider.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowLeft') { go(index - 1); }
-      else if (e.key === 'ArrowRight') { go(index + 1); }
+      if (prev) prev.addEventListener('click', function () { go(index - 1); });
+      if (next) next.addEventListener('click', function () { go(index + 1); });
+      slider.setAttribute('tabindex', '0');
+      slider.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { go(index - 1); }
+        else if (e.key === 'ArrowRight') { go(index + 1); }
+      });
+      var x0 = null;
+      slider.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      slider.addEventListener('touchend', function (e) {
+        if (x0 === null) return;
+        var dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
+        x0 = null;
+      });
+      go(0);
     });
-    var x0 = null;
-    slider.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
-    slider.addEventListener('touchend', function (e) {
-      if (x0 === null) return;
-      var dx = e.changedTouches[0].clientX - x0;
-      if (Math.abs(dx) > 40) go(index + (dx < 0 ? 1 : -1));
-      x0 = null;
-    });
-    go(0);
+  }
+  initSliders();
+
+  /* Ré-attacher les observateurs après hydratation en direct depuis le Hub */
+  document.addEventListener('vasilias:hydrated', function () {
+    observeReveals();
+    applyActiveWorkFilter();
+    syncSpacer();
+    initSliders();
   });
 });

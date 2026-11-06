@@ -1,86 +1,61 @@
-# Hub v3 — Documentation · Vasilías Studio
+# Hub v4 — Documentation · Vasilías Studio
 
-*Espace privé de gestion du portfolio. Hébergé sur GitHub Pages (`hub.html`, `noindex`).*
-*URL : `https://vasilias-studio.github.io/hub.html` — Version 3.0 · 2026-10-28*
+*Administration privée du portfolio, hébergée sur GitHub Pages (`hub.html`, `noindex`).*
+*URL : `https://vasilias-studio.github.io/hub.html#content` · Version 4.0 · 2026-11-06*
 
----
+## Publication automatique
 
-## 1. Accès
+Le Hub écrit directement dans le dépôt `vasilias-studio/vasilias-studio.github.io`, branche `main`, via l’API Git Data de GitHub. Une fois le token configuré dans le navigateur, les enregistrements sont regroupés après une courte temporisation et publiés dans un commit atomique. Aucune opération manuelle de dépôt, d’export ou d’upload n’est nécessaire pour le flux normal.
 
-| Élément | Fonctionnement réel |
+À chaque publication, le Hub met à jour `hub-data.json`, le sitemap et les pages HTML publiques connues. Les pages de projet nouvellement publiées sont générées depuis les données du Hub. Les fichiers importés dans la médiathèque sont envoyés dans `assets/hub-uploads/`; les suppressions sont incluses dans le même commit. GitHub Pages lance ensuite son déploiement statique sur `https://vasilias-studio.github.io/`.
+
+### Connexion GitHub (à faire une fois par navigateur)
+
+1. Ouvrir le Hub et, avant ou après déverrouillage, développer **Connexion à GitHub pour publier automatiquement** ou aller dans **Paramètres → Publication automatique**.
+2. Coller un token personnel GitHub autorisé sur ce dépôt avec accès en écriture au contenu (`Contents: Read and write`; un fine-grained token limité à ce seul dépôt est préférable).
+3. Cliquer **Enregistrer**. Le secret est conservé dans `localStorage` sous `hub2_gh_token` sur cet appareil seulement.
+
+Le token n’est ni inclus dans les fichiers du site, ni envoyé au visiteur public, ni commité dans Git. Les appels authentifiés sont faits directement depuis le navigateur vers `api.github.com`. Toute personne ayant accès à ce navigateur peut toutefois utiliser le token : supprimer-le dans Paramètres quand l’appareil n’est plus de confiance. Pour un environnement multi-administrateur, remplacer ce modèle par un backend avec secrets serveur.
+
+Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le stockage local puis le fragment est immédiatement retiré de l’historique. Ne pas partager une telle URL. En cas d’échec API (token invalide/expiré, droits insuffisants, conflit de branche ou réseau), les données restent dans le cache local et l’interface affiche l’erreur; **elles ne sont alors pas encore publiées**. Réessayer via **Synchroniser maintenant** dans Paramètres. L’export JSON demeure une copie de secours, pas une étape du workflow normal.
+
+## Écrans du Hub
+
+| Section | Fonction |
 |---|---|
-| Code d'accès | Vérifié par **empreinte SHA-256** côté navigateur (constante `ACCESS_SHA256`) — le code n'apparaît nulle part en clair |
-| Champ | Label, bouton **afficher/masquer**, état de chargement (spinner), message d'erreur exploitable |
-| Anti-force brute | 5 tentatives → blocage 60 s (persistant `localStorage hub2_attempts`) |
-| Session | 12 h, conservée en `sessionStorage` (onglet uniquement) ; expiration affichée dans la barre latérale ; bouton **Se déconnecter** |
-| Limite assumée | Verrou de **confort**, pas une sécurité serveur : tout visiteur technique peut lire les assets. Évolution : Netlify Identity / backend / Decap CMS |
+| Vue d’ensemble | État du portfolio, activité, tâches et notifications locales. |
+| Projets | Création et modification du statut, année, nature, catégories, client, couverture, rôle, accroche, présentation et galerie; création de pages pour les nouveaux projets publiés. |
+| Contenus | Accroche, présentation, services, processus, champs d’intervention, textes À propos et Contact, supports et profils sociaux; les champs structurés avancés sont éditables en JSON. |
+| Médiathèque | Import multiple vers `assets/hub-uploads/`, suppression de fichiers, recherche et texte alternatif. L’import est téléversé automatiquement lors du commit. |
+| Compétences | Listes de compétences et outils. |
+| SEO & partage | Title, description, image OG et URL canonique par page. |
+| Publication | État de synchronisation, checklist et export JSON de secours. |
+| Surveillance | Vérifications manuelles lancées depuis le navigateur; ce n’est pas une surveillance serveur continue. |
+| Historique & sauvegardes | Journal et instantanés locaux; ceux-ci sont propres au navigateur et ne remplacent pas l’historique Git. |
+| Paramètres | Token GitHub, synchronisation manuelle, session et données locales. |
 
-**Changer le code** : `printf 'NOUVEAU_CODE' | sha256sum` (ou générateur en ligne) → remplacer la valeur de `ACCESS_SHA256` en tête du `<script>` de `hub.html` → commit + push.
+## Architecture de synchronisation
 
----
+- `hub-data.json` v4 est la source de contenu commune.
+- `js/hub-sync.js` expose `window.VasiliasSync` (et `module.exports` pour les tests Node). Il hydrate le DOM public depuis le cache local/les données publiées, met à jour le head SEO, les sections éditoriales, le pied de page, les médias et les cartes de projets. Il fournit aussi la sérialisation HTML, la génération des pages projet et du sitemap.
+- Les neuf pages publiques chargent `js/hub-sync.js?v=1` avant `js/main.js?v=7`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
+- Les sauvegardes locales du Hub sont partagées avec le site public du même navigateur via `BroadcastChannel('vasilias_hub')` et `localStorage`. Les autres appareils reçoivent le changement après le déploiement GitHub Pages.
+- Le client de publication lit la branche et les blobs GitHub, compare les contenus, crée uniquement les blobs modifiés, puis crée un arbre/commit et avance `refs/heads/main` sans force-push. `hub2_pending_sync` est posé pendant les modifications non publiées et retiré après succès.
 
-## 2. Plan de navigation (10 sections)
+## Données et confidentialité
 
-| # | Section | Rôle | Source de vérité |
-|---|---|---|---|
-| 1 | **Vue d'ensemble** | 5 cartes réelles (projets, publiés, prêts, médias, pages), bloc **À traiter** (projets incomplets avec manques listés), activité récente (journal réel), dernier contrôle réel, notifications | `hub-data.json` + journal local |
-| 2 | **Projets** | Grille/liste avec miniatures, recherche, filtres statut/catégorie, 5 statuts (Brouillon / À compléter / Prêt à publier / Publié / Archivé), création/édition/archivage | `projects[]` |
-| 3 | **Contenus** | Accroche + intro, services (CRUD), récap pages avec état SEO | `pitch`, `services[]`, `pages[]` |
-| 4 | **Médiathèque** | Grille de miniatures réelles, poids, usage, édition du **texte alternatif**, recherche | `media[]` + `hub2_alts` |
-| 5 | **Compétences & outils** | CRUD listes textuelles (aucune note/%, conforme profil) | `skills[]`, `tools[]` |
-| 6 | **SEO & partage** | Édition title/description/OG/canonical **par page**, compteurs de caractères AA, **prévisualisation Google + carte sociale réelle**, relecture live de la page en ligne | `hub2_seo` |
-| 7 | **Surveillance** | Contrôles **réels** (fetch : HTTP, temps ms, état accessible/redirection/erreur/injoignable), horodatés, journal local (50/URL), notifications d'échec | `hub2_watchhist` |
-| 8 | **Publication** | Workflow export→commit documenté, checklist à progression **réelle**, état (prêts, alts manquants, non exporté), export `hub-data.json` complet | `hub2_checklist` |
-| 9 | **Historique & sauvegardes** | Journal (400 événements), **sauvegardes instantanées** (12 max, téléchargeables), **restauration guidée** (sauvegarde préalable proposée, jamais d'écrasement silencieux), import de fichier | `hub2_journal`, `hub2_snaps` |
-| 10 | **Paramètres** | Accès, session, données locales (taille mesurée, réinitialisation confirmée), architecture réelle, liens | — |
+Les brouillons restent dans `localStorage` tant qu’ils ne sont pas publiés. Le token est un secret privilégié stocké uniquement dans le navigateur et ne doit jamais être écrit dans le code source, `hub-data.json`, une capture d’écran ou un dépôt public. Révoquer tout token perdu ou exposé depuis les paramètres de sécurité GitHub, puis en créer un nouveau à portée minimale.
 
-Aucune page n'est vide : tout élément non disponible techniquement (édition WYSIWYG, base serveur, surveillance continue) est **signalé « à connecter »** avec la solution cible.
+Le verrou par code du Hub est un contrôle de confort exécuté côté navigateur, pas une authentification serveur. GitHub Pages sert les fichiers statiques publiquement; le verrou ne protège donc pas les données ou scripts de leurs visiteurs techniques.
 
----
+## Dépannage et restauration
 
-## 3. Design system (contrôlé WCAG 2.2 AA)
+- **Token manquant** : enregistrer un token dans Paramètres; les changements locaux se publieront ensuite avec **Synchroniser maintenant**.
+- **401/403** : token invalide/expiré ou sans accès Contents en écriture au dépôt. Remplacer le token.
+- **409 / référence modifiée** : recharger le Hub pour lire la dernière version, puis réappliquer les modifications locales si nécessaire; ne pas forcer l’avancement de la branche.
+- **Pages temporairement anciennes** : le commit Git est immédiat, mais la construction GitHub Pages peut prendre un court délai. Vérifier l’état Pages puis recharger sans cache.
+- **Rollback** : utiliser `git revert <sha>` dans GitHub ou un environnement Git autorisé et pousser le revert. Les snapshots du navigateur ne rétablissent pas les fichiers distants.
 
-| Token | Valeur | Usage | Contraste |
-|---|---|---|---|
-| `--bg` | `#F7F8FA` | fond | — |
-| `--surface` | `#FFFFFF` | cartes, sidebar | — |
-| `--ink` | `#17191C` | texte principal | **16,5–17,6 : 1** ✓ |
-| `--sub` | `#646C76` | texte secondaire | **5,0–5,3 : 1** ✓ *(cahier : `#747B85` = 4,02–4,27 → échoue AA ; ajusté et justifié ici)* |
-| `--line` | `#E8EAED` | bordures | (décoratif) |
-| `--accent` | `#1C2E1F` | boutons primaires (texte blanc) | **14,4 : 1** ✓ |
-| succès | `#16A36A` → badges `#0E6B45`/`#E8F5EE` | états | 5,84 : 1 ✓ |
-| avertissement | `#A97600` (pastille) → badges `#7A5800`/`#FBF3DD` | états | 3,44 : 1 graphique ✓ / 5,88 : 1 texte ✓ *(cahier : `#E5A000` = 2,24 sur blanc → jamais en texte)* |
-| erreur | `#DC4545` → badges `#9B2C2C`/`#FBEAEA` | états | 6,47 : 1 ✓ |
+## Dépendances et publication
 
-Typographie **Inter**, logo/titres éventuels Josefin Sans (clin d'œil marque). Grille 4/8 px, coins 8 px, ombres discrètes, **aucun glassmorphism**. Icônes : **Material Symbols (Google Fonts Icons)** — 26 SVG inline officiels (`viewBox="0 -960 960 960"`, héritage `currentColor`), aucune police externe à charger : rendu garanti hors-ligne et dans tout aperçu sandboxé.
-Accessibilité : `:focus-visible` visible partout, `prefers-reduced-motion` respecté, info jamais portée par la couleur seule (points + libellés), contrastes AA vérifiés au calcul (valeurs ci-dessus), navigation clavier (Escape ferme les modales, ordre de tabulation naturel).
-
----
-
-## 4. Données & persistance
-
-| Clé | Contenu |
-|---|---|
-| `hub2_data` | Copie locale de hub-data.json (créée à la 1re modification) |
-| `hub2_journal` / `hub2_watchhist` / `hub2_alerts` | Journal / mesures surveillance / notifications |
-| `hub2_checklist` / `hub2_seo` / `hub2_alts` / `hub2_snaps` / `hub2_viewmode` | Checklist, SEO par page, textes alt, sauvegardes, mode d'affichage |
-
-**Workflow de publication** (réel, journalisé) : modifier dans le hub → *Publication → Exporter* → remplacer `hub-data.json` dans le dépôt → adapter les pages concernées → `git commit && git push` → GitHub Pages redéploie → Surveillance pour contrôler.
-
-## 5. Sauvegarde & restauration
-
-- Sauvegarde instantanée : *Historique → Créer une sauvegarde* (max 12, horodatées, téléchargeables en JSON).
-- Restauration : confirmation explicite + **sauvegarde automatique de l'état actuel** proposée (cochée par défaut) + événement journalisé.
-- Import : fichier `hub-data.json` externe, structure validée (`projects[]` requis) avant application.
-- **Rollback complet du site** : `git revert <commit> && git push` (historique GitHub intact).
-
-## 6. Fonctions testées vs à connecter
-
-**Testées (51/51 automatisés + syntaxe `node --check` + service HTTP 200)** : empreinte SHA-256 du code actuel, 5 statuts + migration `review→incomplete`, export v3 (meta/seo/checklist), les 10 vues et leurs rendus, session 12 h, afficher/masquer, zéro code en clair, zéro stat fictive.
-**À connecter (hors périmètre site statique, documenté)** : comptes serveur/SSO, édition WYSIWYG répercutée dans le HTML sans commit, surveillance continue (cron externe), base de données.
-
-## 7. Maintenance
-
-- Dépendances : aucune (HTML/CSS/JS vanilla, Google Fonts en survitesse).
-- Ne jamais écrire de secret dans `hub.html` (empreinte uniquement).
-- Si le hub régresse : restaurer la dernière sauvegarde, sinon `git revert`.
+Aucun backend ni service d’upload distinct n’est utilisé : le déploiement statique existant GitHub Pages publie la branche `main`. Le navigateur doit être connecté à Internet, autoriser `api.github.com` et utiliser un navigateur compatible `fetch`, `DOMParser`, `localStorage` et `WebCrypto`.

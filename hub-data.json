@@ -2,9 +2,142 @@
   "meta": {
     "site": "Vasilías Studio",
     "url": "https://vasilias-studio.github.io/",
-    "version": "3.0",
-    "generated": "2026-10-28"
+    "version": "4.0",
+    "generated": "2026-11-06",
+    "updatedAt": "2026-11-06T08:15:00.000Z"
   },
+  "pitch": {
+    "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
+    "intro": "Je suis designer graphique et digital freelance, fondateur de Vasilías Studio, basé à Toamasina, Madagascar. Depuis deux ans, je développe ma pratique du design en autodidacte, avec une attention particulière portée au branding et à la création d'identités visuelles. J'accompagne les marques dans la construction d'une image cohérente, distinctive et adaptée à leur univers."
+  },
+  "process": {
+    "heading": "Un processus clair,\ndu premier échange à la livraison",
+    "steps": [
+      {
+        "title": "Brief & écoute",
+        "desc": "Comprendre votre marque, votre marché, vos objectifs et vos contraintes avant de dessiner quoi que ce soit."
+      },
+      {
+        "title": "Recherche & direction artistique",
+        "desc": "Références, moodboard et concept créatif : définir ensemble la voie visuelle à explorer."
+      },
+      {
+        "title": "Création & itérations",
+        "desc": "Conception, allers-retours et affinage jusqu'à un système graphique juste et cohérent."
+      },
+      {
+        "title": "Livraison & fichiers de production",
+        "desc": "Fichiers sources organisés, prêts pour l'impression et le digital, avec les règles d'utilisation."
+      }
+    ]
+  },
+  "fieldsHeading": "Champs d'intervention\n& spécialisations",
+  "fields": [
+    {
+      "title": "Branding",
+      "desc": "Logotypes, systèmes d'identité, palettes chromatiques et règles d'utilisation, pour une image cohérente sur l'ensemble de vos supports.",
+      "href": "services.html"
+    },
+    {
+      "title": "Packaging Design",
+      "desc": "Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.",
+      "href": "services.html"
+    },
+    {
+      "title": "Supports Imprimés (Print)",
+      "desc": "Cartes de visite, affiches, brochures et autres supports imprimés ou numériques, conçus pour être lisibles et mémorables.",
+      "href": "services.html"
+    },
+    {
+      "title": "Contenus pour Réseaux Sociaux",
+      "desc": "Publications, stories et templates déclinés dans votre identité, adaptés aux formats de chaque plateforme.",
+      "href": "services.html"
+    }
+  ],
+  "services": [
+    {
+      "title": "Création de Logo & Identités Visuelles",
+      "desc": "Logotypes, systèmes d'identité, palettes chromatiques et choix typographiques qui expriment la personnalité de votre marque et la rendent immédiatement identifiable.",
+      "foot": "Fichiers vectoriels prêts pour print & digital"
+    },
+    {
+      "title": "Brandboard & Charte Graphique",
+      "desc": "Synthèse complète de votre identité : logo, couleurs, typographies et règles d'utilisation, pour une image cohérente sur l'ensemble de vos supports.",
+      "foot": "Brandboard & règles d'application inclus"
+    },
+    {
+      "title": "Direction Artistique",
+      "desc": "Recherche de concepts, définition d'univers graphiques et cohérence esthétique pour vos campagnes, lancements et projets créatifs.",
+      "foot": "Moodboards, concepts & références visuelles"
+    },
+    {
+      "title": "Supports de Communication",
+      "desc": "Cartes de visite, affiches, bannières, brochures et autres supports imprimés ou numériques, conçus pour être lisibles et mémorables.",
+      "foot": "Fichiers d'impression & formats web fournis"
+    },
+    {
+      "title": "Visuels pour Réseaux Sociaux",
+      "desc": "Publications, stories et templates déclinés dans votre identité, adaptés aux formats de chaque plateforme.",
+      "foot": "Templates réutilisables"
+    },
+    {
+      "title": "Design de Packaging",
+      "desc": "Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.",
+      "foot": "Maquettes & mockups de présentation"
+    },
+    {
+      "title": "Conception d'Interfaces & UI/UX",
+      "desc": "Conception d'interfaces web et mobiles avec une réflexion attentive sur l'expérience utilisateur, la lisibilité et la hiérarchie du contenu.",
+      "foot": "Maquettes & prototypes Figma"
+    },
+    {
+      "title": "Modélisation & Visualisation 3D",
+      "desc": "Modélisation, mise en scène et visualisation de produits avec Blender pour donner du relief à vos présentations.",
+      "foot": "Rendus Blender haute définition"
+    }
+  ],
+  "about": {
+    "heading": "Designer graphique & digital autodidacte, fondateur de Vasilías Studio",
+    "lead": "Je suis designer graphique et digital autodidacte avec deux années de pratique, et fondateur de Vasilías Studio. Mon parcours dans le design s'est construit à travers l'apprentissage personnel, l'expérimentation et la réalisation de projets créatifs. Cette démarche m'a permis de développer une approche polyvalente du design et une curiosité constante pour les nouvelles possibilités visuelles et numériques.",
+    "paragraphs": [
+      "Je porte un intérêt particulier au branding et à la création d'identités visuelles. Pour moi, une identité de marque ne se limite pas à un logo : elle repose sur un ensemble cohérent de choix graphiques qui permettent à une entreprise d'exprimer sa personnalité, de communiquer clairement et de se distinguer.",
+      "À travers Vasilías Studio, je propose un accompagnement créatif dans la conception d'univers visuels et de supports de communication. Je travaille également sur des domaines complémentaires comme le design digital, l'UI/UX, le packaging et la création 3D. Mon objectif est de concevoir des solutions visuelles réfléchies, fonctionnelles et adaptées aux besoins de chaque projet.",
+      "En tant que designer autodidacte, je considère l'apprentissage et l'expérimentation comme des éléments essentiels de mon évolution. Chaque projet est une occasion d'affiner ma démarche, d'explorer de nouvelles idées et de développer mes compétences."
+    ],
+    "portrait": "assets/about-portrait-v2.png",
+    "caption": "Vasilías"
+  },
+  "contact": {
+    "heading": "Échangeons sur votre projet",
+    "intro": "Pour toute demande d'information, de devis ou de collaboration créative, envoyez un message direct ou utilisez le formulaire.",
+    "email": "ericotlauranto34@gmail.com",
+    "positioning": "Graphic & Digital Designer — Freelance",
+    "availability": "Disponible pour projets"
+  },
+  "supports": [
+    {
+      "id": "social",
+      "title": "Réseaux Sociaux",
+      "tag": "SOCIAL",
+      "category": "Social",
+      "desc": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes.",
+      "overview": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes — une communication visuelle cohérente avec l'identité de marque.",
+      "cover": "assets/social-visuals.jpg",
+      "page": "social.html",
+      "showOnHome": true
+    },
+    {
+      "id": "print",
+      "title": "Imprimés",
+      "tag": "PRINT",
+      "category": "Print",
+      "desc": "Cartes de visite, affiches, brochures et papeterie d'exception prêts pour l'impression.",
+      "overview": "Cartes de visite, affiches, brochures et papeterie d'exception — des supports imprimés alliant noblesse du papier et précision de mise en page.",
+      "cover": "assets/print-visuals.jpg",
+      "page": "print.html",
+      "showOnHome": true
+    }
+  ],
   "projects": [
     {
       "id": "nebulo",
@@ -19,9 +152,11 @@
       ],
       "client": "",
       "role": "Identité Visuelle · Direction Artistique",
-      "tagline": "Système d'identité contemporain et dynamique.",
+      "tagline": "Système d'identité contemporain et dynamique pour Nébulo.",
+      "overview": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Le système d'identité se déploie à travers une typographie dynamique, une construction géométrique précise et des animations de marque expressives.",
       "page": "work-nebulo.html",
-      "cover": "assets/projects/nebulo/cover.jpg"
+      "cover": "assets/projects/nebulo/cover.jpg",
+      "gallery": []
     },
     {
       "id": "orquid-spices",
@@ -36,9 +171,11 @@
       ],
       "client": "Orquid Spices",
       "role": "Branding · Packaging Design · Direction Artistique",
-      "tagline": "Identité globale d'une maison d'épices fines fondée à Madagascar.",
+      "tagline": "Identité globale et packaging premium pour épices d'exception.",
+      "overview": "Le projet ORQUID SPICES m'a été confié dans sa globalité. Il s'agissait de construire de zéro l'identité visuelle d'une maison d'épices fines contemporaines fondée à Madagascar, avec un positionnement ancré dans l'univers de la parfumerie de niche et de l'édition haut de gamme. Le défi était de créer quelque chose qui ne ressemble à aucun packaging alimentaire existant, avec un système visuel où le silence, la précision et la matière font tout le travail.",
       "page": "work-orquid-spices.html",
-      "cover": "assets/projects/orquid-spices/Cover.jpg"
+      "cover": "assets/projects/orquid-spices/Cover.jpg",
+      "gallery": []
     },
     {
       "id": "pellicano",
@@ -54,8 +191,10 @@
       "client": "",
       "role": "",
       "tagline": "Identité méditerranéenne — en attente de contenus.",
-      "page": "",
-      "cover": ""
+      "overview": "",
+      "page": "work-pellicano.html",
+      "cover": "",
+      "gallery": []
     },
     {
       "id": "dolce",
@@ -71,8 +210,10 @@
       "client": "",
       "role": "",
       "tagline": "Glace artisanale — en attente de contenus.",
-      "page": "",
-      "cover": ""
+      "overview": "",
+      "page": "work-dolce.html",
+      "cover": "",
+      "gallery": []
     },
     {
       "id": "les-trois-etoiles",
@@ -88,72 +229,57 @@
       "client": "",
       "role": "",
       "tagline": "Art de la table — en attente de contenus.",
-      "page": "",
-      "cover": ""
+      "overview": "",
+      "page": "work-les-trois-etoiles.html",
+      "cover": "",
+      "gallery": []
     }
   ],
   "pages": [
     {
       "file": "index.html",
-      "title": "Accueil"
+      "title": "Accueil",
+      "inMenu": true
     },
     {
       "file": "work.html",
-      "title": "Projets"
+      "title": "Projets",
+      "inMenu": true
     },
     {
       "file": "about.html",
-      "title": "À propos"
+      "title": "À propos",
+      "inMenu": true
     },
     {
       "file": "services.html",
-      "title": "Services"
+      "title": "Services",
+      "inMenu": true
     },
     {
       "file": "contact.html",
-      "title": "Contact"
+      "title": "Contact",
+      "inMenu": true
     },
     {
       "file": "print.html",
-      "title": "Imprimés"
+      "title": "Imprimés",
+      "inMenu": false
     },
     {
       "file": "social.html",
-      "title": "Réseaux sociaux"
+      "title": "Réseaux sociaux",
+      "inMenu": false
     },
     {
       "file": "work-nebulo.html",
-      "title": "Étude : Nébulo"
+      "title": "Étude : Nébulo",
+      "inMenu": false
     },
     {
       "file": "work-orquid-spices.html",
-      "title": "Étude : ORQUID SPICES"
-    }
-  ],
-  "services": [
-    {
-      "title": "Création de Logo & Identités Visuelles"
-    },
-    {
-      "title": "Brandboard & Charte Graphique"
-    },
-    {
-      "title": "Direction Artistique"
-    },
-    {
-      "title": "Supports de Communication"
-    },
-    {
-      "title": "Visuels pour Réseaux Sociaux"
-    },
-    {
-      "title": "Design de Packaging"
-    },
-    {
-      "title": "Conception d'Interfaces & UI/UX"
-    },
-    {
-      "title": "Modélisation & Visualisation 3D"
+      "title": "Étude : ORQUID SPICES",
+      "inMenu": false
     }
   ],
   "skills": [
@@ -188,10 +314,6 @@
     {
       "name": "Facebook",
       "url": "https://www.facebook.com/profile.php?id=100071948245188"
-    },
-    {
-      "name": "Email",
-      "url": "mailto:ericotlauranto34@gmail.com"
     }
   ],
   "watch": [
@@ -205,118 +327,369 @@
     "robots.txt",
     "sitemap.xml"
   ],
+  "seo": {
+    "index.html": {
+      "title": "Vasilías — Graphic & Digital Designer",
+      "ogTitle": "Vasilías — Designer Graphique Freelance, Toamasina",
+      "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
+      "ogDesc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/"
+    },
+    "work.html": {
+      "title": "Projets — Vasilías",
+      "ogTitle": "Projets — Vasilías",
+      "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
+      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/work.html"
+    },
+    "about.html": {
+      "title": "À Propos — Vasilías",
+      "ogTitle": "À Propos — Vasilías",
+      "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
+      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/about.html"
+    },
+    "services.html": {
+      "title": "Services & Expertises — Vasilías",
+      "ogTitle": "Services & Expertises — Vasilías",
+      "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
+      "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/services.html"
+    },
+    "contact.html": {
+      "title": "Contact — Vasilías",
+      "ogTitle": "Contact — Vasilías",
+      "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
+      "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/contact.html"
+    },
+    "print.html": {
+      "title": "Imprimés — Vasilías",
+      "ogTitle": "Imprimés — Vasilías",
+      "desc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
+      "ogDesc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/print.html"
+    },
+    "social.html": {
+      "title": "Réseaux Sociaux — Vasilías",
+      "ogTitle": "Réseaux Sociaux — Vasilías",
+      "desc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
+      "ogDesc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/social.html"
+    },
+    "work-nebulo.html": {
+      "title": "Nébulo — Vasilías",
+      "ogTitle": "Nébulo — Vasilías",
+      "desc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
+      "ogDesc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
+      "img": "https://vasilias-studio.github.io/assets/projects/nebulo/cover.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-nebulo.html"
+    },
+    "work-orquid-spices.html": {
+      "title": "ORQUID SPICES — Vasilías",
+      "ogTitle": "ORQUID SPICES — Vasilías",
+      "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
+      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
+      "img": "https://vasilias-studio.github.io/assets/projects/orquid-spices/Cover.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html"
+    }
+  },
+  "alts": {
+    "statue.png": "Buste sculpté en pierre, emblème de Vasilías Studio",
+    "moi-portrait.png": "Portrait du fondateur de Vasilías Studio",
+    "projects/nebulo/cover.jpg": "Visuel d'identité Nébulo, silhouette bleue néon",
+    "projects/orquid-spices/Cover.jpg": "Packaging ORQUID SPICES, marbre sombre",
+    "print-visuals.jpg": "Supports imprimés Vasilías",
+    "social-visuals.jpg": "Visuels pour réseaux sociaux Vasilías",
+    "about-portrait-v2.png": "Portrait de Vasilías",
+    "print-1.jpg": "Cartes de visite imprimées",
+    "print-2.jpg": "Affiche et brochure imprimées",
+    "social-1.jpg": "Publication carrée réseaux sociaux",
+    "social-2.jpg": "Format story réseaux sociaux",
+    "social-3.jpg": "Bannière LinkedIn",
+    "projects/nebulo/hero.jpg": "Bannière principale du projet Nébulo",
+    "projects/nebulo/asset-1.jpg": "Déclinaison Nébulo",
+    "projects/nebulo/asset-4.jpg": "Construction géométrique Nébulo",
+    "projects/nebulo/asset-5.jpg": "Déclinaison Nébulo",
+    "projects/nebulo/asset-3.jpg": "Application mobile Nébulo",
+    "projects/nebulo/asset-2.jpg": "Cartes de visite Nébulo",
+    "projects/nebulo/asset-6.jpg": "Déclinaison visuelle Nébulo",
+    "projects/orquid-spices/6.jpg": "Présentation ORQUID SPICES",
+    "projects/orquid-spices/1.jpg": "Visuel packaging ORQUID SPICES",
+    "projects/orquid-spices/5.jpg": "Série de coffrets ORQUID SPICES",
+    "projects/orquid-spices/2.jpg": "Flacon ORQUID SPICES",
+    "projects/orquid-spices/3.jpg": "Visuel packaging ORQUID SPICES portrait",
+    "projects/orquid-spices/4.jpg": "Détail packaging ORQUID SPICES",
+    "hero-vasilias-v2.jpg": "Visuel hero Vasilías Studio",
+    "moi-portrait.jpg": "Portrait du fondateur de Vasilías Studio",
+    "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
+    "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
+    "logo-vasilias.svg": "Logo Vasilías Studio",
+    "pin-blue.png": "Épingle décorative bleue",
+    "placeholders/portrait-placeholder.svg": "Emplacement portrait",
+    "og/og-image.png": "Carte de partage Open Graph Vasilías Studio",
+    "og/og-image.svg": "Carte vectorielle Open Graph Vasilías Studio",
+    "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
+    "icons/adobeindesign.svg": "Icône Adobe InDesign",
+    "icons/adobephotoshop.svg": "Icône Adobe Photoshop",
+    "icons/blender.svg": "Icône Blender",
+    "icons/canva.svg": "Icône Canva",
+    "icons/figma.svg": "Icône Figma"
+  },
+  "checklist": [
+    {
+      "label": "Texte relu (orthographe, années, noms)",
+      "done": false,
+      "required": true
+    },
+    {
+      "label": "Type client / concept confirmé",
+      "done": false,
+      "required": true
+    },
+    {
+      "label": "Année et rôle vérifiés",
+      "done": false,
+      "required": true
+    },
+    {
+      "label": "Images définitives présentes, optimisées, avec texte alt",
+      "done": false,
+      "required": false
+    },
+    {
+      "label": "Liens testés",
+      "done": false,
+      "required": true
+    },
+    {
+      "label": "Affichage mobile vérifié (menu, boutons, images)",
+      "done": false,
+      "required": false
+    },
+    {
+      "label": "SEO renseigné (title + meta description)",
+      "done": false,
+      "required": true
+    },
+    {
+      "label": "Prévisualisation approuvée",
+      "done": false,
+      "required": false
+    },
+    {
+      "label": "Déploiement terminé et page publique contrôlée",
+      "done": false,
+      "required": false
+    }
+  ],
   "media": [
     {
       "path": "assets/about-portrait-v2.png",
-      "bytes": 890774
+      "bytes": 890774,
+      "used": "about.html"
     },
     {
       "path": "assets/hero-vasilias-v2.jpg",
-      "bytes": 127642
+      "bytes": 127642,
+      "used": ""
+    },
+    {
+      "path": "assets/logo-vasilias.svg",
+      "bytes": 1690,
+      "used": "index.html, work.html, about.html, services.html, contact.html, print.html, social.html, work-nebulo.html, work-orquid-spices.html"
+    },
+    {
+      "path": "assets/moi-portrait.jpg",
+      "bytes": 208631,
+      "used": ""
+    },
+    {
+      "path": "assets/moi-portrait.png",
+      "bytes": 1980973,
+      "used": "index.html"
+    },
+    {
+      "path": "assets/moi-portrait.webp",
+      "bytes": 213644,
+      "used": "index.html"
     },
     {
       "path": "assets/pin-blue.png",
-      "bytes": 126102
+      "bytes": 126102,
+      "used": ""
     },
     {
       "path": "assets/print-1.jpg",
-      "bytes": 154745
+      "bytes": 154745,
+      "used": "print.html"
     },
     {
       "path": "assets/print-2.jpg",
-      "bytes": 225377
+      "bytes": 225377,
+      "used": "print.html"
     },
     {
       "path": "assets/print-visuals.jpg",
-      "bytes": 117348
+      "bytes": 117348,
+      "used": "index.html, work.html, print.html"
     },
     {
       "path": "assets/social-1.jpg",
-      "bytes": 155874
+      "bytes": 155874,
+      "used": "social.html"
     },
     {
       "path": "assets/social-2.jpg",
-      "bytes": 118938
+      "bytes": 118938,
+      "used": "social.html"
     },
     {
       "path": "assets/social-3.jpg",
-      "bytes": 101363
+      "bytes": 101363,
+      "used": "social.html"
     },
     {
       "path": "assets/social-visuals.jpg",
-      "bytes": 174840
+      "bytes": 174840,
+      "used": "index.html, work.html, social.html"
     },
     {
-      "path": "assets/placeholders/portrait-placeholder.svg",
-      "bytes": 637
+      "path": "assets/statue.png",
+      "bytes": 807273,
+      "used": "index.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-1.jpg",
-      "bytes": 326402
+      "path": "assets/statue.webp",
+      "bytes": 59608,
+      "used": "index.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-2.jpg",
-      "bytes": 592971
+      "path": "assets/icons/adobeillustrator.svg",
+      "bytes": 625,
+      "used": "about.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-3.jpg",
-      "bytes": 966182
+      "path": "assets/icons/adobeindesign.svg",
+      "bytes": 1326,
+      "used": "about.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-4.jpg",
-      "bytes": 671179
+      "path": "assets/icons/adobephotoshop.svg",
+      "bytes": 2433,
+      "used": "about.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-5.jpg",
-      "bytes": 787200
+      "path": "assets/icons/blender.svg",
+      "bytes": 1309,
+      "used": "about.html"
     },
     {
-      "path": "assets/projects/nebulo/asset-6.jpg",
-      "bytes": 230108
+      "path": "assets/icons/canva.svg",
+      "bytes": 4231,
+      "used": "about.html"
     },
     {
-      "path": "assets/projects/nebulo/cover.jpg",
-      "bytes": 398688
-    },
-    {
-      "path": "assets/projects/nebulo/hero.jpg",
-      "bytes": 102867
-    },
-    {
-      "path": "assets/projects/orquid-spices/1.jpg",
-      "bytes": 823127
-    },
-    {
-      "path": "assets/projects/orquid-spices/2.jpg",
-      "bytes": 343746
-    },
-    {
-      "path": "assets/projects/orquid-spices/3.jpg",
-      "bytes": 773480
-    },
-    {
-      "path": "assets/projects/orquid-spices/4.jpg",
-      "bytes": 1367099
-    },
-    {
-      "path": "assets/projects/orquid-spices/5.jpg",
-      "bytes": 2032148
-    },
-    {
-      "path": "assets/projects/orquid-spices/6.jpg",
-      "bytes": 1858981
-    },
-    {
-      "path": "assets/projects/orquid-spices/Cover.jpg",
-      "bytes": 593651
+      "path": "assets/icons/figma.svg",
+      "bytes": 1108,
+      "used": "about.html"
     },
     {
       "path": "assets/og/og-image.png",
-      "bytes": 193334
+      "bytes": 193334,
+      "used": "index.html, work.html, about.html, services.html, contact.html, print.html, social.html"
     },
     {
       "path": "assets/og/og-image.svg",
-      "bytes": 764
+      "bytes": 764,
+      "used": ""
+    },
+    {
+      "path": "assets/placeholders/portrait-placeholder.svg",
+      "bytes": 637,
+      "used": ""
+    },
+    {
+      "path": "assets/projects/nebulo/asset-1.jpg",
+      "bytes": 326402,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/asset-2.jpg",
+      "bytes": 592971,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/asset-3.jpg",
+      "bytes": 966182,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/asset-4.jpg",
+      "bytes": 671179,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/asset-5.jpg",
+      "bytes": 787200,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/asset-6.jpg",
+      "bytes": 230108,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/cover.jpg",
+      "bytes": 398688,
+      "used": "index.html, work.html, work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/nebulo/hero.jpg",
+      "bytes": 102867,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/1.jpg",
+      "bytes": 823127,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/2.jpg",
+      "bytes": 343746,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/3.jpg",
+      "bytes": 773480,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/4.jpg",
+      "bytes": 1367099,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/5.jpg",
+      "bytes": 2032148,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/6.jpg",
+      "bytes": 1858981,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets/projects/orquid-spices/Cover.jpg",
+      "bytes": 593651,
+      "used": "index.html, work.html, work-orquid-spices.html"
     }
   ]
 }

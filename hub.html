@@ -358,6 +358,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
       <p class="lock-msg" id="lockmsg" role="status"></p>
     </div>
     <button class="btn btn-primary btn-full" id="unlock"><span id="unlockLbl">Déverrouiller</span></button>
+    <details class="lock-more" style="margin-top:1rem"><summary>Connexion à GitHub pour publier automatiquement</summary><label for="ghTokenInput" class="lbl" style="text-align:left;margin-top:.7rem">Personal Access Token</label><input type="password" id="ghTokenInput" autocomplete="off" placeholder="github_pat_… ou ghp_…"><p class="help" style="text-align:left">Stocké uniquement dans ce navigateur (localStorage), jamais dans le dépôt. Nécessite un token limité à ce dépôt avec accès Contents: Read and write.</p><button type="button" class="btn btn-ghost btn-sm" id="saveGhToken">Enregistrer le token</button><p class="lock-msg" id="ghTokenMsg" role="status"></p></details>
     <details class="lock-more">
       <summary>À propos de ce verrou</summary>
       <p>Le code est vérifié par empreinte SHA-256 et n'est jamais stocké. C'est un verrou de confort côté navigateur, <strong>pas une sécurité serveur</strong> (détail : Paramètres → Architecture).</p>
@@ -388,7 +389,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
       <div style="font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:.45rem"><span class="dot ok"></span>Session active</div>
       <div class="sessionexp" id="sessionExp"></div>
       <button class="btn btn-ghost btn-sm" id="btnLogout" style="margin-top:.5rem;width:100%;justify-content:center">Se déconnecter</button>
-      <small class="mut" style="font-size:.68rem;margin-top:.5rem">Hub v3 · GitHub Pages</small>
+      <small class="mut" style="font-size:.68rem;margin-top:.5rem">Hub v4 · synchronisation GitHub</small>
     </div>
   </nav>
   <div class="scrim" id="scrim"></div>
@@ -399,7 +400,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
       <h1 id="viewTitle" tabindex="-1">Vue d'ensemble</h1>
       <span class="date" id="today"></span>
       <div class="spacer"></div>
-      <span class="pill warn hidden" id="dirtyPill" role="status"><span class="dot warn"></span>Modifications non exportées</span>
+      <span class="pill warn hidden" id="dirtyPill" role="status"><span class="dot warn"></span>Modifications en attente de synchronisation</span>
       <button class="pill neut" id="notifPill" aria-label="Notifications" style="cursor:pointer;border:none;background:var(--mut-bg)"><span data-ic="notifications"></span> <span id="notifN">0</span></button>
       <button class="btn btn-primary btn-sm" id="quickExport">Exporter</button>
     </div>
@@ -409,6 +410,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
 
 <div id="toasts" aria-live="polite"></div>
 
+<script src="js/hub-sync.js?v=1"></script>
 <script>
 'use strict';
 /* Icones : Material Symbols (Google Fonts Icons) - SVG inline officiels, zero dependance reseau */
@@ -416,11 +418,12 @@ var IC={"add":"M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z","auto_
 function ic(n,cls){return '<svg class="mi '+(cls||'')+'" viewBox="0 -960 960 960" aria-hidden="true" focusable="false"><path d="'+IC[n]+'"/></svg>'}
 function fillIcons(root){$all('[data-ic]',root).forEach(function(el){if(!el.dataset.icDone){el.innerHTML=ic(el.dataset.ic);el.dataset.icDone='1'}})}
 /* ============================================================
-   HUB v3 — local-first, données réelles, zéro secret côté client.
-   Publication sur le site public : export + commit Git (documenté).
+   HUB v4 — édition local-first et publication GitHub automatique.
+   Le jeton est conservé uniquement dans localStorage de ce navigateur.
 ============================================================ */
 var ACCESS_SHA256='158a323a7ba44870f23d96f1516dd70aa48e9a72db4ebb026b0a89e212a208ab'; // empreinte SHA-256 du code — jamais le code
 var SESSION_HOURS=12;
+(function(){var m=location.hash.match(/^#gh=([^&]+)/);if(m){try{localStorage.setItem('hub2_gh_token',decodeURIComponent(m[1]));history.replaceState(null,'',location.pathname+'#content')}catch(e){history.replaceState(null,'',location.pathname+'#content')}}})();
 var LS={data:'hub2_data',journal:'hub2_journal',checklist:'hub2_checklist',watch:'hub2_watch',alerts:'hub2_alerts',session:'hub2_ok',att:'hub2_attempts',hist:'hub2_watchhist',alts:'hub2_alts',seo:'hub2_seo',view:'hub2_viewmode',snaps:'hub2_snaps'};
 var CATEGORIES=['Branding','Identité visuelle','Design graphique','Réseaux sociaux','Packaging','UI/UX','3D','Éditorial','Autre'];
 var NATURES=['Projet client','Projet personnel','Concept fictif','Exercice','Collaboration','À confirmer'];
@@ -441,7 +444,38 @@ function lsSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function log(action,target){store.journal.unshift({ts:new Date().toISOString(),action:action,target:target||''});if(store.journal.length>400)store.journal.length=400;lsSet(LS.journal,store.journal)}
 function notify(msg,type,view){store.alerts.unshift({ts:new Date().toISOString(),msg:msg,type:type||'info',view:view||null,read:false});if(store.alerts.length>80)store.alerts.length=80;lsSet(LS.alerts,store.alerts);renderNotif()}
 function renderNotif(){var n=store.alerts.filter(function(a){return !a.read}).length;$('#notifN').textContent=n;$('#notifPill').setAttribute('aria-label','Notifications : '+n+' non lue'+(n>1?'s':''))}
-function save(){lsSet(LS.data,store.data);store.dirty=true;$('#dirtyPill').classList.remove('hidden')}
+var GH_OWNER='vasilias-studio',GH_REPO='vasilias-studio.github.io',GH_BRANCH='main';
+var pendingAssets={},pendingDeletes={},syncTimer=null,syncRunning=false,syncAgain=false;
+var hubChannel=typeof BroadcastChannel==='function'?new BroadcastChannel('vasilias_hub'):null;
+function ghToken(){return localStorage.getItem('hub2_gh_token')||''}
+function ghHeaders(){return {'Authorization':'Bearer '+ghToken(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
+function ghApi(path,opts){opts=opts||{};opts.headers=Object.assign(ghHeaders(),opts.headers||{});return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+path,opts).then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('GitHub '+r.status+': '+(t||r.statusText).slice(0,300))});return r.status===204?null:r.json()})}
+function save(){store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();lsSet(LS.data,store.data);localStorage.setItem('hub2_pending_sync','1');store.dirty=true;$('#dirtyPill').classList.remove('hidden');if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});clearTimeout(syncTimer);syncTimer=setTimeout(syncGitHub,900)}
+function ghBlobText(sha){return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/git/blobs/'+sha,{headers:{'Authorization':'Bearer '+ghToken(),'Accept':'application/vnd.github.raw+json','X-GitHub-Api-Version':'2022-11-28'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Lecture GitHub impossible ('+r.status+')');var ct=r.headers.get('content-type')||'';return r.text().then(function(t){if(ct.indexOf('json')>=0){var j=JSON.parse(t);if(j.encoding==='base64')return decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));return j.content||''}return t})})}
+function base64File(file){return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(String(r.result).split(',')[1])};r.onerror=reject;r.readAsDataURL(file)})}
+function syncGitHub(){if(syncRunning){syncAgain=true;return}if(!ghToken())return;syncRunning=true;localStorage.setItem('hub2_pending_sync','1');
+  function finish(err){syncRunning=false;if(err){toast('Synchronisation automatique échouée : '+err.message,'err');syncAgain=false;return}store.dirty=false;$('#dirtyPill').classList.add('hidden');localStorage.removeItem('hub2_pending_sync');localStorage.setItem('hub2_live_cache',JSON.stringify(store.data));if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});log('Publication automatique GitHub','hub-data.json + pages HTML + sitemap');toast('Modifications publiées sur le site — GitHub Pages reconstruit la page.','ok');if(syncAgain){syncAgain=false;syncGitHub()}}
+  (async function(){
+    try{
+      store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();
+      store.data.seo=store.seo||store.data.seo||{};store.data.checklist=store.checklist||[];
+      var ref=await ghApi('/git/ref/heads/'+GH_BRANCH,{cache:'no-store'});var baseCommit=ref.object.sha;
+      var commit=await ghApi('/git/commits/'+baseCommit,{cache:'no-store'});var tree=await ghApi('/git/trees/'+commit.tree.sha+'?recursive=1',{cache:'no-store'});var entries={};(tree.tree||[]).forEach(function(x){entries[x.path]=x});
+      var changes={};changes['hub-data.json']=JSON.stringify(store.data,null,2)+'\n';changes['sitemap.xml']=VasiliasSync.buildSitemapXml(store.data);
+      if(entries['hub-data.json']&&entries['hub-data.json'].sha){try{var oldData=JSON.parse(await ghBlobText(entries['hub-data.json'].sha));var nowPublished=(store.data.projects||[]).filter(function(x){return x.status==='published'}).map(function(x){return VasiliasSync.projectHref(x)});(oldData.projects||[]).filter(function(x){return x.status==='published'}).forEach(function(x){var f=VasiliasSync.projectHref(x);if(nowPublished.indexOf(f)<0)pendingDeletes[f]=true})}catch(ignore){}}
+      var pages=['index.html','work.html','services.html','about.html','contact.html','print.html','social.html','work-nebulo.html','work-orquid-spices.html'];
+      Object.keys(entries).forEach(function(f){if(/^work-[^/]+\.html$/.test(f)&&pages.indexOf(f)<0)pages.push(f)});
+      for(var i=0;i<pages.length;i++){var path=pages[i],ent=entries[path];if(!ent||!ent.sha)continue;var html=await ghBlobText(ent.sha);var doc=new DOMParser().parseFromString(html,'text/html');VasiliasSync.applyToDocument(doc,store.data,path);changes[path]=VasiliasSync.serializeDocument(doc)}
+      (store.data.projects||[]).filter(function(pr){return pr.status==='published'}).forEach(function(pr){var f=VasiliasSync.projectHref(pr);if(!entries[f])changes[f]=VasiliasSync.buildProjectPageHtml(pr,0,null,store.data)});
+      var paths=Object.keys(pendingAssets);for(var ai=0;ai<paths.length;ai++){var ap=paths[ai];changes[ap]={binary:await base64File(pendingAssets[ap])}}
+      var paths2=Object.keys(changes),treeEntries=[];
+      for(var j=0;j<paths2.length;j++){var file=paths2[j],val=changes[file];if(val&&val.binary){var b=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val.binary,encoding:'base64'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:b.sha})}else{var old=entries[file];if(old&&old.sha){var current=await ghBlobText(old.sha);if(current===val)continue}var blob=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val,encoding:'utf-8'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:blob.sha})}}
+      Object.keys(pendingDeletes).forEach(function(path){if(entries[path])treeEntries.push({path:path,mode:'100644',type:'blob',sha:null})});
+      if(!treeEntries.length){pendingAssets={};pendingDeletes={};finish();return}
+      var nt=await ghApi('/git/trees',{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree:treeEntries})});var nc=await ghApi('/git/commits',{method:'POST',body:JSON.stringify({message:'Hub: mise à jour automatique du site',tree:nt.sha,parents:[baseCommit]})});await ghApi('/git/refs/heads/'+GH_BRANCH,{method:'PATCH',body:JSON.stringify({sha:nc.sha,force:false})});pendingAssets={};pendingDeletes={};finish();
+    }catch(e){finish(e)}
+  })()
+}
 function markClean(){store.dirty=false;$('#dirtyPill').classList.add('hidden')}
 function pillFor(kind){var m={ok:'ok',warn:'warn',err:'err',neut:'neut',info:'info'};return m[kind]||'neut'}
 
@@ -484,6 +518,7 @@ function sha256(t){return crypto.subtle.digest('SHA-256',new TextEncoder().encod
   $('#unlock').addEventListener('click',tryUnlock);
   input.addEventListener('keydown',function(e){if(e.key==='Enter')tryUnlock()});
   fillIcons(document);
+  var gi=$('#ghTokenInput'),gm=$('#ghTokenMsg');if(gi&&localStorage.getItem('hub2_gh_token')){gi.placeholder='Token enregistré — collez-en un nouveau pour le remplacer'};$('#saveGhToken').addEventListener('click',function(){var t=gi.value.trim();if(!t){gm.textContent='Collez le token GitHub.';return}localStorage.setItem('hub2_gh_token',t);gi.value='';gm.textContent='Token enregistré dans ce navigateur.';gm.className='lock-msg';});
   setTimeout(function(){input.focus()},0);
 })();
 
@@ -496,7 +531,7 @@ function enter(){
     if(err){$('#view').removeAttribute('aria-busy');$('#view').innerHTML='<div class="card"><p class="pill err">Erreur de chargement</p><p style="margin-top:.5rem">'+esc(err.message)+'</p><p class="help">Vérifiez que hub-data.json est présent à la racine du site et que vous êtes connecté à internet.</p></div>';return}
     renderNotif();
     if(lsGet(LS.data,null))$('#dirtyPill').classList.remove('hidden');
-    normalizeData();migrateStatuses();scanAlerts();bindNav();$('#view').removeAttribute('aria-busy');go(routeFromHash()||'dashboard',true);
+    normalizeData();migrateStatuses();scanAlerts();bindNav();$('#view').removeAttribute('aria-busy');go(routeFromHash()||'dashboard',true);if(store.dirty&&ghToken())setTimeout(syncGitHub,1200);
   });
 }
 /* Tolérance au format de hub-data.json : champs absents ou nommés autrement (non énumérables => jamais ré-exportés) */
@@ -548,10 +583,10 @@ function bindNav(){
 
 /* ---------- chargement des données ---------- */
 function loadAll(cb){
-  fetch('hub-data.json',{cache:'no-store'}).then(function(r){
-    if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json();
-  }).then(function(base){
-    store.data=lsGet(LS.data,null)||base;
+  var remoteData=ghToken()?ghApi('/contents/hub-data.json?ref='+GH_BRANCH,{cache:'no-store'}).then(function(j){if(j.content)return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));throw new Error('GitHub API: contenu vide')}).catch(function(){return fetch('hub-data.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json()})}):fetch('hub-data.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json()});
+  remoteData.then(function(base){
+    var local=lsGet(LS.data,null);store.data=(local&&local.meta&&base.meta&&Date.parse(local.meta.updatedAt||0)>Date.parse(base.meta.updatedAt||0))?local:base;
+    if(local&&local.meta&&base.meta&&Date.parse(local.meta.updatedAt||0)>Date.parse(base.meta.updatedAt||0))store.dirty=true;
     store.journal=lsGet(LS.journal,[]);
     store.checklist=lsGet(LS.checklist,[
       {label:'Texte relu (orthographe, années, noms)',done:false,required:true},
@@ -567,7 +602,7 @@ function loadAll(cb){
     store.watchCfg=lsGet(LS.watch,null)||base.watch.slice();
     store.watchHist=lsGet(LS.hist,{});
     store.alerts=lsGet(LS.alerts,[]);
-    store.seo=lsGet(LS.seo,{});
+    store.seo=lsGet(LS.seo,base.seo||store.data.seo||{});
     cb(null);
   }).catch(cb);
 }
@@ -745,7 +780,11 @@ function projectModal(slug){
     +'<div><label class="lbl">Client / contexte</label><input type="text" id="fmC" value="'+esc(p?(p.client||''):'')+'"></div></div>'
     +'<label class="lbl req">Catégories</label><div style="display:flex;flex-wrap:wrap;gap:.35rem">'
     +CATEGORIES.map(function(c){var on=cats.includes(c);return '<button type="button" class="pill '+(on?'info':'neut')+'" data-cat="'+c+'" aria-pressed="'+on+'">'+(on?ic('check')+' ':'')+c+'</button>'}).join('')+'</div>'
-    +'<label class="lbl">Visuel de couverture (chemin dans assets/ ou « none »)</label><input type="text" id="fmCover" value="'+esc(p?(p.cover||'none'):'none')+'" placeholder="images/projet/cover.webp">'
+    +'<label class="lbl">Visuel de couverture (chemin dans assets/ ou « none »)</label><input type="text" id="fmCover" value="'+esc(p?(p.cover||'none'):'none')+'" placeholder="projects/projet/cover.webp">'
+    +'<label class="lbl">Rôle / contribution</label><input type="text" id="fmRole" value="'+esc(p?(p.role||''):'')+'">'
+    +'<label class="lbl">Accroche</label><textarea id="fmTagline">'+esc(p?(p.tagline||''):'')+'</textarea>'
+    +'<label class="lbl">Présentation du projet</label><textarea id="fmOverview">'+esc(p?(p.overview||''):'')+'</textarea>'
+    +'<label class="lbl">Galerie (chemins de fichiers JSON, liste)</label><textarea id="fmGallery" rows="4">'+esc(JSON.stringify(p?(p.gallery||[]):[]))+'</textarea>'
     +'<p class="help">Les projets « Brouillon » et « À compléter » ne doivent pas apparaître sur le site public. « Prêt à publier » passe par la checklist de Publication.</p>';
   var pBtns=[{label:'Annuler',cls:'btn-ghost'}];
   if(p)pBtns.push({label:'Archiver',cls:'btn-danger',onClick:function(bg){bg.remove();confirmModal('Archiver '+p.title+' ?','Le projet restera dans le hub mais sera marqué archivé (retiré du site au prochain export).',function(){p.status='archived';log('Projet archivé',p.title);save();viewProjects();toast('Projet archivé','warn')})}});
@@ -760,8 +799,8 @@ function projectModal(slug){
         var base=slugify(t)||'projet',sl=base,k=2;
         while(store.data.projects.some(function(x){return x.slug===sl})){sl=base+'-'+k;k++}
         p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
-      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value.trim()||'none';
-      if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — pensez à exporter.','ok');
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value.trim()||'none';p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();try{p.gallery=JSON.parse($('#fmGallery',bg).value||'[]');if(!Array.isArray(p.gallery))throw new Error('La galerie doit être une liste JSON.')}catch(e){toast('Galerie invalide : '+e.message,'err');return}
+      if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — synchronisation automatique en cours.','ok');
     }});
   modal(p?'Modifier « '+p.title+' »':'Nouveau projet',body,pBtns);
   $all('[data-cat]').forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.className='pill '+(!on?'info':'neut');b.innerHTML=(!on?ic('check')+' ':'')+esc(b.dataset.cat)})});
@@ -785,8 +824,10 @@ function viewContent(){
     h+='<tr><td><strong>'+esc(pg.name)+'</strong></td><td><code style="font-size:.8rem">'+esc(pg.file)+'</code></td><td>'+(pg.inMenu===undefined?'<span class="pill neut">Non renseigné</span>':pg.inMenu?'<span class="pill ok">Oui</span>':'<span class="pill neut">Non</span>')+'</td><td>'+(flag?'<span class="pill ok">Renseigné</span>':'<span class="pill warn">À vérifier</span>')+'</td></tr>';
   });
   h+='</tbody></table></div><button class="btn btn-ghost btn-sm" data-goto="seo" style="margin-top:.6rem">Gérer le SEO de ces pages '+ic('arrow_forward')+'</button></div>';
+  h+='<div class="card"><h2>Autres contenus du site</h2><p class="help">Modifiez les champs de texte et listes. Le Hub applique ces données aux pages publiques lors de la synchronisation.</p><label class="lbl">Processus (JSON)</label><textarea id="cxProcess" rows="10">'+esc(JSON.stringify(d.process||{},null,2))+'</textarea><label class="lbl">Champs d’intervention (JSON)</label><textarea id="cxFields" rows="10">'+esc(JSON.stringify({heading:d.fieldsHeading||'',items:d.fields||[]},null,2))+'</textarea><label class="lbl">À propos (JSON)</label><textarea id="cxAbout" rows="10">'+esc(JSON.stringify(d.about||{},null,2))+'</textarea><label class="lbl">Contact (JSON)</label><textarea id="cxContact" rows="8">'+esc(JSON.stringify(d.contact||{},null,2))+'</textarea><label class="lbl">Supports et réseaux (JSON)</label><textarea id="cxSupports" rows="10">'+esc(JSON.stringify({supports:d.supports||[],profiles:d.profiles||[]},null,2))+'</textarea><button class="btn btn-primary btn-sm" id="cxSave">Enregistrer ces contenus</button></div>';
   $('#view').innerHTML=h;
   $('#ctSave').addEventListener('click',function(){d.pitch.tagline=$('#ctTag').value.trim();d.pitch.intro=$('#ctIntro').value.trim();log('Pitch mis à jour');save();toast('Textes d\'accroche enregistrés.','ok')});
+  $('#cxSave').addEventListener('click',function(){try{var pr=JSON.parse($('#cxProcess').value),fi=JSON.parse($('#cxFields').value),ab=JSON.parse($('#cxAbout').value),ct=JSON.parse($('#cxContact').value),sp=JSON.parse($('#cxSupports').value);if(!Array.isArray(fi.items)||!Array.isArray(sp.supports)||!Array.isArray(sp.profiles))throw new Error('Champs items/supports/profiles doivent être des listes JSON.');d.process=pr;d.fieldsHeading=fi.heading||'';d.fields=fi.items;d.about=ab;d.contact=ct;d.supports=sp.supports;d.profiles=sp.profiles;log('Contenus de pages mis à jour');save();toast('Contenus enregistrés — publication automatique en cours.','ok')}catch(e){toast('JSON invalide : '+e.message,'err')}});
   $('#svAdd').addEventListener('click',function(){serviceModal(null)});
   $all('[data-sv]').forEach(function(b){b.addEventListener('click',function(){serviceModal(+b.dataset.sv)})});
   $all('[data-svdel]').forEach(function(b){b.addEventListener('click',function(){var s=d.services[+b.dataset.svdel];confirmModal('Retirer « '+s.title+' » ?','Il disparaîtra de la liste au prochain export.',function(){d.services.splice(+b.dataset.svdel,1);log('Service retiré',s.title);save();viewContent()})})});
@@ -807,7 +848,7 @@ function serviceModal(i){
 /* ==================== MÉDIATHÈQUE ==================== */
 function viewMedia(){
   var d=store.data,alts=lsGet(LS.alts,{});
-  var h='<div class="toolbar"><input type="text" id="mf" placeholder="Rechercher un fichier…" aria-label="Rechercher"><span class="pill neut">'+(d.media||[]).length+' fichiers · '+fmtBytes((d.media||[]).reduce(function(a,m){return a+m.bytes},0))+'</span><div class="spacer"></div><span class="pill warn"><span class="dot warn"></span>Ajout/suppression : via commit Git (voir Publication)</span></div><div id="mgrid"></div>';
+  var h='<div class="toolbar"><input type="text" id="mf" placeholder="Rechercher un fichier…" aria-label="Rechercher"><span class="pill neut">'+(d.media||[]).length+' fichiers · '+fmtBytes((d.media||[]).reduce(function(a,m){return a+m.bytes},0))+'</span><div class="spacer"></div><label class="btn btn-primary btn-sm" for="mediaUpload">'+ic('upload')+' Ajouter un média</label><input id="mediaUpload" type="file" multiple style="display:none" accept="image/*,.pdf,.svg,.mp4,.webm"></div><p class="help">Les fichiers sélectionnés sont téléversés vers assets/ avec la prochaine synchronisation automatique.</p><div id="mgrid"></div>';
   $('#view').innerHTML=h;
   function draw(){
     var f=($('#mf').value||'').toLowerCase();
@@ -823,6 +864,7 @@ function viewMedia(){
     $all('[data-mi]').forEach(function(b){b.addEventListener('click',function(){mediaModal(+b.dataset.mi)})});
   }
   $('#mf').addEventListener('input',draw);
+  $('#mediaUpload').addEventListener('change',function(e){Array.prototype.forEach.call(e.target.files,function(file){var clean=file.name.replace(/[^a-zA-Z0-9._-]+/g,'-');var dest='hub-uploads/'+Date.now()+'-'+clean;pendingAssets['assets/'+dest]=file;var item={path:'assets/'+dest,bytes:file.size,used:'Ajouté via Hub'};Object.defineProperty(item,'file',{value:dest,enumerable:false,writable:true,configurable:true});d.media.push(item);if(!d.alts)d.alts={};});save();draw();toast('Média ajouté à la file de publication.','ok')});
   draw();
 }
 function mediaModal(i){
@@ -833,10 +875,12 @@ function mediaModal(i){
     +'<tr><td><strong>Poids</strong></td><td>'+fmtBytes(m.bytes)+'</td></tr>'
     +'<tr><td><strong>Usage</strong></td><td>'+esc(m.used||'non référencé')+'</td></tr></tbody></table>'
     +'<label class="lbl">Texte alternatif (accessibilité + SEO)</label><input type="text" id="altIn" value="'+esc(alts[m.file]||'')+'" placeholder="Décrivez l\'image en une phrase">'
-    +'<p class="help">Ce texte est conservé ici et rappelé lors de l\'export ; l\'attribut alt se pose dans le HTML concerné.</p>';
+    +'<p class="help">Ce texte est enregistré dans hub-data.json et appliqué aux pages publiques.</p>'
+    +'<button type="button" class="btn btn-danger btn-sm" id="mediaDelete" style="margin-top:.5rem">Supprimer ce média du dépôt</button>';
   modal(m.file.split('/').pop(),body,[{label:'Fermer',cls:'btn-ghost'},{label:'Enregistrer l\'alt',cls:'btn-primary',onClick:function(bg){
-    alts[m.file]=$('#altIn',bg).value.trim();lsSet(LS.alts,alts);log('Alt mis à jour',m.file);store.dirty=true;$('#dirtyPill').classList.remove('hidden');bg.remove();viewMedia();toast('Texte alternatif enregistré.','ok');
+    alts[m.file]=$('#altIn',bg).value.trim();store.data.alts=store.data.alts||{};store.data.alts[m.file.replace(/^assets\//,'')]=alts[m.file];lsSet(LS.alts,alts);log('Alt mis à jour',m.file);save();bg.remove();viewMedia();toast('Texte alternatif enregistré.','ok');
   }}]);
+  var del=$('#mediaDelete');if(del)del.addEventListener('click',function(){confirmModal('Supprimer '+m.file+' ?','Le fichier et sa référence seront supprimés du dépôt lors de la prochaine synchronisation.',function(){pendingDeletes['assets/'+m.file]=true;store.data.media.splice(i,1);delete alts[m.file];if(store.data.alts)delete store.data.alts[m.file.replace(/^assets\//,'')];save();$('.modal-bg')&&$('.modal-bg').remove();viewMedia();toast('Média mis en suppression.','warn')})});
 }
 
 /* ==================== COMPÉTENCES & OUTILS ==================== */
@@ -901,7 +945,7 @@ function viewSeo(){
       var t=$('#sfT').value.trim(),dd=$('#sfD').value.trim();
       if(!t||!dd){toast('Titre et description obligatoires.','err');return}
       store.seo[file]={title:t,desc:dd,img:$('#sfImg').value.trim(),canonical:$('#sfC').value.trim(),updated:new Date().toISOString()};
-      lsSet(LS.seo,store.seo);store.dirty=true;$('#dirtyPill').classList.remove('hidden');
+      lsSet(LS.seo,store.seo);save();
       log('SEO mis à jour',file);toast('SEO enregistré pour '+file+'.','ok');
     });
   }
@@ -972,12 +1016,12 @@ function viewPublish(){
   var ready=d.projects.filter(function(p){return p.status==='ready'}).length;
   var alts=lsGet(LS.alts,{});
   var missingAlt=(d.media||[]).filter(function(m){return /\.(webp|png|jpe?g|gif|svg|avif)$/i.test(m.file)&&!alts[m.file]}).length;
-  var h='<div class="card"><h2>Workflow de publication (réel et journalisé)</h2>'
+  var h='<div class="card"><h2>Publication automatique</h2>'
     +'<ol style="margin:.4rem 0 0 1.2rem;font-size:.875rem;line-height:2">'
     +'<li>Finaliser les contenus et projets dans le hub.</li>'
-    +'<li><strong>Exporter</strong> les données (fichier <code>hub-data.json</code> régénéré ci-dessous).</li>'
-    +'<li>Remplacer le fichier dans le dépôt, adapter les pages concernées, puis <code>git commit && git push</code> — GitHub Pages redéploie automatiquement.</li>'
-    +'<li>Revenir ici, cocher « page publique contrôlée », et lancer la Surveillance.</li></ol></div>';
+    +'<li>Connecter un token GitHub dans Paramètres une seule fois.</li>'
+    +'<li>Chaque enregistrement publie automatiquement hub-data.json, les pages HTML, le sitemap et les médias sélectionnés.</li>'
+    +'<li>GitHub Pages reconstruit ensuite le site; aucune manipulation manuelle du dépôt n’est nécessaire.</li></ol><p class="help">Connexion : '+(ghToken()?'token actif — synchronisation automatique prête.':'à configurer dans Paramètres → Publication automatique.')+'</p></div>';
   h+='<div class="grid2"><div class="card"><h2>Checklist avant publication</h2><div class="progress" style="margin:.4rem 0 .8rem" role="progressbar" aria-valuenow="'+doneN+'" aria-valuemin="0" aria-valuemax="'+store.checklist.length+'"><div style="width:'+Math.round(doneN/store.checklist.length*100)+'%"></div></div>';
   store.checklist.forEach(function(c,i){
     h+='<label class="check"><input type="checkbox" data-ci="'+i+'" '+(c.done?'checked':'')+'><span class="txt">'+esc(c.label)+(c.required?' <span style="color:var(--err)">*</span>':' <small class="mut">(recommandé)</small>')+'</span></label>';
@@ -987,25 +1031,24 @@ function viewPublish(){
     +'<div class="item"><span class="dot '+(ready?'warn':'neut')+'" style="margin-top:6px"></span><div><strong>'+ready+' projet(s) « Prêt à publier »</strong><small class="mut">'+(ready?'À pousser via export + commit.':'Aucun en attente.')+'</small></div></div>'
     +'<div class="item"><span class="dot '+(missingAlt?'warn':'ok')+'" style="margin-top:6px"></span><div><strong>'+(missingAlt?missingAlt+' image(s) sans texte alternatif':'Tous les textes alternatifs sont renseignés')+'</strong><small class="mut">Voir Médiathèque.</small></div></div>'
     +'<div class="item"><span class="dot '+(store.dirty?'warn':'ok')+'" style="margin-top:6px"></span><div><strong>'+(store.dirty?'Des modifications n\'ont pas été exportées':'Aucune modification en attente d\'export')+'</strong></div></div></div></div>';
-  h+='<div class="card"><h2>Export</h2><p class="help" style="margin-bottom:.8rem">Génère le <code>hub-data.json</code> complet (projets, contenus, SEO, état de la checklist) à déposer dans le dépôt. L\'export est journalisé.</p>'
+  h+='<div class="card"><h2>Export</h2><p class="help" style="margin-bottom:.8rem">Téléchargement de secours. En fonctionnement normal, les changements sont publiés automatiquement via GitHub.</p>'
     +'<button class="btn btn-primary" id="expBtn">'+ic('download')+' Exporter hub-data.json</button> '
     +'<button class="btn btn-ghost" id="expShow">Voir le contenu</button></div>';
   $('#view').innerHTML=h;
-  $all('[data-ci]').forEach(function(c){c.addEventListener('change',function(){store.checklist[+c.dataset.ci].done=c.checked;lsSet(LS.checklist,store.checklist);store.dirty=true;$('#dirtyPill').classList.remove('hidden');log('Checklist',(c.checked?'coché — ':'décoché — ')+store.checklist[+c.dataset.ci].label);viewPublish()})});
+  $all('[data-ci]').forEach(function(c){c.addEventListener('change',function(){store.checklist[+c.dataset.ci].done=c.checked;lsSet(LS.checklist,store.checklist);store.data.checklist=store.checklist;save();log('Checklist',(c.checked?'coché — ':'décoché — ')+store.checklist[+c.dataset.ci].label);viewPublish()})});
   $('#expBtn').addEventListener('click',exportData);
   $('#expShow').addEventListener('click',function(){modal('Contenu de l\'export','<pre class="exp">'+esc(exportPayload())+'</pre>')});
 }
 function exportPayload(){
   var d=JSON.parse(JSON.stringify(store.data));
-  d.meta=d.meta||{};d.meta.version='3.0';d.meta.generated=new Date().toISOString().slice(0,10);
+  d.meta=d.meta||{};d.meta.version='4.0';d.meta.generated=new Date().toISOString().slice(0,10);d.meta.updatedAt=new Date().toISOString();
   d.seo=store.seo;d.checklist=store.checklist;
   return JSON.stringify(d,null,2);
 }
 function exportData(){
   var blob=new Blob([exportPayload()],{type:'application/json'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hub-data.json';a.click();
-  markClean();log('Export hub-data.json effectué');toast('Export téléchargé — déposez-le dans le dépôt puis commitez.','ok');
-  if($('#dirtyPill'))$('#dirtyPill').classList.add('hidden');
+  log('Export de secours hub-data.json effectué');toast('Copie de sauvegarde téléchargée. La synchronisation automatique reste en attente.','ok');
 }
 
 /* ==================== HISTORIQUE & SAUVEGARDES ==================== */
@@ -1073,14 +1116,16 @@ function viewSettings(){
     +'<button class="btn btn-ghost btn-sm" id="stLogout" style="margin-top:.7rem">Terminer la session</button></div>';
   h+='<div class="card"><h2>Données locales</h2><p style="font-size:.875rem">'+fmtBytes(used)+' utilisés par le hub dans ce navigateur (brouillons, journal, checklist, sauvegardes).</p>'
     +'<button class="btn btn-danger btn-sm" id="stWipe" style="margin-top:.7rem">Réinitialiser les données locales…</button></div></div>';
-  h+='<div class="card"><h2>Architecture (réel, à connecter plus tard)</h2><ul style="margin-left:1.2rem;font-size:.875rem;line-height:2">'
+  h+='<div class="card"><h2>Publication automatique — GitHub</h2><p class="help">'+(ghToken()?'Token enregistré sur cet appareil. Les modifications sont envoyées automatiquement à '+GH_OWNER+'/'+GH_REPO+' (branche '+GH_BRANCH+').':'Aucun token enregistré : les modifications restent locales jusqu’à la connexion.')+'</p><div class="toolbar"><input type="password" id="settingsGhToken" autocomplete="off" placeholder="'+(ghToken()?'Remplacer le token GitHub':'Coller un token GitHub (Contents: Read and write)')+'"><button class="btn btn-primary btn-sm" id="saveSettingsGh">Enregistrer</button><button class="btn btn-ghost btn-sm" id="removeSettingsGh">Supprimer le token</button><button class="btn btn-ghost btn-sm" id="syncNow">Synchroniser maintenant</button></div><p class="help">Le token n’est jamais écrit dans le dépôt. Toute personne ayant accès à ce navigateur peut toutefois l’utiliser.</p></div>'
+    +'<div class="card"><h2>Architecture (publication depuis le navigateur)</h2><ul style="margin-left:1.2rem;font-size:.875rem;line-height:2">'
     +'<li><strong>Hébergement :</strong> GitHub Pages (statique) — <a href="https://vasilias-studio.github.io/" target="_blank" rel="noopener">site public</a></li>'
     +'<li><strong>Données :</strong> hub-data.json (versionné Git) + cache navigateur — pas de serveur, pas de base.</li>'
     +'<li><strong>Verrou :</strong> SHA-256 côté navigateur — confort, pas sécurité serveur. Pour un vrai compte : Netlify Identity, backend ou CMS (Decap/Sveltia).</li>'
-    +'<li><strong>Publication :</strong> export → commit → push → redéploiement GitHub Pages.</li>'
+    +'<li><strong>Publication :</strong> édition → synchronisation Git Data API atomique → commit → GitHub Pages.</li>'
     +'<li><strong>Sauvegardes :</strong> instantanés navigateur (12 max) + exports téléchargeables.</li></ul></div>';
   h+='<div class="card"><h2>Documentation</h2><p style="font-size:.875rem"><a href="hub-documentation.md" target="_blank" rel="noopener">Ouvrir hub-documentation.md</a> — guide complet du hub (accès, workflow, sauvegardes, rollback, évolutions).</p></div>';
   $('#view').innerHTML=h;
+  $('#saveSettingsGh').addEventListener('click',function(){var t=$('#settingsGhToken').value.trim();if(!t){toast('Collez d’abord le token.','warn');return}localStorage.setItem('hub2_gh_token',t);$('#settingsGhToken').value='';toast('Token enregistré uniquement dans ce navigateur.','ok');viewSettings()});$('#removeSettingsGh').addEventListener('click',function(){localStorage.removeItem('hub2_gh_token');toast('Token supprimé de ce navigateur.','ok');viewSettings()});$('#syncNow').addEventListener('click',function(){if(!ghToken()){toast('Enregistrez un token GitHub d’abord.','warn');return}syncGitHub()});
   $('#stLogout').addEventListener('click',function(){sessionEnd();location.reload()});
   $('#stWipe').addEventListener('click',function(){confirmModal('Réinitialiser les données locales ?','Journal, checklist, sauvegardes et modifications non exportées seront définitivement perdus. Le fichier hub-data.json du site n\'est PAS touché.',function(){
     Object.keys(localStorage).forEach(function(k){if(k.indexOf('hub2_')===0)localStorage.removeItem(k)});sessionStorage.clear();location.reload();
