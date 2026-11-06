@@ -411,7 +411,7 @@
     var grid = doc.querySelector('.services-grid');
     if (!grid || !Array.isArray(data.services)) return;
     var anims = ['reveal-left', 'reveal-right', 'reveal-down', 'reveal-zoom', 'reveal-fade', 'reveal-zoom-out'];
-    var serviceImages = ['logo-identite', 'brandboard', 'direction-artistique', 'supports-communication', 'reseaux-sociaux', 'packaging', 'visualisation-3d'];
+    var serviceImages = ['logo-identite', 'brandboard-v2', 'supports-communication-v2', 'reseaux-sociaux-v2', 'packaging-v2'];
     grid.innerHTML = data.services.map(function (s, idx) {
       var img = normalizeAssetPath(s.image) || ('assets/services/' + serviceImages[idx % serviceImages.length] + '.jpg');
       var num = String(idx + 1).padStart(2, '0');

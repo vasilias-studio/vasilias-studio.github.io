@@ -58,27 +58,32 @@
     {
       "title": "Création de Logo & Identités Visuelles",
       "desc": "Logotypes, systèmes d'identité, palettes chromatiques et choix typographiques qui expriment la personnalité de votre marque et la rendent immédiatement identifiable.",
-      "foot": "Fichiers vectoriels prêts pour print & digital"
+      "foot": "Fichiers vectoriels prêts pour print & digital",
+      "image": "assets/services/logo-identite.jpg"
     },
     {
       "title": "Brandboard & Charte Graphique",
       "desc": "Synthèse complète de votre identité : logo, couleurs, typographies et règles d'utilisation, pour une image cohérente sur l'ensemble de vos supports.",
-      "foot": "Brandboard & règles d'application inclus"
+      "foot": "Brandboard & règles d'application inclus",
+      "image": "assets/services/brandboard-v2.jpg"
     },
     {
       "title": "Supports de Communication",
       "desc": "Cartes de visite, affiches, bannières, brochures et autres supports imprimés ou numériques, conçus pour être lisibles et mémorables.",
-      "foot": "Fichiers d'impression & formats web fournis"
+      "foot": "Fichiers d'impression & formats web fournis",
+      "image": "assets/services/supports-communication-v2.jpg"
     },
     {
       "title": "Visuels pour Réseaux Sociaux",
       "desc": "Publications, stories et templates déclinés dans votre identité, adaptés aux formats de chaque plateforme.",
-      "foot": "Templates réutilisables"
+      "foot": "Templates réutilisables",
+      "image": "assets/services/reseaux-sociaux-v2.jpg"
     },
     {
       "title": "Design de Packaging",
       "desc": "Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.",
-      "foot": "Maquettes & mockups de présentation"
+      "foot": "Maquettes & mockups de présentation",
+      "image": "assets/services/packaging-v2.jpg"
     }
   ],
   "about": {
