@@ -721,7 +721,7 @@ function viewProjects(){
     }else{
       var t='<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Projet</th><th>Catégorie</th><th>Année</th><th>Statut</th><th></th></tr></thead><tbody>';
       list.forEach(function(p){
-        t+='<tr><td><strong>'+esc(p.title)+'</strong><br><small class="mut">'+esc(p.slug)+'</small></td><td>'+(p.category||[]).join(', ')||'—'+'</td><td>'+(p.year||'—')+'</td>'
+        t+='<tr><td><strong>'+esc(p.title)+'</strong><br><small class="mut">'+esc(p.slug)+'</small></td><td>'+((p.category||[]).join(', ')||'—')+'</td><td>'+(p.year||'—')+'</td>'
           +'<td><span class="pill '+STATUS_PILL[p.status]+'">'+STATUSES[p.status]+'</span></td>'
           +'<td><button class="btn btn-ghost btn-sm" data-slug="'+p.slug+'">Modifier</button></td></tr>';
       });
@@ -756,7 +756,10 @@ function projectModal(slug){
       if(!cc.length){toast('Sélectionnez au moins une catégorie.','err');return}
       var y=parseInt($('#fmY',bg).value,10);
       if(!y){toast('L\'année est obligatoire.','err');return}
-      var created=false;if(!p){created=true;p={slug:slugify(t)};store.data.projects.unshift(p);log('Projet créé',t)}
+      var created=false;if(!p){created=true;
+        var base=slugify(t)||'projet',sl=base,k=2;
+        while(store.data.projects.some(function(x){return x.slug===sl})){sl=base+'-'+k;k++}
+        p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
       p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.cover=$('#fmCover',bg).value.trim()||'none';
       if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — pensez à exporter.','ok');
     }});
@@ -959,7 +962,7 @@ function runWatch(){
   }
   next();
 }
-function pushWatch(u,r){var h=store.watchHist[u]||[];h.push(r);if(h.length>50)h.length=50;store.watchHist[u]=h}
+function pushWatch(u,r){var h=store.watchHist[u]||[];h.push(r);if(h.length>50)h.splice(0,h.length-50);store.watchHist[u]=h}
 
 /* ==================== PUBLICATION ==================== */
 function viewPublish(){
