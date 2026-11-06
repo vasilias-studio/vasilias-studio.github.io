@@ -143,8 +143,7 @@
 
   function applySeo(doc, data, pageFile) {
     var seoMap = (data && data.seo) || {};
-    var seo = seoMap[pageFile];
-    if (!seo) return;
+    var seo = seoMap[pageFile] || {};
     if (seo.title) {
       var titleEl = doc.querySelector('title');
       if (titleEl) titleEl.textContent = seo.title;
@@ -156,11 +155,21 @@
       setMeta(doc, 'meta[property="og:description"]', 'content', seo.ogDesc || seo.desc);
       setMeta(doc, 'meta[name="twitter:description"]', 'content', seo.ogDesc || seo.desc);
     }
-    if (seo.img) {
-      var imgUrl = fullUrl(seo.img);
+    var shareImage = seo.img;
+    if (!shareImage && /^work-[^/]+\.html$/i.test(pageFile)) {
+      var slug = pageFile.replace(/^work-/i, '').replace(/\.html$/i, '');
+      var project = ((data && data.projects) || []).find(function (p) {
+        return p && (p.slug === slug || projectHref(p) === pageFile);
+      });
+      if (project) shareImage = project.cover;
+    }
+    if (shareImage) {
+      var imgUrl = fullUrl(shareImage);
       setMeta(doc, 'meta[property="og:image"]', 'content', imgUrl);
       setMeta(doc, 'meta[name="twitter:image"]', 'content', imgUrl);
     }
+    if (seo.imgWidth) setMeta(doc, 'meta[property="og:image:width"]', 'content', seo.imgWidth);
+    if (seo.imgHeight) setMeta(doc, 'meta[property="og:image:height"]', 'content', seo.imgHeight);
     if (seo.canonical) {
       setMeta(doc, 'link[rel="canonical"]', 'href', seo.canonical);
       setMeta(doc, 'meta[property="og:url"]', 'content', seo.canonical);
@@ -616,9 +625,30 @@
       if (ovP) ovP.textContent = p.overview;
     }
 
-    if (p.cover && p.cover !== 'none') {
-      var covImg = doc.querySelector('[data-hub="project-cover"]');
-      if (covImg) covImg.setAttribute('src', normalizeAssetPath(p.cover));
+    var coverSrc = (p.cover && p.cover !== 'none') ? normalizeAssetPath(p.cover) : '';
+    var covImg = doc.querySelector('[data-hub="project-cover"]');
+    if (coverSrc) {
+      if (!covImg) {
+        var hero = doc.createElement('div');
+        hero.className = 'case-hero reveal reveal-right';
+        covImg = doc.createElement('img');
+        covImg.setAttribute('data-hub', 'project-cover');
+        hero.appendChild(covImg);
+        var metaBlock = doc.querySelector('.case-meta');
+        if (metaBlock && metaBlock.parentNode) metaBlock.parentNode.insertBefore(hero, metaBlock.nextSibling);
+      }
+      if (covImg) {
+        var coverRel = relAssetPath(coverSrc);
+        var alts = (data && data.alts) || {};
+        covImg.setAttribute('src', encodeURI(coverSrc));
+        covImg.setAttribute('alt', alts[coverRel] || ('Visuel principal du projet ' + p.title));
+        covImg.setAttribute('loading', 'eager');
+        covImg.setAttribute('fetchpriority', 'high');
+        covImg.setAttribute('decoding', 'async');
+      }
+    } else if (covImg) {
+      var oldHero = covImg.closest ? covImg.closest('.case-hero') : null;
+      if (oldHero) oldHero.remove(); else covImg.remove();
     }
 
     var galWrap = doc.querySelector('[data-hub="project-gallery"]');
@@ -762,8 +792,8 @@
       + '  <meta property="og:description" content="' + esc(pageDesc) + '">\n'
       + '  <meta property="og:url" content="' + esc(canonical) + '">\n'
       + '  <meta property="og:image" content="' + esc(ogImage) + '">\n'
-      + '  <meta property="og:image:width" content="1200">\n'
-      + '  <meta property="og:image:height" content="630">\n'
+      + '  <meta property="og:image:width" content="' + esc(seo.imgWidth || 1200) + '">\n'
+      + '  <meta property="og:image:height" content="' + esc(seo.imgHeight || 630) + '">\n'
       + '  <meta name="twitter:card" content="summary_large_image">\n'
       + '  <meta name="twitter:title" content="' + esc(pageTitle) + '">\n'
       + '  <meta name="twitter:description" content="' + esc(pageDesc) + '">\n'
@@ -844,7 +874,7 @@
       + '    </div>\n'
       + '  </footer>\n'
       + '  <script>document.getElementById(\'year\').textContent = new Date().getFullYear();</script>\n'
-      + '  <script src="js/hub-sync.js?v=1"></script>\n'
+      + '  <script src="js/hub-sync.js?v=5"></script>\n'
       + '  <script src="js/main.js?v=8"></script>\n'
       + '</body>\n'
       + '</html>\n';
