@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
     wizard.querySelectorAll('.is-selected').forEach(function (el) { el.classList.remove('is-selected'); });
     wizard.hidden = false;
     document.querySelector('.quote-progress-wrap').hidden = false;
-    document.getElementById('quoteModalDescription').hidden = false;
     confirmation.hidden = true;
     nonce = '';
     submitButton.textContent = 'Envoyer ma demande de devis';
@@ -305,7 +304,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('quoteConfirmationDetail').textContent = detail && detail !== 'Votre demande est reçue.' && detail !== 'Votre demande a déjà été reçue.' ? detail : '';
     wizard.hidden = true;
     document.querySelector('.quote-progress-wrap').hidden = true;
-    document.getElementById('quoteModalDescription').hidden = true;
     confirmation.hidden = false;
     confirmation.querySelector('h3').focus();
     clearTimeout(sendTimer);

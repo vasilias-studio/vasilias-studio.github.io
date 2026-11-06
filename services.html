@@ -173,12 +173,11 @@
 
     <div class="quote-modal" id="quoteModal" hidden aria-hidden="true">
       <div class="quote-backdrop" data-quote-close></div>
-      <section class="quote-dialog" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle" aria-describedby="quoteModalDescription" tabindex="-1">
+      <section class="quote-dialog" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle" tabindex="-1">
         <header class="quote-modal-head">
-          <div><p class="quote-modal-kicker">Vasilías Studio · Devis personnalisé</p><h2 id="quoteModalTitle">Construisons votre projet</h2></div>
+          <div><h2 id="quoteModalTitle">Construisons votre projet</h2></div>
           <button class="quote-close" type="button" id="quoteClose" aria-label="Fermer le formulaire">×</button>
         </header>
-        <p id="quoteModalDescription" class="quote-modal-description">Votre demande se remplit en six étapes. Vous pourrez vérifier et modifier les informations avant l’envoi.</p>
 
         <div class="quote-progress-wrap">
           <div class="quote-progress-meta"><span id="quoteStepCounter">Étape 1 sur 6</span><span id="quoteStepName">Informations du client</span></div>
@@ -196,7 +195,6 @@
           <input type="hidden" name="resume_detaille" id="quotePayload">
           <section class="quote-step" data-quote-step="1" aria-labelledby="quoteStep1Title">
             <h3 id="quoteStep1Title">Commençons par faire connaissance.</h3>
-            <p class="quote-step-description">Quelques informations pour savoir avec qui nous allons collaborer.</p>
             <div class="quote-fields quote-fields-2">
               <label class="quote-field">Nom et prénom <span aria-hidden="true">*</span><input type="text" name="clientName" autocomplete="name" required maxlength="120"></label>
               <label class="quote-field">Adresse e-mail <span aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required maxlength="254"></label>
@@ -321,7 +319,7 @@
   <script src="js/hub-sync.js?v=2"></script>
   <script src="js/main.js?v=8"></script>
   <script src="js/quote-config.js?v=3"></script>
-  <script src="js/quote-form.js?v=2"></script>
+  <script src="js/quote-form.js?v=3"></script>
 
 
 
