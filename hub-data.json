@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-06T09:03:09.822Z"
+    "updatedAt": "2026-11-06T09:14:48.020Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -352,11 +352,10 @@
   "seo": {
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
-      "ogTitle": "Vasilías — Designer Graphique Freelance, Toamasina",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "ogDesc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
       "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
-      "canonical": "https://vasilias-studio.github.io/"
+      "canonical": "https://vasilias-studio.com/",
+      "updated": "2026-11-06T09:14:47.104Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
