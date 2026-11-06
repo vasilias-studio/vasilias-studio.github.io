@@ -995,16 +995,14 @@ html,.home-v2{overflow-x:clip}
 /* ---------- Packs d'identité visuelle : section Services ---------- */
 .packs-section{margin-top:clamp(5rem,9vw,8rem);padding-top:clamp(2.5rem,5vw,4.5rem);border-top:1px solid var(--line)}
 .packs-head{max-width:54rem;margin-bottom:clamp(2rem,4vw,3.25rem)}
-.packs-eyebrow{margin:0 0 .8rem;color:var(--accent-text);font-family:'Josefin Sans',sans-serif;font-size:.8125rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
-.packs-title{margin:0;font-family:'Josefin Sans',sans-serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;letter-spacing:-.01em;line-height:1.08;text-transform:uppercase}
+.packs-title{margin:0;font-family:'Josefin Sans',sans-serif;font-size:clamp(1.9rem,3.8vw,2.8rem);font-weight:700;letter-spacing:-.015em;line-height:1.04;text-transform:uppercase}
 .packs-intro{max-width:43rem;margin:1rem 0 0;color:var(--muted);font-size:1rem;line-height:1.7}
 .packs-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem;align-items:stretch}
-.pack-card{display:flex;min-width:0;flex-direction:column;padding:1.5rem 0 1.25rem;border-top:1px solid var(--line)}
-.pack-card--featured{padding-right:1.1rem;padding-left:1.1rem;border-top:2px solid var(--accent);background:rgba(242,233,216,.2)}
-.pack-card-topline{display:flex;min-height:1.5rem;align-items:center;justify-content:space-between;gap:.75rem}
-.pack-index{margin:0;color:var(--muted);font-family:'Josefin Sans',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
-.pack-recommended{flex:0 0 auto;padding:.3rem .45rem;border:1px solid var(--accent);color:var(--accent-text);font-family:'Josefin Sans',sans-serif;font-size:.625rem;font-weight:600;letter-spacing:.08em;line-height:1.2;text-transform:uppercase}
-.pack-name{margin:1.1rem 0 0;font-family:'Josefin Sans',sans-serif;font-size:clamp(1.2rem,1.6vw,1.5rem);font-weight:700;letter-spacing:-.01em;line-height:1.15;text-transform:uppercase}
+.pack-card{display:flex;min-width:0;flex-direction:column;padding:1.5rem 0 1.25rem;border-top:2px solid var(--line)}
+.pack-card--featured{position:relative;padding-right:1.1rem;padding-left:1.1rem;border-top:2px solid var(--accent);background:var(--ink);color:var(--bg)}
+.pack-recommended{position:absolute;top:.55rem;right:1.1rem;padding:.3rem .45rem;border:1px solid var(--accent);color:var(--bg);font-family:'Josefin Sans',sans-serif;font-size:.625rem;font-weight:600;letter-spacing:.08em;line-height:1.2;text-transform:uppercase}
+.pack-name{min-height:2.3em;margin:1.1rem 0 0;font-family:'Josefin Sans',sans-serif;font-size:clamp(1.2rem,1.6vw,1.5rem);font-weight:700;letter-spacing:-.01em;line-height:1.15;text-transform:uppercase}
+.pack-card--featured .pack-name{color:var(--bg)}
 .pack-price{display:flex;align-items:baseline;gap:.45rem;margin:1rem 0 0;color:var(--accent);white-space:nowrap}
 .pack-amount{font-family:'Josefin Sans',sans-serif;font-size:clamp(2rem,3vw,2.6rem);font-weight:600;letter-spacing:-.045em;line-height:1}
 .pack-currency{font-size:.9375rem;font-weight:600}
@@ -1014,6 +1012,10 @@ html,.home-v2{overflow-x:clip}
 .pack-features li::before{position:absolute;top:0;left:0;color:var(--accent);content:"—"}
 .pack-cta{width:100%;justify-content:space-between;gap:.75rem;margin-top:auto;padding:.85rem .9rem;white-space:normal;text-align:left}
 .pack-cta span{font-size:1rem}
+.pack-card--featured .pack-description{color:rgba(255,255,255,.72)}
+.pack-card--featured .pack-features{border-color:rgba(255,255,255,.25);color:var(--bg)}
+.pack-card--featured .pack-cta{border-color:rgba(255,255,255,.7);color:var(--bg)}
+.pack-card--featured .pack-cta:hover{border-color:var(--accent);background:var(--accent);color:var(--ink)}
 @media(min-width:640px){.packs-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4rem}}
 @media(min-width:960px){.packs-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1.25rem,2vw,2rem)}.pack-card--featured{padding-right:1rem;padding-left:1rem}}
 
