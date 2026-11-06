@@ -7,10 +7,18 @@ const sandbox = {
   Utilities: {
     base64Decode(value) { return Array.from(Buffer.from(value, 'base64')); },
     newBlob(bytes, type, name) { return { bytes, type, name, getName() { return name; } }; },
+    formatDate() { return '06/11/2026 21:57'; },
     DigestAlgorithm: { SHA_256: 'SHA_256' }
   },
   HtmlService: {
-    createHtmlOutput(html) { return { html, setTitle(title) { this.title = title; return this; } }; }
+    XFrameOptionsMode: { ALLOWALL: 'ALLOWALL' },
+    createHtmlOutput(html) {
+      return {
+        html,
+        setTitle(title) { this.title = title; return this; },
+        setXFrameOptionsMode(mode) { this.frameMode = mode; return this; }
+      };
+    }
   }
 };
 vm.createContext(sandbox);
@@ -47,4 +55,19 @@ const response = sandbox.responsePage_(true, 'quote', 'nonce-123');
 assert.match(response.html, /window\.top\.postMessage/);
 assert.match(response.html, /vasilias-studio\.github\.io/);
 assert.match(response.html, /nonce-123/);
-console.log('Apps Script static/unit checks passed: validation, safe fields, file type/count handling, consent, storage, retention, email, and postMessage response.');
+assert.equal(response.frameMode, 'ALLOWALL');
+
+const quoteSummary = sandbox.parseQuoteSummary_(JSON.stringify({
+  project: { categories: ['Identité visuelle'], deliverables: ['Icône de marque'], description: 'Création du logo' },
+  budget: '450 000 à 800 000 Ar', deadline: 'Dès que possible', styles: ['Minimaliste']
+}));
+assert.deepEqual(JSON.parse(JSON.stringify(quoteSummary.project.categories)), ['Identité visuelle']);
+assert.equal(sandbox.emailRows_([['Catégories', quoteSummary.project.categories]])[0].value, 'Identité visuelle');
+assert.equal(sandbox.escapeEmailHtml_('<script>"x"</script>'), '&lt;script&gt;&quot;x&quot;&lt;/script&gt;');
+const notification = sandbox.buildNotificationHtml_('Nouvelle demande de devis', 'test-id', new Date('2026-11-06T18:57:00Z'), [
+  { title: 'PROJET', rows: [{ label: 'Catégories', value: 'Identité visuelle' }] }
+]);
+assert.match(notification, /PROJET/);
+assert.match(notification, /Identité visuelle/);
+assert.doesNotMatch(notification, /\{"project"/);
+console.log('Apps Script static/unit checks passed: validation, private storage, retention, iframe response, and readable HTML/text email layouts.');

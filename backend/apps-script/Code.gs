@@ -115,31 +115,60 @@ function sendQuote_(p, all, senderEmail) {
   ];
   appendRecord_('Devis', record);
 
-  var attachmentNotes = saved.links.length
-    ? '\n\nFichiers enregistrés dans Drive (accès privé) :\n' + saved.links.join('\n')
-    : '\n\nAucune pièce jointe.';
-  var body = [
-    'Nouvelle demande de devis — Vasilías Studio',
-    '',
-    'ID : ' + id,
-    'Nom : ' + name,
-    'E-mail : ' + senderEmail,
-    'WhatsApp : ' + phone,
-    'Entreprise ou marque : ' + company,
-    'Site / réseau : ' + (website || '(non renseigné)'),
-    '',
-    'Résumé détaillé du projet :',
-    summary,
-    attachmentNotes,
-    '',
-    'Reçu le : ' + receivedAt.toISOString()
-  ].join('\n');
+  var details = parseQuoteSummary_(summary);
+  var project = details && details.project || {};
+  var sections = [
+    {
+      title: 'COORDONNÉES',
+      rows: emailRows_([
+        ['Nom', name], ['Entreprise ou marque', company], ['E-mail', senderEmail],
+        ['WhatsApp', phone], ['Site / réseau', website]
+      ])
+    },
+    {
+      title: 'PROJET',
+      rows: emailRows_([
+        ['Catégories', project.categories], ['Autre projet', project.otherProject],
+        ['Prestations demandées', project.deliverables], ['Précisions sur les livrables', project.deliverablesDescription],
+        ['Description', project.description], ['Objectifs', project.objectives], ['Public cible', project.audience]
+      ])
+    },
+    {
+      title: 'BUDGET ET DÉLAIS',
+      rows: emailRows_([
+        ['Budget estimé', details && details.budget], ['Délai souhaité', details && details.deadline],
+        ['Date précise', details && details.targetDate]
+      ])
+    },
+    {
+      title: 'UNIVERS VISUEL',
+      rows: emailRows_([['Style graphique', details && details.styles]])
+    }
+  ];
+  if (!details) sections[1].rows = emailRows_([['Détails du projet', summary]]);
+
+  var fileRows = saved.names.map(function (fileName, index) {
+    var fileUrl = saved.links[index] || '';
+    var safeName = escapeEmailHtml_(fileName);
+    return {
+      label: 'Fichier ' + (index + 1),
+      value: fileName + (fileUrl ? ' — ' + fileUrl : ''),
+      html: fileUrl
+        ? '<a href="' + escapeEmailHtml_(fileUrl) + '" style="color:#8a552b;text-decoration:underline">' + safeName + '</a> <span style="color:#6a665c">(Drive privé)</span>'
+        : safeName
+    };
+  });
+  sections.push({
+    title: 'FICHIERS JOINTS',
+    rows: fileRows.length ? fileRows : [{ label: 'Pièces jointes', value: 'Aucune pièce jointe.' }]
+  });
 
   var mailOptions = {
     to: FORM_CONFIG.recipient,
     replyTo: senderEmail,
     subject: '[SITE-FORM] Devis — ' + safeSubject_(name),
-    body: body
+    body: buildNotificationText_('Nouvelle demande de devis', id, receivedAt, sections),
+    htmlBody: buildNotificationHtml_('Nouvelle demande de devis', id, receivedAt, sections)
   };
   if (attachments.length) mailOptions.attachments = attachments;
   MailApp.sendEmail(mailOptions);
@@ -159,26 +188,84 @@ function sendContact_(p, senderEmail) {
   var receivedAt = new Date();
   appendRecord_('Contact', [id, receivedAt, name, senderEmail, subject, message, consent]);
 
-  var body = [
-    'Nouveau message de contact — Vasilías Studio',
-    '',
-    'ID : ' + id,
-    'Nom / entreprise : ' + name,
-    'E-mail : ' + senderEmail,
-    'Sujet : ' + (subject || '(non précisé)'),
-    '',
-    'Message :',
-    message,
-    '',
-    'Reçu le : ' + receivedAt.toISOString()
-  ].join('\n');
+  var sections = [
+    { title: 'COORDONNÉES', rows: emailRows_([['Nom / entreprise', name], ['E-mail', senderEmail], ['Sujet', subject]]) },
+    { title: 'MESSAGE', rows: emailRows_([['Contenu', message]]) }
+  ];
 
   MailApp.sendEmail({
     to: FORM_CONFIG.recipient,
     replyTo: senderEmail,
     subject: '[SITE-FORM] Contact — ' + safeSubject_(subject || name),
-    body: body
+    body: buildNotificationText_('Nouveau message de contact', id, receivedAt, sections),
+    htmlBody: buildNotificationHtml_('Nouveau message de contact', id, receivedAt, sections)
   });
+}
+
+function parseQuoteSummary_(value) {
+  try {
+    var parsed = JSON.parse(String(value || ''));
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function emailRows_(pairs) {
+  return pairs.map(function (pair) {
+    var value = pair[1];
+    if (Array.isArray(value)) value = value.join(', ');
+    if (value && typeof value === 'object') value = '';
+    value = String(value == null ? '' : value).trim();
+    return value ? { label: pair[0], value: value } : null;
+  }).filter(function (row) { return !!row; });
+}
+
+function escapeEmailHtml_(value) {
+  return String(value == null ? '' : value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function formatEmailDate_(date) {
+  return Utilities.formatDate(date, 'Indian/Antananarivo', 'dd/MM/yyyy HH:mm') + ' (heure de Madagascar)';
+}
+
+function buildNotificationText_(title, id, receivedAt, sections) {
+  var lines = [title + ' — Vasilías Studio', 'Référence : ' + id, ''];
+  sections.forEach(function (section) {
+    lines.push(section.title);
+    section.rows.forEach(function (row) { lines.push(row.label + ' : ' + row.value); });
+    lines.push('');
+  });
+  lines.push('Reçu le : ' + formatEmailDate_(receivedAt));
+  lines.push('Répondez directement à cet e-mail pour contacter la personne.');
+  return lines.join('\n');
+}
+
+function buildNotificationHtml_(title, id, receivedAt, sections) {
+  var cards = sections.map(function (section) {
+    var rows = section.rows.map(function (row) {
+      var content = row.html || escapeEmailHtml_(row.value).replace(/\r?\n/g, '<br>');
+      return '<tr><td valign="top" style="padding:11px 14px;border-top:1px solid #eee9e3;color:#6a665c;font:12px/1.5 Arial,sans-serif;width:34%">' +
+        escapeEmailHtml_(row.label) + '</td><td valign="top" style="padding:11px 14px;border-top:1px solid #eee9e3;color:#24211e;font:14px/1.6 Arial,sans-serif;word-break:break-word">' + content + '</td></tr>';
+    }).join('');
+    return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 16px;border:1px solid #e8e2da;border-collapse:separate;background:#fff">' +
+      '<tr><td colspan="2" style="padding:13px 14px;background:#f7f5f1;color:#6a665c;font:bold 11px/1.4 Arial,sans-serif;letter-spacing:1.2px">' + escapeEmailHtml_(section.title) + '</td></tr>' + rows + '</table>';
+  }).join('');
+  return '<!doctype html><html lang="fr"><head><meta charset="utf-8"></head><body style="margin:0;padding:24px 12px;background:#f1efeb">' +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">' +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:660px;background:#fff;border:1px solid #e8e2da">' +
+    '<tr><td style="padding:26px 28px;background:#161513;color:#fff;border-bottom:4px solid #BF814B">' +
+    '<div style="color:#d8b18f;font:bold 11px/1.4 Arial,sans-serif;letter-spacing:2px">VASILÍAS STUDIO</div>' +
+    '<h1 style="margin:12px 0 8px;color:#fff;font:bold 23px/1.25 Arial,sans-serif">' + escapeEmailHtml_(title) + '</h1>' +
+    '<div style="color:#dedbd5;font:13px/1.5 Arial,sans-serif">Nouvelle demande reçue depuis le site</div></td></tr>' +
+    '<tr><td style="padding:22px 22px 8px"><div style="margin:0 0 16px;padding:12px 14px;background:#f7f5f1;color:#514b44;font:13px/1.5 Arial,sans-serif">' +
+    '<strong style="color:#24211e">Référence :</strong> ' + escapeEmailHtml_(id) + '</div>' + cards +
+    '<div style="padding:14px 0 4px;color:#6a665c;font:12px/1.6 Arial,sans-serif">Reçu le ' + escapeEmailHtml_(formatEmailDate_(receivedAt)) +
+    '<br>Vous pouvez répondre directement à cet e-mail pour contacter la personne.</div></td></tr>' +
+    '<tr><td style="padding:14px 22px;background:#f7f5f1;color:#8a847b;font:11px/1.5 Arial,sans-serif">Notification automatique — Vasilías Studio</td></tr>' +
+    '</table></td></tr></table></body></html>';
 }
 
 function quoteAttachments_(p) {
@@ -386,7 +473,9 @@ function responsePage_(success, type, clientNonce) {
     '<style>body{margin:0;background:#f5f2ed;color:#24211e;font:16px/1.6 Arial,sans-serif;display:grid;min-height:100vh;place-items:center}.card{background:#fff;max-width:560px;margin:24px;padding:36px;border:1px solid #ded8d1;border-radius:16px}h1{font-size:1.7rem;margin:0 0 12px}a{color:#8a552b}.mark{color:#BF814B;font-size:2rem}</style></head>' +
     '<body><main class="card"><div class="mark">' + (success ? '✓' : '•') + '</div><h1>' + title + '</h1><p>' + message + '</p><p><a href="' + siteLink + '">Retour au site</a></p></main>' +
     '<script>(function(){try{window.top.postMessage(' + response + ',"https://vasilias-studio.github.io");}catch(e){}})();</script></body></html>';
-  return HtmlService.createHtmlOutput(html).setTitle(title + ' — Vasilías Studio');
+  return HtmlService.createHtmlOutput(html)
+    .setTitle(title + ' — Vasilías Studio')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function field_(params, name) {

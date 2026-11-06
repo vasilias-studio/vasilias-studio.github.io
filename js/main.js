@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
             formError.style.display = 'block';
           }
           if (submitBtn) { submitBtn.disabled = false; if (submitBtn.firstChild) submitBtn.firstChild.textContent = 'Réessayer l’envoi '; }
-        }, 120000);
+        }, 60000);
         form.submit();
         return;
       }
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   window.addEventListener('message', function (event) {
     var data = event.data || {};
-    if (!isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
+    if (!contactResponseFrame || event.source !== contactResponseFrame.contentWindow || !isFormsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'contact' || !activeContactNonce || data.clientNonce !== activeContactNonce) return;
     if (contactTimeout) window.clearTimeout(contactTimeout);
     if (contactSendingOverlay) contactSendingOverlay.hidden = true;
     if (data.success) {

@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitButton.disabled = false;
         previousButton.disabled = currentStep === 1;
         setLive('La réponse tarde à arriver. Vérifiez votre e-mail avant de renvoyer la demande, afin d’éviter un doublon.', true);
-      }, 120000);
+      }, 60000);
       wizard.submit();
     } catch (error) {
       sending = false;
@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   window.addEventListener('message', function (event) {
     var data = event.data || {};
-    if (!isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
+    if (!submissionFrame || event.source !== submissionFrame.contentWindow || !isAppsScriptOrigin(event.origin) || data.source !== 'vasilias-apps-script' || data.formType !== 'quote' || !activeNonce || data.clientNonce !== activeNonce) return;
     if (sendTimeout) window.clearTimeout(sendTimeout);
     sending = false;
     sendingOverlay.hidden = true;
