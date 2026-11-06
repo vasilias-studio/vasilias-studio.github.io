@@ -548,7 +548,7 @@ function enter(){
   loadAll(function(err){
     if(err){$('#view').removeAttribute('aria-busy');$('#view').innerHTML='<div class="card"><p class="pill err">Erreur de chargement</p><p style="margin-top:.5rem">'+esc(err.message)+'</p><p class="help">Vérifiez que hub-data.json est présent à la racine du site et que vous êtes connecté à internet.</p></div>';return}
     renderNotif();
-    if(lsGet(LS.data,null))$('#dirtyPill').classList.remove('hidden');
+    if(store.dirty)$('#dirtyPill').classList.remove('hidden');else $('#dirtyPill').classList.add('hidden');
     normalizeData();migrateStatuses();scanAlerts();bindNav();$('#view').removeAttribute('aria-busy');go(routeFromHash()||'dashboard',true);if(store.dirty&&ghToken())setTimeout(syncGitHub,1200);
   });
 }
@@ -603,8 +603,11 @@ function bindNav(){
 function loadAll(cb){
   var remoteData=ghToken()?ghApi('/contents/hub-data.json?ref='+GH_BRANCH,{cache:'no-store'}).then(function(j){if(j.content)return JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));throw new Error('GitHub API: contenu vide')}).catch(function(){return fetch('hub-data.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json()})}):fetch('hub-data.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('hub-data.json introuvable (HTTP '+r.status+')');return r.json()});
   remoteData.then(function(base){
-    var local=lsGet(LS.data,null);store.data=(local&&local.meta&&base.meta&&Date.parse(local.meta.updatedAt||0)>Date.parse(base.meta.updatedAt||0))?local:base;
-    if(local&&local.meta&&base.meta&&Date.parse(local.meta.updatedAt||0)>Date.parse(base.meta.updatedAt||0))store.dirty=true;
+    var local=lsGet(LS.data,null),pendingLocal=localStorage.getItem('hub2_pending_sync')==='1';
+    var localTs=Date.parse(local&&local.meta&&local.meta.updatedAt||0)||0,remoteTs=Date.parse(base&&base.meta&&base.meta.updatedAt||0)||0;
+    var useLocal=!!(pendingLocal&&local&&localTs>remoteTs);
+    store.data=useLocal?local:base;store.dirty=useLocal;
+    if(!useLocal){if(pendingLocal&&remoteTs>localTs)localStorage.removeItem('hub2_pending_sync');lsSet(LS.data,base);localStorage.setItem('hub2_live_cache',JSON.stringify(base))}
     store.journal=lsGet(LS.journal,[]);
     store.checklist=lsGet(LS.checklist,[
       {label:'Texte relu (orthographe, années, noms)',done:false,required:true},
@@ -620,7 +623,10 @@ function loadAll(cb){
     store.watchCfg=lsGet(LS.watch,null)||base.watch.slice();
     store.watchHist=normalizeWatchHistory(lsGet(LS.hist,{}));
     store.alerts=lsGet(LS.alerts,[]);
-    store.seo=lsGet(LS.seo,base.seo||store.data.seo||{});
+    var remoteSeo=base.seo||store.data.seo||{},localSeo=lsGet(LS.seo,null)||{};
+    store.seo=JSON.parse(JSON.stringify(remoteSeo));
+    Object.keys(localSeo).forEach(function(file){var lt=Date.parse((localSeo[file]||{}).updated||0)||0,rt=Date.parse((remoteSeo[file]||{}).updated||0)||0;if(pendingLocal&&lt>rt)store.seo[file]=localSeo[file]});
+    store.data.seo=store.seo;lsSet(LS.seo,store.seo);
     cb(null);
   }).catch(cb);
 }
