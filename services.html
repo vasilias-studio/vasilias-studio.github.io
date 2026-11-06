@@ -153,11 +153,11 @@
       </div>
       <div class="quote-callout-art" aria-hidden="true">
         <svg viewBox="0 0 300 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="52" y="34" width="170" height="184" stroke="currentColor" stroke-width="1.4"/>
-          <rect x="78" y="59" width="170" height="184" stroke="#BF814B" stroke-width="1.4"/>
-          <path d="M104 101h92M104 121h70M104 151h92M104 171h56" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-          <circle cx="211" cy="75" r="19" fill="#BF814B"/>
-          <path d="M202 75h18M211 66v18" stroke="#161513" stroke-width="1.5" stroke-linecap="round"/>
+          <rect x="52" y="34" width="170" height="184" stroke="currentColor" stroke-width="1.4"></rect>
+          <rect x="78" y="59" width="170" height="184" stroke="#BF814B" stroke-width="1.4"></rect>
+          <path d="M104 101h92M104 121h70M104 151h92M104 171h56" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+          <circle cx="211" cy="75" r="19" fill="#BF814B"></circle>
+          <path d="M202 75h18M211 66v18" stroke="#161513" stroke-width="1.5" stroke-linecap="round"></path>
         </svg>
         <span>Votre projet,<br>à votre mesure.</span>
       </div>
@@ -171,8 +171,8 @@
       <a href="contact.html" class="btn btn-accent">Démarrer un projet <svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg></a>
     </div>
 
-    <div class="quote-modal" id="quoteModal" hidden aria-hidden="true">
-      <div class="quote-backdrop" data-quote-close></div>
+    <div class="quote-modal" id="quoteModal" hidden="" aria-hidden="true">
+      <div class="quote-backdrop" data-quote-close=""></div>
       <section class="quote-dialog" role="dialog" aria-modal="true" aria-labelledby="quoteModalTitle" tabindex="-1">
         <header class="quote-modal-head">
           <div><h2 id="quoteModalTitle">Construisons votre projet</h2></div>
@@ -185,7 +185,7 @@
         </div>
         <p class="quote-live-message" id="quoteLiveMessage" role="status" aria-live="polite"></p>
 
-        <form id="quoteWizard" action="https://formsubmit.co/ericotlauranto34@gmail.com" method="POST" enctype="multipart/form-data" novalidate>
+        <form id="quoteWizard" action="https://formsubmit.co/ericotlauranto34@gmail.com" method="POST" enctype="multipart/form-data" novalidate="">
           <div class="quote-honeypot" aria-hidden="true"><label for="quoteFax">Ne pas remplir ce champ</label><input type="text" id="quoteFax" name="_honey" tabindex="-1" autocomplete="off"></div>
           <input type="hidden" name="_subject" value="Nouvelle demande de devis — Vasilías Studio">
           <input type="hidden" name="_replyto" id="quoteReplyTo">
@@ -196,15 +196,15 @@
           <section class="quote-step" data-quote-step="1" aria-labelledby="quoteStep1Title">
             <h3 id="quoteStep1Title">Commençons par faire connaissance.</h3>
             <div class="quote-fields quote-fields-2">
-              <label class="quote-field">Nom et prénom <span aria-hidden="true">*</span><input type="text" name="clientName" autocomplete="name" required maxlength="120"></label>
-              <label class="quote-field">Adresse e-mail <span aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required maxlength="254"></label>
-              <label class="quote-field">Numéro WhatsApp <span aria-hidden="true">*</span><input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" pattern="[+0-9() .-]{7,24}" title="Saisissez un numéro de téléphone valide." required maxlength="24"></label>
-              <label class="quote-field">Entreprise ou marque <span aria-hidden="true">*</span><input type="text" name="company" autocomplete="organization" required maxlength="120"></label>
+              <label class="quote-field">Nom et prénom <span aria-hidden="true">*</span><input type="text" name="clientName" autocomplete="name" required="" maxlength="120"></label>
+              <label class="quote-field">Adresse e-mail <span aria-hidden="true">*</span><input type="email" name="email" autocomplete="email" required="" maxlength="254"></label>
+              <label class="quote-field">Numéro WhatsApp <span aria-hidden="true">*</span><input type="tel" name="whatsapp" autocomplete="tel" inputmode="tel" pattern="[+0-9() .-]{7,24}" title="Saisissez un numéro de téléphone valide." required="" maxlength="24"></label>
+              <label class="quote-field">Entreprise ou marque <span aria-hidden="true">*</span><input type="text" name="company" autocomplete="organization" required="" maxlength="120"></label>
               <label class="quote-field quote-field-wide">Site web ou réseau social <span class="quote-optional">Facultatif</span><input type="url" name="website" placeholder="https://" maxlength="500"></label>
             </div>
           </section>
 
-          <section class="quote-step" data-quote-step="2" aria-labelledby="quoteStep2Title" hidden>
+          <section class="quote-step" data-quote-step="2" aria-labelledby="quoteStep2Title" hidden="">
             <h3 id="quoteStep2Title">Quel est votre projet ?</h3>
             <p class="quote-step-description">Sélectionnez une ou plusieurs catégories de prestation.</p>
             <div class="quote-category-grid">
@@ -214,42 +214,42 @@
               <label class="quote-category-card"><input type="checkbox" name="category" value="social"><span class="quote-category-icon" aria-hidden="true">◎</span><strong>Réseaux sociaux</strong><span>Templates, couvertures, bannières et visuels publicitaires.</span></label>
               <label class="quote-category-card"><input type="checkbox" name="category" value="other"><span class="quote-category-icon" aria-hidden="true">✳</span><strong>Autres prestations</strong><span>Direction artistique, présentation ou demande spécifique.</span></label>
             </div>
-            <label class="quote-field quote-other-project" id="quoteOtherProjectWrap" hidden>Précisez votre autre projet <span aria-hidden="true">*</span><textarea id="quoteOtherProject" name="otherProject" rows="3" maxlength="1000"></textarea></label>
+            <label class="quote-field quote-other-project" id="quoteOtherProjectWrap" hidden="">Précisez votre autre projet <span aria-hidden="true">*</span><textarea id="quoteOtherProject" name="otherProject" rows="3" maxlength="1000"></textarea></label>
           </section>
 
-          <section class="quote-step" data-quote-step="3" aria-labelledby="quoteStep3Title" hidden>
+          <section class="quote-step" data-quote-step="3" aria-labelledby="quoteStep3Title" hidden="">
             <h3 id="quoteStep3Title">Précisons vos besoins.</h3>
             <p class="quote-step-description">Les options ci-dessous s’adaptent aux catégories choisies.</p>
             <div class="quote-services-options" id="quoteServicesOptions"></div>
             <label class="quote-field quote-field-spaced">Décrivez précisément les livrables souhaités <span class="quote-optional">Facultatif</span><textarea id="quoteDeliverables" name="deliverables" rows="4" maxlength="2500" placeholder="Formats, quantités, supports ou autres précisions…"></textarea></label>
           </section>
 
-          <section class="quote-step" data-quote-step="4" aria-labelledby="quoteStep4Title" hidden>
+          <section class="quote-step" data-quote-step="4" aria-labelledby="quoteStep4Title" hidden="">
             <h3 id="quoteStep4Title">Parlons de votre budget.</h3>
             <p class="quote-step-description">Cela nous permettra de vous proposer une solution adaptée. Aucun prix final n’est calculé à partir de votre sélection.</p>
             <fieldset class="quote-choice-group"><legend>Budget estimé <span aria-hidden="true">*</span></legend><div class="quote-budget-grid">
-              <label class="quote-radio-card"><input type="radio" name="budget" value="Moins de 200 000 Ar" required><span>Moins de 200 000 Ar</span></label>
-              <label class="quote-radio-card"><input type="radio" name="budget" value="200 000 à 450 000 Ar" required><span>200 000 à 450 000 Ar</span></label>
-              <label class="quote-radio-card"><input type="radio" name="budget" value="450 000 à 800 000 Ar" required><span>450 000 à 800 000 Ar</span></label>
-              <label class="quote-radio-card"><input type="radio" name="budget" value="800 000 à 1 500 000 Ar" required><span>800 000 à 1 500 000 Ar</span></label>
-              <label class="quote-radio-card"><input type="radio" name="budget" value="Plus de 1 500 000 Ar" required><span>Plus de 1 500 000 Ar</span></label>
-              <label class="quote-radio-card"><input type="radio" name="budget" value="Je souhaite recevoir une recommandation" required><span>Je souhaite recevoir une recommandation</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Moins de 200 000 Ar" required=""><span>Moins de 200 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="200 000 à 450 000 Ar" required=""><span>200 000 à 450 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="450 000 à 800 000 Ar" required=""><span>450 000 à 800 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="800 000 à 1 500 000 Ar" required=""><span>800 000 à 1 500 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Plus de 1 500 000 Ar" required=""><span>Plus de 1 500 000 Ar</span></label>
+              <label class="quote-radio-card"><input type="radio" name="budget" value="Je souhaite recevoir une recommandation" required=""><span>Je souhaite recevoir une recommandation</span></label>
             </div></fieldset>
             <fieldset class="quote-choice-group quote-deadline-group"><legend>Délai souhaité <span aria-hidden="true">*</span></legend><div class="quote-deadline-grid">
-              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dès que possible" required><span>Dès que possible</span></label>
-              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans une semaine" required><span>Dans une semaine</span></label>
-              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans deux semaines" required><span>Dans deux semaines</span></label>
-              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans un mois" required><span>Dans un mois</span></label>
-              <label class="quote-radio-card"><input type="radio" name="deadline" value="Date flexible" required><span>Date flexible</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dès que possible" required=""><span>Dès que possible</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans une semaine" required=""><span>Dans une semaine</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans deux semaines" required=""><span>Dans deux semaines</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Dans un mois" required=""><span>Dans un mois</span></label>
+              <label class="quote-radio-card"><input type="radio" name="deadline" value="Date flexible" required=""><span>Date flexible</span></label>
             </div></fieldset>
             <label class="quote-field quote-field-spaced">Avez-vous une date précise en tête ? <span class="quote-optional">Facultatif</span><input type="date" name="targetDate"></label>
           </section>
 
-          <section class="quote-step" data-quote-step="5" aria-labelledby="quoteStep5Title" hidden>
+          <section class="quote-step" data-quote-step="5" aria-labelledby="quoteStep5Title" hidden="">
             <h3 id="quoteStep5Title">Faisons connaissance avec votre univers.</h3>
             <p class="quote-step-description">Partagez vos inspirations pour nous aider à comprendre votre vision.</p>
             <div class="quote-fields">
-              <label class="quote-field">Description générale du projet <span aria-hidden="true">*</span><textarea id="quoteProjectDescription" name="projectDescription" rows="4" required maxlength="3000"></textarea></label>
+              <label class="quote-field">Description générale du projet <span aria-hidden="true">*</span><textarea id="quoteProjectDescription" name="projectDescription" rows="4" required="" maxlength="3000"></textarea></label>
               <label class="quote-field">Objectifs du projet <span class="quote-optional">Facultatif</span><textarea id="quoteObjectives" name="objectives" rows="3" maxlength="1500"></textarea></label>
               <label class="quote-field">Public cible <span class="quote-optional">Facultatif</span><textarea id="quoteAudience" name="audience" rows="2" maxlength="1000"></textarea></label>
             </div>
@@ -265,27 +265,27 @@
             </div></fieldset>
             <div class="quote-field quote-field-spaced">
               <span class="quote-field-title">Références visuelles <span class="quote-optional">Facultatif · 5 fichiers max · 3 Mo par fichier · 8 Mo au total</span></span>
-              <label class="quote-drop-zone" id="quoteDropZone" for="quoteFiles"><span class="quote-upload-icon" aria-hidden="true">＋</span><span>Glissez vos fichiers ici ou <u>parcourez votre appareil</u></span><span class="quote-optional">Images, PDF ou présentations PowerPoint</span><input type="file" id="quoteFiles" name="pieces_jointes[]" accept=".jpg,.jpeg,.png,.webp,.pdf,.ppt,.pptx,image/jpeg,image/png,image/webp,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple></label>
+              <label class="quote-drop-zone" id="quoteDropZone" for="quoteFiles"><span class="quote-upload-icon" aria-hidden="true">＋</span><span>Glissez vos fichiers ici ou <u>parcourez votre appareil</u></span><span class="quote-optional">Images, PDF ou présentations PowerPoint</span><input type="file" id="quoteFiles" name="pieces_jointes[]" accept=".jpg,.jpeg,.png,.webp,.pdf,.ppt,.pptx,image/jpeg,image/png,image/webp,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" multiple=""></label>
               <ul class="quote-file-list" id="quoteFileList" aria-live="polite"></ul>
               <p class="quote-field-error" id="quoteFileError" role="status"></p>
             </div>
           </section>
 
-          <section class="quote-step" data-quote-step="6" aria-labelledby="quoteStep6Title" hidden>
+          <section class="quote-step" data-quote-step="6" aria-labelledby="quoteStep6Title" hidden="">
             <h3 id="quoteStep6Title">Vérifions votre demande.</h3>
             <p class="quote-step-description">Vous pouvez revenir à chaque étape pour modifier les informations.</p>
             <div class="quote-summary" id="quoteSummary"></div>
-            <label class="quote-consent"><input type="checkbox" id="quoteConsent" name="consentement" value="accepté" required><span>J’accepte que mes informations soient utilisées pour traiter ma demande de devis. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité (brouillon)</a></span></label>
+            <label class="quote-consent"><input type="checkbox" id="quoteConsent" name="consentement" value="accepté" required=""><span>J’accepte que mes informations soient utilisées pour traiter ma demande de devis. <a href="privacy.html" target="_blank" rel="noopener noreferrer">Lire la politique de confidentialité (brouillon)</a></span></label>
             <div class="quote-setup-notice" id="quoteSetupNotice" role="status">L’envoi par FormSubmit attend la validation de la politique de confidentialité et l’activation de l’adresse de réception. Les demandes seront transmises par e-mail, sans enregistrement dans le Hub, Google Sheets ou Drive.</div>
           </section>
 
           <footer class="quote-form-footer">
-            <button class="btn btn-outline" id="quotePrevious" type="button" disabled>Précédent</button>
-            <div class="quote-footer-actions"><button class="btn btn-outline" id="quoteContinue" type="button">Continuer <span aria-hidden="true">→</span></button><button class="btn btn-dark" id="quoteSubmit" type="button" hidden disabled>Envoyer ma demande de devis</button></div>
+            <button class="btn btn-outline" id="quotePrevious" type="button" disabled="">Précédent</button>
+            <div class="quote-footer-actions"><button class="btn btn-outline" id="quoteContinue" type="button">Continuer <span aria-hidden="true">→</span></button><button class="btn btn-dark" id="quoteSubmit" type="button" hidden="" disabled="">Envoyer ma demande de devis</button></div>
           </footer>
         </form>
 
-        <section class="quote-confirmation" id="quoteConfirmation" hidden aria-live="polite">
+        <section class="quote-confirmation" id="quoteConfirmation" hidden="" aria-live="polite">
           <span class="quote-confirmation-mark" aria-hidden="true">✓</span>
           <h3 tabindex="-1">Votre demande a bien été envoyée !</h3>
           <p>Merci de faire confiance à Vasilías Studio. Votre projet a bien été transmis. Nous allons examiner votre demande afin de vous proposer une solution adaptée à vos besoins.</p>
@@ -319,6 +319,7 @@
   <script src="js/main.js?v=8"></script>
   <script src="js/quote-config.js?v=3"></script>
   <script src="js/quote-form.js?v=4"></script>
+
 
 
 
