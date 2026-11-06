@@ -2,9 +2,9 @@
 
 ## État actuel
 
-Le parcours de devis est en cours de migration vers FormSubmit, comme le formulaire Contact. Le flux prévu est une transmission par e-mail à `ericotlauranto34@gmail.com`; les demandes ne sont pas enregistrées dans le Hub, Sheets ou Drive. La configuration publique du devis et la notice restent désactivées/en attente de validation. L’adresse FormSubmit doit également être confirmée à la première utilisation. Aucun envoi réel n’a été testé.
+Le formulaire de devis est configuré pour FormSubmit, comme le formulaire Contact, et transmet les demandes par e-mail à `ericotlauranto34@gmail.com`; elles ne sont pas enregistrées dans le Hub, Sheets ou Drive. La notice indique une suppression des e-mails au plus tard six mois après réception. Aucun envoi réel de devis n’a encore été testé; si FormSubmit demande une confirmation de l’adresse à la première soumission, il faudra la confirmer avant de considérer l’acheminement opérationnel.
 
-Les sections ci-dessous décrivent une ancienne option Apps Script + Sheets/Drive préparée auparavant. Ne pas suivre ces étapes pour activer le flux FormSubmit. Ne reprendre Apps Script que si Vasilías Studio choisit ultérieurement de revenir à l’enregistrement privé dans le Hub.
+Les sections ci-dessous décrivent une ancienne option Apps Script + Sheets/Drive préparée auparavant. Ne pas suivre ces étapes pour le flux FormSubmit actuel. Ne reprendre Apps Script que si Vasilías Studio choisit ultérieurement de revenir à l’enregistrement privé dans le Hub.
 
 ## État de l’option Apps Script
 

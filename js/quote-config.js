@@ -1,6 +1,6 @@
-/* Réglages publics du formulaire de devis. Aucun secret ne doit figurer ici. */
+/* Public configuration for the quote form. No secrets belong in this file. */
 window.VAS_QUOTE_CONFIG = Object.freeze({
   endpoint: 'https://formsubmit.co/ericotlauranto34@gmail.com',
-  enabled: false,
-  privacyApproved: false
+  enabled: true,
+  privacyApproved: true
 });
