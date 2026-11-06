@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-06T15:52:29.115Z"
+    "updatedAt": "2026-11-07T02:58:44.786Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -58,32 +58,27 @@
     {
       "title": "Création de Logo & Identités Visuelles",
       "desc": "Logotypes, systèmes d'identité, palettes chromatiques et choix typographiques qui expriment la personnalité de votre marque et la rendent immédiatement identifiable.",
-      "foot": "Fichiers vectoriels prêts pour print & digital",
-      "image": "assets/services/logo-identite.jpg"
+      "foot": "Fichiers vectoriels prêts pour print & digital"
     },
     {
       "title": "Brandboard & Charte Graphique",
       "desc": "Synthèse complète de votre identité : logo, couleurs, typographies et règles d'utilisation, pour une image cohérente sur l'ensemble de vos supports.",
-      "foot": "Brandboard & règles d'application inclus",
-      "image": "assets/services/brandboard-v2.jpg"
+      "foot": "Brandboard & règles d'application inclus"
     },
     {
       "title": "Supports de Communication",
       "desc": "Cartes de visite, affiches, bannières, brochures et autres supports imprimés ou numériques, conçus pour être lisibles et mémorables.",
-      "foot": "Fichiers d'impression & formats web fournis",
-      "image": "assets/services/supports-communication-v2.jpg"
+      "foot": "Fichiers d'impression & formats web fournis"
     },
     {
       "title": "Visuels pour Réseaux Sociaux",
       "desc": "Publications, stories et templates déclinés dans votre identité, adaptés aux formats de chaque plateforme.",
-      "foot": "Templates réutilisables",
-      "image": "assets/services/reseaux-sociaux-v2.jpg"
+      "foot": "Templates réutilisables"
     },
     {
       "title": "Design de Packaging",
       "desc": "Conception graphique d'emballages et mise en valeur visuelle de vos produits, de l'étiquette au coffret.",
-      "foot": "Maquettes & mockups de présentation",
-      "image": "assets/services/packaging-v2.jpg"
+      "foot": "Maquettes & mockups de présentation"
     }
   ],
   "about": {
@@ -181,7 +176,7 @@
         "Réseaux sociaux",
         "UI/UX"
       ],
-      "cover": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "cover": "assets/hub-uploads/1794020321689-ycr9-Plan-de-travail-2.jpg",
       "role": "",
       "tagline": "",
       "overview": "",
@@ -387,16 +382,16 @@
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png?v=2",
+      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
       "canonical": "https://vasilias-studio.github.io/",
-      "updated": "2026-11-06T15:52:29.115Z"
+      "updated": "2026-11-07T02:48:06.246Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
       "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
-      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png?v=2",
+      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
       "canonical": "https://vasilias-studio.com/work.html",
-      "updated": "2026-11-06T15:52:29.115Z"
+      "updated": "2026-11-07T00:51:43.374Z"
     },
     "about.html": {
       "title": "À Propos — Vasilías",
@@ -756,8 +751,18 @@
       "used": "Ajouté via Hub"
     },
     {
+      "path": "assets/hub-uploads/1794013046836-udr4-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "bytes": 777681,
+      "used": "Ajouté via Hub"
+    },
+    {
       "path": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "bytes": 777681,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794020321689-ycr9-Plan-de-travail-2.jpg",
+      "bytes": 225462,
       "used": "Ajouté via Hub"
     }
   ]
