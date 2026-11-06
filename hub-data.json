@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-07T02:45:24.246Z"
+    "updatedAt": "2026-11-07T02:48:07.150Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -176,7 +176,7 @@
         "Réseaux sociaux",
         "UI/UX"
       ],
-      "cover": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "cover": "assets/hub-uploads/1794013046836-udr4-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "role": "",
       "tagline": "",
       "overview": "",
@@ -384,7 +384,7 @@
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
       "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
       "canonical": "https://vasilias-studio.github.io/",
-      "updated": "2026-11-07T02:44:56.949Z"
+      "updated": "2026-11-07T02:48:06.246Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
@@ -748,6 +748,11 @@
     {
       "path": "assets/hub-uploads/1794012362937-318z-og-iage.png",
       "bytes": 320223,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794013046836-udr4-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "bytes": 777681,
       "used": "Ajouté via Hub"
     },
     {
