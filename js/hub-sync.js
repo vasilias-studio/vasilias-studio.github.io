@@ -411,7 +411,9 @@
     var grid = doc.querySelector('.services-grid');
     if (!grid || !Array.isArray(data.services)) return;
     var anims = ['reveal-left', 'reveal-right', 'reveal-down', 'reveal-zoom', 'reveal-fade', 'reveal-zoom-out'];
+    var serviceImages = ['logo-identite', 'brandboard', 'direction-artistique', 'supports-communication', 'reseaux-sociaux', 'packaging', 'visualisation-3d'];
     grid.innerHTML = data.services.map(function (s, idx) {
+      var img = normalizeAssetPath(s.image) || ('assets/services/' + serviceImages[idx % serviceImages.length] + '.jpg');
       var num = String(idx + 1).padStart(2, '0');
       var anim = anims[idx % anims.length];
       return '<div class="service-card reveal ' + anim + '">'
@@ -421,6 +423,7 @@
         + '<p class="service-desc">' + esc(s.desc || '') + '</p>'
         + '</div>'
         + '<div class="service-foot"><span>' + esc(s.foot || '') + '</span></div>'
+        + '<figure class="service-media"><img src="' + esc(img) + '" alt="" width="1180" height="1180" loading="lazy" decoding="async"></figure>'
         + '</div>';
     }).join('\n      ');
   }

@@ -965,22 +965,28 @@ html,.home-v2{overflow-x:clip}
 .contact-grid .about-h2{font-size:clamp(1.7rem,3vw,2.6rem)}
 .work-card:hover .work-card-title{color:inherit;text-decoration:underline;text-underline-offset:.18em}
 
-/* Services : lignes ouvertes à filets (comme « Champs d'intervention ») au lieu de cartes encadrées */
+/* Services : alternance texte / visuel carré (même marges et mêmes niveaux de titre que le reste du site) */
 .services-grid{display:block;margin-top:clamp(2.5rem,5vw,4rem)}
-.service-card{display:grid;grid-template-columns:1.15fr 1fr;grid-template-areas:"num desc" "title desc" "title foot";column-gap:2rem;align-content:start;padding:clamp(2.2rem,3.4vw,3.6rem) 0;background:transparent;border:0;border-top:1px solid rgba(22,21,19,.25);border-radius:0;transition:background .2s ease}
-.service-card:last-child{border-bottom:1px solid rgba(22,21,19,.25)}
-.service-card:hover{background:rgba(242,233,216,.35)}
+.service-card{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:1fr repeat(4,auto) 1fr;column-gap:clamp(2rem,6vw,6rem);padding:clamp(1.5rem,3.5vw,3.25rem) 0;background:transparent;border:0;border-radius:0}
 .service-card>div:first-child{display:contents}
-.service-num{grid-area:num}
-.service-title{grid-area:title;font-size:clamp(1.35rem,2.6vw,2.5rem);margin:.4rem 0 0;transition:transform .25s ease}
+.service-num{grid-column:1;grid-row:2}
+.service-title{grid-column:1;grid-row:3;font-size:clamp(1.35rem,2.6vw,2.5rem);margin:.4rem 0 0;transition:transform .25s ease}
 .service-card:hover .service-title{transform:translateX(6px)}
-.service-desc{grid-area:desc;margin:0;font-size:.95rem;line-height:1.6;color:var(--muted);max-width:30rem}
-.service-foot{grid-area:foot;padding-top:1.1rem}
-.service-card:nth-child(even){grid-template-columns:1fr 1.15fr;grid-template-areas:"desc num" "desc title" "foot title"}
-.service-card:nth-child(even) .service-num,.service-card:nth-child(even) .service-title{justify-self:end;text-align:end}
+.service-desc{grid-column:1;grid-row:4;margin:1.5rem 0 0;font-size:.95rem;line-height:1.6;color:var(--muted);max-width:30rem}
+.service-foot{grid-column:1;grid-row:5;padding-top:1.1rem}
+.service-media{grid-column:2;grid-row:1/-1;margin:0;aspect-ratio:1/1;overflow:hidden;background:var(--surface)}
+.service-media img{display:block;width:100%;height:100%;object-fit:cover}
+.service-card:nth-child(even) .service-media{grid-column:1}
+.service-card:nth-child(even) .service-num,
+.service-card:nth-child(even) .service-title,
+.service-card:nth-child(even) .service-desc,
+.service-card:nth-child(even) .service-foot{grid-column:2}
 @media(max-width:860px){
-  .service-card,.service-card:nth-child(even){grid-template-columns:1fr;grid-template-areas:"num" "title" "desc" "foot";row-gap:0}
-  .service-card:nth-child(even) .service-num,.service-card:nth-child(even) .service-title{justify-self:start;text-align:start}
+  .service-card,.service-card:nth-child(even){grid-template-columns:minmax(0,1fr);grid-template-rows:none;padding:1.75rem 0}
+  .service-media,.service-card:nth-child(even) .service-media{grid-column:1;grid-row:1;margin-bottom:1.5rem}
+  .service-num,.service-title,.service-desc,.service-foot,
+  .service-card:nth-child(even) .service-num,.service-card:nth-child(even) .service-title,
+  .service-card:nth-child(even) .service-desc,.service-card:nth-child(even) .service-foot{grid-column:1;grid-row:auto}
   .service-desc{margin-top:.9rem}
 }
 
@@ -992,7 +998,6 @@ html,.home-v2{overflow-x:clip}
 .form-card{padding:0;background:transparent;border:0;border-radius:0}
 @media(min-width:1024px){.form-card{padding-left:clamp(0rem,2vw,2rem)}}
 .services-grid{margin-top:0}
-.service-card:first-child{border-top:0}
 
 /* ---------- Packs d'identité visuelle : section Services ---------- */
 .packs-section{margin-top:clamp(5rem,9vw,8rem);padding-top:clamp(2.5rem,5vw,4.5rem);border-top:1px solid var(--line)}
