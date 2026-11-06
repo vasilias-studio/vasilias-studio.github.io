@@ -1163,3 +1163,123 @@ html,.home-v2{overflow-x:clip}
 @media (min-width: 768px) { .slider-btn { width: 3.25rem; height: 3.25rem; } .slider-prev { left: 1.25rem; } .slider-next { right: 1.25rem; } }
 .case-slider.is-single .slider-btn { display: none; }
 @media (prefers-reduced-motion: reduce) { .case-slider .slider-track { transition: none; } }
+
+/* ============================================================
+   Devis personnalisé — refonte UI/UX (cohérence éditoriale)
+   Josefin Sans · fond blanc · filets fins · accent cuivre
+   ============================================================ */
+.quote-inline .quote-dialog{display:grid;grid-template-columns:minmax(0,1fr);column-gap:clamp(2.5rem,6vw,6rem);align-items:start}
+.quote-inline .quote-dialog>*{grid-column:1}
+
+/* Rail de progression */
+.quote-inline .quote-progress-wrap{margin:0 0 2rem;padding:0 0 1.25rem;border-bottom:1px solid var(--line)}
+.quote-inline .quote-progress-meta{display:grid;gap:.35rem;margin-bottom:1rem;font-size:.8125rem;letter-spacing:.12em;color:var(--accent-text)}
+.quote-inline .quote-progress-meta #quoteStepName{color:var(--ink);font-size:clamp(1.05rem,1.8vw,1.3rem);font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.quote-inline .quote-progress-track{height:3px;background:transparent;overflow:visible;position:relative}
+.quote-inline .quote-progress-track::before{content:"";position:absolute;inset:0;background:var(--line)}
+.quote-inline .quote-progress-track span{position:relative;background:var(--ink);transition:width .35s cubic-bezier(.2,.7,.2,1)}
+.quote-inline .quote-progress-track{-webkit-mask-image:repeating-linear-gradient(90deg,#000 0,#000 calc(16.666% - 4px),transparent calc(16.666% - 4px),transparent 16.666%);mask-image:repeating-linear-gradient(90deg,#000 0,#000 calc(16.666% - 4px),transparent calc(16.666% - 4px),transparent 16.666%)}
+.quote-inline .quote-live-message{margin:0 0 1rem;min-height:0;font-size:.8125rem;font-weight:600}
+.quote-inline .quote-live-message:empty{display:none}
+.quote-inline .quote-live-message.is-error{padding:.7rem .9rem;border-left:3px solid #9B2C2C;background:rgba(155,44,44,.05)}
+
+/* Étapes */
+.quote-inline .quote-step h3{font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.08}
+.quote-inline .quote-step-description{max-width:38rem;margin:.75rem 0 1.75rem;color:var(--muted)}
+.quote-inline .quote-step>h3:not(:has(+ .quote-step-description)){margin-bottom:1.75rem}
+
+/* Champs */
+.quote-inline .quote-fields{gap:1.35rem}
+.quote-inline .quote-field{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .3rem;color:var(--muted);font-size:.8125rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.quote-inline .quote-field [aria-hidden="true"]{color:var(--accent-text)}
+.quote-inline .quote-field>input,.quote-inline .quote-field>textarea,.quote-inline .quote-field>select{flex:1 0 100%;padding:.8rem 0;border:0;border-bottom:1px solid rgba(22,21,19,.28);border-radius:0;background:transparent;color:var(--ink);font-size:1.0625rem;letter-spacing:0;text-transform:none;transition:border-color .2s ease,box-shadow .2s ease}
+.quote-inline .quote-field>textarea{padding:.8rem .9rem;border:1px solid rgba(22,21,19,.28);line-height:1.6}
+.quote-inline .quote-field>input::placeholder,.quote-inline .quote-field>textarea::placeholder{color:rgba(106,102,92,.65)}
+.quote-inline .quote-field>input:hover,.quote-inline .quote-field>textarea:hover{border-color:var(--ink)}
+.quote-inline .quote-field>input:focus,.quote-inline .quote-field>textarea:focus,.quote-inline .quote-field>select:focus{outline:0;border-color:var(--ink);box-shadow:0 1px 0 0 var(--ink)}
+.quote-inline .quote-field>textarea:focus{box-shadow:0 0 0 1px var(--ink)}
+.quote-inline .quote-field>[aria-invalid="true"]{border-color:#9B2C2C;box-shadow:0 1px 0 0 #9B2C2C}
+.quote-inline .quote-optional{margin-left:.5rem;color:var(--muted);font-size:.6875rem;font-weight:400;letter-spacing:.08em;opacity:.85}
+.quote-inline .quote-choice-group legend{margin-bottom:.85rem;color:var(--muted);font-size:.8125rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+
+/* Cartes de choix (catégories, budget, délai, style, options) */
+.quote-inline .quote-category-grid{gap:0;border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.quote-inline .quote-category-card{min-height:9rem;padding:1.25rem 1.25rem 1.25rem;border:0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:transparent;transition:background .2s ease,box-shadow .2s ease}
+.quote-inline .quote-category-card:hover{background:var(--surface)}
+.quote-inline .quote-category-card strong{font-size:1rem;text-transform:uppercase;letter-spacing:.02em}
+.quote-inline .quote-category-card>span:last-child{line-height:1.6}
+.quote-inline .quote-category-card.is-selected,.quote-inline .quote-category-card:has(input:checked){background:var(--surface);box-shadow:inset 0 0 0 1px var(--ink)}
+.quote-inline .quote-category-icon{color:var(--accent-text)}
+.quote-inline .quote-radio-card,.quote-inline .quote-style-choice{min-height:3.25rem;padding:.75rem 1rem;border-color:rgba(22,21,19,.2);font-size:.9375rem;transition:border-color .2s ease,background .2s ease,box-shadow .2s ease}
+.quote-inline .quote-radio-card:hover,.quote-inline .quote-style-choice:hover{border-color:var(--ink)}
+.quote-inline .quote-radio-card.is-selected,.quote-inline .quote-radio-card:has(input:checked),
+.quote-inline .quote-style-choice.is-selected,.quote-inline .quote-style-choice:has(input:checked){border-color:var(--ink);background:var(--surface);box-shadow:inset 0 0 0 1px var(--ink)}
+.quote-inline .quote-budget-grid,.quote-inline .quote-deadline-grid,.quote-inline .quote-style-grid,.quote-inline .quote-service-option-grid{gap:.6rem}
+.quote-inline .quote-budget-grid .quote-radio-card:last-child{grid-column:1/-1}
+.quote-inline .quote-deadline-group{margin-top:2.25rem}
+
+/* Cases & radios sur mesure */
+.quote-inline .quote-category-card input,.quote-inline .quote-radio-card input,.quote-inline .quote-style-choice input,.quote-inline .quote-consent input,.quote-inline .quote-service-choice input{-webkit-appearance:none;appearance:none;display:inline-grid;place-content:center;width:1.125rem;height:1.125rem;margin:0;border:1px solid rgba(22,21,19,.45);border-radius:2px;background:var(--bg);accent-color:var(--ink);transition:background .15s ease,border-color .15s ease}
+.quote-inline .quote-radio-card input[type="radio"]{border-radius:50%}
+.quote-inline input[type="checkbox"]::before{content:"";width:.6rem;height:.35rem;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:translateY(-1px) rotate(-45deg) scale(0);transition:transform .15s ease}
+.quote-inline input[type="radio"]::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:#fff;transform:scale(0);transition:transform .15s ease}
+.quote-inline input[type="checkbox"]:checked,.quote-inline input[type="radio"]:checked{border-color:var(--ink);background:var(--ink)}
+.quote-inline input[type="checkbox"]:checked::before{transform:translateY(-1px) rotate(-45deg) scale(1)}
+.quote-inline input[type="radio"]:checked::before{transform:scale(1)}
+.quote-inline .quote-category-card input{top:1rem;right:1rem}
+.quote-inline .quote-dialog input[type="checkbox"]:focus-visible,.quote-inline .quote-dialog input[type="radio"]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.quote-inline .quote-category-card:has(:focus-visible),.quote-inline .quote-radio-card:has(:focus-visible),.quote-inline .quote-style-choice:has(:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.quote-inline .quote-field[hidden]{display:none}
+
+/* Upload */
+.quote-inline .quote-field-title{color:var(--muted);font-size:.8125rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase}
+.quote-inline .quote-drop-zone{min-height:8.5rem;border:1px dashed rgba(22,21,19,.4);border-radius:2px;background:transparent;font-size:.9375rem;letter-spacing:0;text-transform:none}
+.quote-inline .quote-drop-zone:hover,.quote-inline .quote-drop-zone.is-dragging{border-color:var(--ink);background:var(--surface)}
+.quote-inline .quote-upload-icon{display:grid;width:2.25rem;height:2.25rem;place-items:center;border:1px solid var(--ink);border-radius:50%;color:var(--ink);font-size:1.25rem}
+.quote-inline .quote-drop-zone u{text-decoration-color:var(--accent);text-underline-offset:.2em}
+
+/* Récapitulatif */
+.quote-inline .quote-summary{gap:0;border-top:1px solid var(--line)}
+.quote-inline .quote-summary-section{padding:1.15rem 0;border:0;border-bottom:1px solid var(--line);background:transparent}
+.quote-inline .quote-summary-head{padding-bottom:.6rem;border-bottom:0}
+.quote-inline .quote-summary-head h4{color:var(--accent-text);font-size:.8125rem;letter-spacing:.12em}
+.quote-inline .quote-summary-row{font-size:.9375rem}
+.quote-inline .quote-summary-row dt{font-weight:500}
+.quote-inline .quote-edit-step{color:var(--ink);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;text-underline-offset:.2em}
+.quote-inline .quote-edit-step:hover{color:var(--accent-text)}
+.quote-inline .quote-consent{margin:1.5rem 0 1rem;padding:1rem 0;border-top:1px solid var(--line)}
+.quote-inline .quote-setup-notice{border-left:2px solid var(--accent);background:var(--surface)}
+
+/* Navigation */
+.quote-inline .quote-form-footer{margin-top:2rem;padding:1.25rem 0 0;border-top:1px solid var(--line);background:transparent}
+.quote-inline .quote-form-footer .btn{min-height:3.25rem;padding:.9rem 1.75rem}
+.quote-inline #quotePrevious{border-color:transparent;background:transparent;padding-left:0}
+.quote-inline #quotePrevious:not(:disabled):hover{background:transparent;color:var(--accent-text)}
+.quote-inline #quotePrevious:disabled{visibility:hidden}
+.quote-inline #quoteContinue{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.quote-inline #quoteContinue:hover{border-color:var(--accent);background:var(--accent);color:#fff}
+.quote-inline #quoteSubmit{background:var(--accent);color:#fff}
+.quote-inline #quoteSubmit:not(:disabled):hover{background:var(--ink)}
+.quote-inline #quoteContinue span{display:inline-block;transition:transform .2s ease}
+.quote-inline #quoteContinue:hover span{transform:translateX(4px)}
+
+/* Confirmation */
+.quote-inline .quote-confirmation{padding:clamp(2rem,5vw,4rem) 0;text-align:left;border-top:1px solid var(--line)}
+.quote-inline .quote-confirmation h3,.quote-inline .quote-confirmation p{margin-left:0;margin-right:0}
+.quote-inline .quote-confirmation-mark{margin:0 0 1.5rem;background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* Bureau : rail sticky à gauche, formulaire à droite */
+@media(min-width:1024px){
+  .quote-inline .quote-dialog{grid-template-columns:minmax(14rem,.55fr) minmax(0,1.6fr)}
+  .quote-inline .quote-dialog>.quote-progress-wrap{grid-column:1;grid-row:1/span 3;position:sticky;top:6.5rem;margin:0;padding:0 2rem 0 0;border-bottom:0;border-right:1px solid var(--line)}
+  .quote-inline .quote-dialog>.quote-live-message,.quote-inline .quote-dialog>form,.quote-inline .quote-dialog>.quote-confirmation{grid-column:2}
+  .quote-inline .quote-progress-meta #quoteStepName{font-size:1.5rem}
+  .quote-inline .quote-progress-meta{margin-bottom:1.5rem}
+}
+@media(max-width:560px){
+  .quote-inline .quote-form-footer{position:sticky;bottom:0;padding:.9rem 0 calc(.9rem + env(safe-area-inset-bottom,0px))}
+  .quote-inline .quote-category-card{min-height:0}
+  .quote-inline #quotePrevious{padding-left:.65rem}
+  .quote-inline .quote-budget-grid .quote-radio-card:last-child{grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){.quote-inline .quote-progress-track span,.quote-inline input::before,.quote-inline #quoteContinue span{transition:none}}
