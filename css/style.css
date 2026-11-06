@@ -823,8 +823,8 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
 
 /* ================= HOME v2 — maquette studio (fond blanc, grotesque) ================= */
 .h2-sec{padding:clamp(4rem,8vw,6.5rem) 5.5vw;background:#fff;color:#161513;overflow-x:clip}
-/* Section vide : fond blanc comme les autres (sinon le hero fixe transparaît), sans contenu */
-.h2-spacer{padding:0;height:clamp(5rem,12vw,10rem)}
+/* Section vide : transparente pour laisser voir le hero fixe (statue) à travers */
+.h2-sec.h2-spacer{padding:0;background:transparent;height:clamp(12rem,32vw,26rem)}
 /* Empêche tout débordement horizontal (translateX des .reveal) qui fait dézoomer la page sur mobile */
 html,.home-v2{overflow-x:clip}
 .h2-title{font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:clamp(1.9rem,3.4vw,3.3rem);line-height:1.08;letter-spacing:-0.015em;margin:0}
