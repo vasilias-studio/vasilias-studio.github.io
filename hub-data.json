@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T15:18:17.895Z"
+    "updatedAt": "2026-11-07T15:32:02.754Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -186,7 +186,8 @@
         "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
         "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
         "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
-      ]
+      ],
+      "page": "work-monreleve.html"
     },
     {
       "id": "nebulo",
@@ -342,6 +343,11 @@
       "inMenu": false
     },
     {
+      "file": "work-monreleve.html",
+      "title": "Étude : monrelevé",
+      "inMenu": false
+    },
+    {
       "file": "work-nebulo.html",
       "title": "Étude : Nébulo",
       "inMenu": false
@@ -392,6 +398,9 @@
     "about.html",
     "services.html",
     "contact.html",
+    "print.html",
+    "social.html",
+    "work-monreleve.html",
     "work-nebulo.html",
     "work-orquid-spices.html",
     "robots.txt",
@@ -459,21 +468,30 @@
     },
     "work-nebulo.html": {
       "title": "Nébulo — Vasilías",
+      "ogTitle": "Nébulo — Vasilías",
       "desc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
+      "ogDesc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
       "img": "assets/hub-uploads/1794064568851-1-6pwe-N-bulo.jpg",
       "canonical": "https://vasilias-studio.github.io/work-nebulo.html",
-      "updated": "2026-11-07T15:16:42.530Z",
-      "ogTitle": "Nébulo — Vasilías",
-      "ogDesc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías."
+      "updated": "2026-11-07T15:16:42.530Z"
     },
     "work-orquid-spices.html": {
       "title": "ORQUID SPICES — Vasilías",
+      "ogTitle": "ORQUID SPICES — Vasilías",
       "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
+      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
       "img": "assets/hub-uploads/1794064067712-2-z0dl-Orquid.jpg",
       "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
-      "updated": "2026-11-07T15:08:01.258Z",
-      "ogTitle": "ORQUID SPICES — Vasilías",
-      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías."
+      "updated": "2026-11-07T15:08:01.258Z"
+    },
+    "work-monreleve.html": {
+      "title": "monrelevé — Vasilías",
+      "ogTitle": "monrelevé — Vasilías",
+      "desc": "Étude de cas monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
+      "ogDesc": "Étude de cas monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
+      "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-monreleve.html",
+      "auto": true
     }
   },
   "alts": {
@@ -694,7 +712,7 @@
     {
       "path": "assets/projects/nebulo/cover.jpg",
       "bytes": 398688,
-      "used": "index.html, work.html, work-nebulo.html"
+      "used": "work-nebulo.html"
     },
     {
       "path": "assets/projects/nebulo/hero.jpg",
@@ -744,7 +762,7 @@
     {
       "path": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "bytes": 777681,
-      "used": "Ajouté via Hub"
+      "used": "index.html, work.html, work-monreleve.html, SEO work-monreleve.html"
     },
     {
       "path": "assets/hub-uploads/1794020321689-ycr9-Plan-de-travail-2.jpg",
@@ -759,12 +777,12 @@
     {
       "path": "assets/hub-uploads/1794073410597-8f00--propos.jpg",
       "bytes": 153323,
-      "used": "Ajouté via Hub"
+      "used": "SEO about.html"
     },
     {
       "path": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
       "bytes": 163323,
-      "used": "Ajouté via Hub"
+      "used": "SEO work.html"
     },
     {
       "path": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
@@ -774,17 +792,17 @@
     {
       "path": "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
       "bytes": 39938,
-      "used": "Ajouté via Hub"
+      "used": "work-monreleve.html"
     },
     {
       "path": "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
       "bytes": 225462,
-      "used": "Ajouté via Hub"
+      "used": "work-monreleve.html"
     },
     {
       "path": "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
       "bytes": 316739,
-      "used": "Ajouté via Hub"
+      "used": "work-monreleve.html"
     },
     {
       "path": "assets/hub-uploads/1794085512921-1-eurk-Service.jpg",
@@ -799,62 +817,62 @@
     {
       "path": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
       "bytes": 633402,
-      "used": "Ajouté via Hub"
+      "used": "index.html, work.html, work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
       "bytes": 68623,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085740820-3-1dlv-03.jpg",
       "bytes": 121804,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085760976-4-yglc-04.jpg",
       "bytes": 475929,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085760979-5-l6ur-05.jpg",
       "bytes": 410272,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085760982-6-0vxf-06.jpg",
       "bytes": 229559,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085760983-7-pkkt-07.jpg",
       "bytes": 229295,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085791384-8-ar6f-08.jpg",
       "bytes": 985673,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085791387-9-dy2f-09.jpg",
       "bytes": 319284,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085791389-10-ibsw-10.jpg",
       "bytes": 337287,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085791391-11-xhch-12.jpg",
       "bytes": 551504,
-      "used": "Ajouté via Hub"
+      "used": "work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
       "bytes": 326402,
-      "used": "Ajouté via Hub"
+      "used": "index.html, work.html, work-nebulo.html"
     },
     {
       "path": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
@@ -864,27 +882,27 @@
     {
       "path": "assets/hub-uploads/1794047011686-1-lcfl-Contact.jpg",
       "bytes": 160415,
-      "used": "Ajouté via Hub"
+      "used": "SEO contact.html"
     },
     {
       "path": "assets/hub-uploads/1794047011745-2-3msn-Service.jpg",
       "bytes": 154352,
-      "used": "Ajouté via Hub"
+      "used": "SEO services.html"
     },
     {
       "path": "assets/hub-uploads/1794063773248-1-dwt9-Accueil.jpg",
       "bytes": 83984,
-      "used": "Ajouté via Hub"
+      "used": "SEO index.html"
     },
     {
       "path": "assets/hub-uploads/1794064067712-2-z0dl-Orquid.jpg",
       "bytes": 176147,
-      "used": "Ajouté via Hub"
+      "used": "SEO work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794064568851-1-6pwe-N-bulo.jpg",
       "bytes": 37549,
-      "used": "Ajouté via Hub"
+      "used": "SEO work-nebulo.html"
     }
   ]
 }

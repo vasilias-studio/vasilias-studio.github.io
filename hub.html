@@ -446,7 +446,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
 <script src="js/forms-config.js?v=1"></script>
 <script src="js/quote-config.js?v=1"></script>
 <script src="js/hub-quotes.js?v=1"></script>
-<script src="js/hub-sync.js?v=12"></script>
+<script src="js/hub-sync.js?v=13"></script>
 <script>
 'use strict';
 /* Icones : Material Symbols (Google Fonts Icons) - SVG inline officiels, zero dependance reseau */
@@ -515,9 +515,39 @@ function discardQueuedImage(path){
 }
 function previewImageUrl(path){return pendingImagePreviews[path]||normalizedImagePath(path)}
 function addImageOption(select,path){var exists=Array.prototype.some.call(select.options,function(o){return o.value===path});if(!exists){var o=document.createElement('option');o.value=path;o.textContent=path.split('/').pop()+' · nouvel import';select.appendChild(o)}select.value=path}
+function projectHrefOf(p){
+  if(window.VasiliasSync&&typeof VasiliasSync.projectHref==='function')return VasiliasSync.projectHref(p);
+  if(!p)return 'work.html';
+  if(p.page&&/\.html$/i.test(p.page))return p.page;
+  var s=String(p.slug||p.id||'projet').replace(/\.html$/i,'');
+  return (/^work-/.test(s)?s:'work-'+s)+'.html';
+}
+function openPageSeo(pageFile){
+  if(!pageFile)return;
+  sessionStorage.setItem('hub2_seo_page',pageFile);
+  go('seo');
+}
+function syncProjectPages(){
+  var d=store.data;if(!d)return;
+  d.seo=Object.assign({},d.seo||{},store.seo||{});
+  if(window.VasiliasSync&&typeof VasiliasSync.reconcileData==='function'){
+    VasiliasSync.reconcileData(d,store.watchCfg);
+  }
+  store.seo=d.seo||{};
+  lsSet(LS.seo,store.seo);
+  store.watchCfg=(d.watch||[]).slice();
+  lsSet(LS.watch,store.watchCfg);
+  (d.pages||[]).forEach(function(pg){
+    Object.defineProperty(pg,'name',{value:pg.title||pg.file||'Page',enumerable:false,writable:true,configurable:true});
+  });
+  (d.media||[]).forEach(function(m){
+    if(!m.file){Object.defineProperty(m,'file',{value:String(m.path||'').replace(/^assets\//,''),enumerable:false,writable:true,configurable:true})}
+    if(typeof m.bytes!=='number')m.bytes=0;
+  });
+}
 function ghHeaders(){return {'Authorization':'Bearer '+ghToken(),'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'}}
 function ghApi(path,opts){opts=opts||{};opts.headers=Object.assign(ghHeaders(),opts.headers||{});return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+path,opts).then(function(r){if(!r.ok)return r.text().then(function(t){throw new Error('GitHub '+r.status+': '+(t||r.statusText).slice(0,300))});return r.status===204?null:r.json()})}
-function save(){store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();lsSet(LS.data,store.data);localStorage.setItem('hub2_pending_sync','1');store.dirty=true;$('#dirtyPill').classList.remove('hidden');if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});clearTimeout(syncTimer);syncTimer=setTimeout(syncGitHub,900)}
+function save(){syncProjectPages();store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();lsSet(LS.data,store.data);localStorage.setItem('hub2_pending_sync','1');store.dirty=true;$('#dirtyPill').classList.remove('hidden');if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});clearTimeout(syncTimer);syncTimer=setTimeout(syncGitHub,900)}
 function ghBlobText(sha){return fetch('https://api.github.com/repos/'+GH_OWNER+'/'+GH_REPO+'/git/blobs/'+sha,{headers:{'Authorization':'Bearer '+ghToken(),'Accept':'application/vnd.github.raw+json','X-GitHub-Api-Version':'2022-11-28'},cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Lecture GitHub impossible ('+r.status+')');var ct=r.headers.get('content-type')||'';return r.text().then(function(t){if(ct.indexOf('json')>=0){var j=JSON.parse(t);if(j.encoding==='base64')return decodeURIComponent(escape(atob(j.content.replace(/\n/g,''))));return j.content||''}return t})})}
 function base64File(file){return new Promise(function(resolve,reject){var r=new FileReader();r.onload=function(){resolve(String(r.result).split(',')[1])};r.onerror=reject;r.readAsDataURL(file)})}
 function syncGitHub(){if(syncRunning){syncAgain=true;return}if(!ghToken())return;syncRunning=true;localStorage.setItem('hub2_pending_sync','1');
@@ -525,23 +555,35 @@ function syncGitHub(){if(syncRunning){syncAgain=true;return}if(!ghToken())return
   function finish(err){syncRunning=false;if(err){toast('Synchronisation automatique échouée : '+err.message,'err');syncAgain=false;return}if(Object.keys(pendingAssets).length||Object.keys(pendingDeletes).length)syncAgain=true;if(!syncAgain){store.dirty=false;$('#dirtyPill').classList.add('hidden');localStorage.removeItem('hub2_pending_sync')}localStorage.setItem('hub2_live_cache',JSON.stringify(store.data));if(hubChannel)hubChannel.postMessage({type:'hub-update',payload:store.data});log('Publication automatique GitHub','hub-data.json + pages HTML + sitemap');toast('Modifications publiées sur le site — GitHub Pages reconstruit la page.','ok');if(syncAgain){syncAgain=false;syncGitHub()}}
   (async function(){
     try{
-      var paths=Object.keys(pendingAssets),delPaths=Object.keys(pendingDeletes);
+      var paths=Object.keys(pendingAssets),delPathsBase=Object.keys(pendingDeletes);
+      syncProjectPages();
       store.data.meta=store.data.meta||{};store.data.meta.version='4.0';store.data.meta.updatedAt=new Date().toISOString();
       store.data.seo=store.seo||store.data.seo||{};store.data.checklist=store.checklist||[];
-      var ref=await ghApi('/git/ref/heads/'+GH_BRANCH,{cache:'no-store'});var baseCommit=ref.object.sha;
-      var commit=await ghApi('/git/commits/'+baseCommit,{cache:'no-store'});var tree=await ghApi('/git/trees/'+commit.tree.sha+'?recursive=1',{cache:'no-store'});var entries={};(tree.tree||[]).forEach(function(x){entries[x.path]=x});
-      var changes={};changes['hub-data.json']=JSON.stringify(store.data,null,2)+'\n';changes['sitemap.xml']=VasiliasSync.buildSitemapXml(store.data);
-      if(entries['hub-data.json']&&entries['hub-data.json'].sha){try{var oldData=JSON.parse(await ghBlobText(entries['hub-data.json'].sha));var nowPublished=(store.data.projects||[]).filter(function(x){return x.status==='published'}).map(function(x){return VasiliasSync.projectHref(x)});(oldData.projects||[]).filter(function(x){return x.status==='published'}).forEach(function(x){var f=VasiliasSync.projectHref(x);if(nowPublished.indexOf(f)<0&&delPaths.indexOf(f)<0)delPaths.push(f)})}catch(ignore){}}
-      var pages=['index.html','work.html','services.html','about.html','contact.html','print.html','social.html','work-nebulo.html','work-orquid-spices.html'];
-      Object.keys(entries).forEach(function(f){if(/^work-[^/]+\.html$/.test(f)&&pages.indexOf(f)<0)pages.push(f)});
-      for(var i=0;i<pages.length;i++){var path=pages[i],ent=entries[path];if(!ent||!ent.sha)continue;var html=await ghBlobText(ent.sha);var doc=new DOMParser().parseFromString(html,'text/html');VasiliasSync.applyToDocument(doc,store.data,path);changes[path]=VasiliasSync.serializeDocument(doc)}
-      (store.data.projects||[]).filter(function(pr){return pr.status==='published'}).forEach(function(pr){var f=VasiliasSync.projectHref(pr);if(!entries[f])changes[f]=VasiliasSync.buildProjectPageHtml(pr,0,null,store.data)});
-      for(var ai=0;ai<paths.length;ai++){var ap=paths[ai];if(pendingAssets[ap])changes[ap]={binary:await base64File(pendingAssets[ap])}}
-      var paths2=Object.keys(changes),treeEntries=[];
-      for(var j=0;j<paths2.length;j++){var file=paths2[j],val=changes[file];if(val&&val.binary){var b=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val.binary,encoding:'base64'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:b.sha})}else{var old=entries[file];if(old&&old.sha){var current=await ghBlobText(old.sha);if(current===val)continue}var blob=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val,encoding:'utf-8'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:blob.sha})}}
-      delPaths.forEach(function(path){if(entries[path])treeEntries.push({path:path,mode:'100644',type:'blob',sha:null})});
-      if(!treeEntries.length){clearBatch(paths,delPaths);finish();return}
-      var nt=await ghApi('/git/trees',{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree:treeEntries})});var nc=await ghApi('/git/commits',{method:'POST',body:JSON.stringify({message:'Hub: mise à jour automatique du site',tree:nt.sha,parents:[baseCommit]})});await ghApi('/git/refs/heads/'+GH_BRANCH,{method:'PATCH',body:JSON.stringify({sha:nc.sha,force:false})});clearBatch(paths,delPaths);finish();
+      var binaryCache={};
+      for(var ai=0;ai<paths.length;ai++){var ap=paths[ai];if(pendingAssets[ap])binaryCache[ap]=await base64File(pendingAssets[ap])}
+      var maxAttempts=3,attempt=0,delPaths=delPathsBase.slice();
+      while(attempt<maxAttempts){
+        attempt++;delPaths=delPathsBase.slice();
+        var ref=await ghApi('/git/ref/heads/'+GH_BRANCH,{cache:'no-store'});var baseCommit=ref.object.sha;
+        var commit=await ghApi('/git/commits/'+baseCommit,{cache:'no-store'});var tree=await ghApi('/git/trees/'+commit.tree.sha+'?recursive=1',{cache:'no-store'});var entries={};(tree.tree||[]).forEach(function(x){entries[x.path]=x});
+        var changes={};changes['hub-data.json']=JSON.stringify(store.data,null,2)+'\n';changes['sitemap.xml']=VasiliasSync.buildSitemapXml(store.data);
+        if(entries['hub-data.json']&&entries['hub-data.json'].sha){try{var oldData=JSON.parse(await ghBlobText(entries['hub-data.json'].sha));var nowPublished=(store.data.projects||[]).filter(function(x){return x.status==='published'}).map(function(x){return VasiliasSync.projectHref(x)});(oldData.projects||[]).filter(function(x){return x.status==='published'}).forEach(function(x){var f=VasiliasSync.projectHref(x);if(nowPublished.indexOf(f)<0&&delPaths.indexOf(f)<0)delPaths.push(f)})}catch(ignore){}}
+        var pages=['index.html','work.html','services.html','about.html','contact.html','print.html','social.html'];
+        (store.data.pages||[]).forEach(function(pg){if(pg&&pg.file&&pages.indexOf(pg.file)<0)pages.push(pg.file)});
+        Object.keys(entries).forEach(function(f){if(/^work-[^/]+\.html$/.test(f)&&delPaths.indexOf(f)<0&&pages.indexOf(f)<0)pages.push(f)});
+        for(var i=0;i<pages.length;i++){var path=pages[i],ent=entries[path];if(!ent||!ent.sha||delPaths.indexOf(path)>=0)continue;var html=await ghBlobText(ent.sha);var doc=new DOMParser().parseFromString(html,'text/html');VasiliasSync.applyToDocument(doc,store.data,path);changes[path]=VasiliasSync.serializeDocument(doc)}
+        var pubList=VasiliasSync.getPublishedProjects(store.data);
+        pubList.forEach(function(pr,pubIdx){var f=VasiliasSync.projectHref(pr);if(!entries[f]){var nextP=pubList.length>1?pubList[(pubIdx+1)%pubList.length]:null;changes[f]=VasiliasSync.buildProjectPageHtml(pr,pubIdx,nextP,store.data)}});
+        Object.keys(binaryCache).forEach(function(k){changes[k]={binary:binaryCache[k]}});
+        var paths2=Object.keys(changes),treeEntries=[];
+        for(var j=0;j<paths2.length;j++){var file=paths2[j],val=changes[file];if(val&&val.binary){var b=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val.binary,encoding:'base64'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:b.sha})}else{var old=entries[file];if(old&&old.sha){var current=await ghBlobText(old.sha);if(current===val)continue}var blob=await ghApi('/git/blobs',{method:'POST',body:JSON.stringify({content:val,encoding:'utf-8'})});treeEntries.push({path:file,mode:'100644',type:'blob',sha:blob.sha})}}
+        delPaths.forEach(function(path){if(entries[path])treeEntries.push({path:path,mode:'100644',type:'blob',sha:null})});
+        if(!treeEntries.length){clearBatch(paths,delPathsBase);finish();return}
+        var nt=await ghApi('/git/trees',{method:'POST',body:JSON.stringify({base_tree:commit.tree.sha,tree:treeEntries})});var nc=await ghApi('/git/commits',{method:'POST',body:JSON.stringify({message:'Hub: mise à jour automatique du site',tree:nt.sha,parents:[baseCommit]})});
+        try{await ghApi('/git/refs/heads/'+GH_BRANCH,{method:'PATCH',body:JSON.stringify({sha:nc.sha,force:false})});break}
+        catch(patchErr){if(attempt<maxAttempts&&/422/.test(String((patchErr&&patchErr.message)||'')))continue;throw patchErr}
+      }
+      clearBatch(paths,delPathsBase);finish();
     }catch(e){finish(e)}
   })()
 }
@@ -614,13 +656,7 @@ function normalizeData(){
     if(!Array.isArray(p.covers))p.covers=covs;
     if(covs.length&&(!p.cover||p.cover==='none'))p.cover=covs[0];
   });
-  d.media.forEach(function(m){
-    if(!m.file){Object.defineProperty(m,'file',{value:String(m.path||'').replace(/^assets\//,''),enumerable:false,writable:true,configurable:true})}
-    if(typeof m.bytes!=='number')m.bytes=0;
-  });
-  d.pages.forEach(function(pg){
-    if(!pg.name){Object.defineProperty(pg,'name',{value:pg.title||pg.file||'Page',enumerable:false,writable:true,configurable:true})}
-  });
+  syncProjectPages();
 }
 function migrateStatuses(){
   var changed=false;
@@ -826,24 +862,36 @@ function viewProjects(){
     if(m==='grid'){
       var g='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.9rem">';
       list.forEach(function(p){
-        var covs=projectCovers(p),cov=primaryCoverOf(p),covUrl=cov?encodeURI(previewImageUrl(cov)).replace(/'/g,'%27'):'';
-        g+='<button class="mtile" data-slug="'+p.slug+'" style="text-align:left">'
+        var covs=projectCovers(p),cov=primaryCoverOf(p),covUrl=cov?encodeURI(previewImageUrl(cov)).replace(/'/g,'%27'):'',pHref=projectHrefOf(p),canSeo=(p.status==='published'||p.status==='ready');
+        g+='<div class="mtile" data-slug="'+esc(p.slug)+'" role="button" tabindex="0" style="text-align:left;display:flex;flex-direction:column">'
           +'<span class="thumb" style="position:relative;'+(covUrl?'background-image:url(\''+covUrl+'\')':'')+'">'+(covUrl?'':'Pas de visuel')+(covs.length>1?'<span style="position:absolute;bottom:.35rem;right:.35rem;background:rgba(22,21,19,.8);color:#fff;font-size:.65rem;font-weight:700;padding:.1rem .4rem;border-radius:2px;letter-spacing:.04em">'+covs.length+' couvertures</span>':'')+'</span>'
-          +'<span class="inf" style="display:block"><span class="nm">'+esc(p.title)+'</span><br>'
+          +'<span class="inf" style="display:block;flex:1"><span class="nm">'+esc(p.title)+'</span><br>'
           +'<span class="pz">'+((p.category||[]).join(' · ')||'Sans catégorie')+'</span><br>'
-          +'<span class="pill '+STATUS_PILL[p.status]+'" style="margin-top:.4rem"><span class="dot '+(STATUS_PILL[p.status]==='ok'?'ok':STATUS_PILL[p.status]==='warn'?'warn':'neut')+'"></span>'+STATUSES[p.status]+'</span></span></button>';
+          +'<span class="pill '+STATUS_PILL[p.status]+'" style="margin-top:.4rem"><span class="dot '+(STATUS_PILL[p.status]==='ok'?'ok':STATUS_PILL[p.status]==='warn'?'warn':'neut')+'"></span>'+STATUSES[p.status]+'</span>'
+          +'<span style="display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-top:.45rem;padding-top:.4rem;border-top:1px solid var(--line);font-size:.72rem">'
+          +(p.status==='published'?'<a href="'+esc(pHref)+'" target="_blank" rel="noopener" data-stop="1" title="Ouvrir la page du projet">'+esc(pHref)+' ↗</a>':'<span class="mut" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Page créée à la publication">'+esc(pHref)+'</span>')
+          +(canSeo?'<button type="button" class="pill info" style="cursor:pointer;padding:.05rem .45rem;font-size:.68rem" data-goto-seo="'+esc(pHref)+'" title="Modifier le SEO de ce projet">SEO</button>':'')
+          +'</span></span></div>';
       });
       $('#plist').innerHTML=g+'</div>';
     }else{
-      var t='<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Projet</th><th>Catégorie</th><th>Année</th><th>Statut</th><th></th></tr></thead><tbody>';
+      var t='<div class="card" style="padding:0;overflow-x:auto"><table><thead><tr><th>Projet</th><th>Page / lien</th><th>Catégorie</th><th>Année</th><th>Statut</th><th></th></tr></thead><tbody>';
       list.forEach(function(p){
-        t+='<tr><td><strong>'+esc(p.title)+'</strong><br><small class="mut">'+esc(p.slug)+'</small></td><td>'+((p.category||[]).join(', ')||'—')+'</td><td>'+(p.year||'—')+'</td>'
+        var pHref=projectHrefOf(p),canSeo=(p.status==='published'||p.status==='ready');
+        t+='<tr><td><strong>'+esc(p.title)+'</strong><br><small class="mut">'+esc(p.slug)+'</small></td>'
+          +'<td>'+(p.status==='published'?'<a href="'+esc(pHref)+'" target="_blank" rel="noopener"><code style="font-size:.78rem">'+esc(pHref)+'</code> ↗</a>':'<code class="mut" style="font-size:.78rem">'+esc(pHref)+'</code><br><small class="mut">non publié</small>')+'</td>'
+          +'<td>'+((p.category||[]).join(', ')||'—')+'</td><td>'+(p.year||'—')+'</td>'
           +'<td><span class="pill '+STATUS_PILL[p.status]+'">'+STATUSES[p.status]+'</span></td>'
-          +'<td><button class="btn btn-ghost btn-sm" data-slug="'+p.slug+'">Modifier</button></td></tr>';
+          +'<td style="white-space:nowrap">'+(canSeo?'<button class="btn btn-ghost btn-sm" data-goto-seo="'+esc(pHref)+'" style="margin-right:.35rem">SEO</button>':'')+'<button class="btn btn-ghost btn-sm" data-slug="'+esc(p.slug)+'">Modifier</button></td></tr>';
       });
       $('#plist').innerHTML=t+'</tbody></table></div>';
     }
-    $all('[data-slug]',$('#plist')).forEach(function(b){b.addEventListener('click',function(){projectModal(b.dataset.slug)})});
+    $all('[data-stop]',$('#plist')).forEach(function(a){a.addEventListener('click',function(e){e.stopPropagation()})});
+    $all('[data-goto-seo]',$('#plist')).forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();openPageSeo(b.dataset.gotoSeo)})});
+    $all('[data-slug]',$('#plist')).forEach(function(b){
+      b.addEventListener('click',function(e){if(e.target.closest('[data-stop],[data-goto-seo]'))return;projectModal(b.dataset.slug)});
+      if(b.getAttribute('role')==='button'){b.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&!e.target.closest('[data-stop],[data-goto-seo]')){e.preventDefault();projectModal(b.dataset.slug)}})}
+    });
   }
   $('#pf').addEventListener('input',draw);$('#pst').addEventListener('change',draw);$('#pcat').addEventListener('change',draw);
   $('#vToggle').addEventListener('click',function(){var m=lsGet(LS.view,'grid')==='grid'?'list':'grid';lsSet(LS.view,m);viewProjects()});
@@ -859,7 +907,14 @@ function projectModal(slug){
   var selectedCovers=p?projectCovers(p).slice():[];
   var primaryCover=p?primaryCoverOf(p):(selectedCovers[0]||'');
   var sessionUploads=[],savedModal=false;
-  var body='<label class="lbl req">Titre</label><input type="text" id="fmT" value="'+esc(p?p.title:'')+'">'
+  var pHref=p?projectHrefOf(p):'';
+  var linkBar=p?('<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding:.55rem .75rem;margin-bottom:.65rem;background:var(--mut-bg);border:1px solid var(--line);border-radius:6px;font-size:.8125rem">'
+    +'<span>Page du projet : <code>'+esc(pHref)+'</code>'+(p.status==='published'?'':' <small class="mut">(visible une fois publié)</small>')+'</span>'
+    +'<span style="display:inline-flex;gap:.4rem;flex-wrap:wrap">'
+    +(p.status==='published'?'<a class="btn btn-ghost btn-sm" href="'+esc(pHref)+'" target="_blank" rel="noopener">Voir la page ↗</a>':'')
+    +(p.status==='published'||p.status==='ready'?'<button type="button" class="btn btn-ghost btn-sm" id="fmGotoSeo">'+ic('travel_explore')+' SEO &amp; partage</button>':'')
+    +'</span></div>'):'';
+  var body=linkBar+'<label class="lbl req">Titre</label><input type="text" id="fmT" value="'+esc(p?p.title:'')+'">'
     +'<div class="grid2"><div><label class="lbl req">Statut</label><select id="fmS">'+Object.keys(STATUSES).map(function(s){return '<option value="'+s+'"'+(p&&p.status===s?' selected':'')+'>'+STATUSES[s]+'</option>'}).join('')+'</select></div>'
     +'<div><label class="lbl req">Année</label><input type="text" id="fmY" value="'+esc(p&&p.year!=null?p.year:'')+'" placeholder="ex. 2026 ou Mai 2026"></div></div>'
     +'<div class="grid2"><div><label class="lbl req">Nature</label><select id="fmN">'+natChoices.map(function(n){return '<option'+(p&&p.nature===n?' selected':'')+'>'+esc(n)+'</option>'}).join('')+'</select></div>'
@@ -896,7 +951,7 @@ function projectModal(slug){
         p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
       var finalCovers=selectedCovers.slice();
       var finalPrimary=finalCovers.length?((primaryCover&&finalCovers.indexOf(primaryCover)>=0)?primaryCover:finalCovers[0]):'none';
-      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=Array.prototype.map.call($('#fmGallery',bg).selectedOptions,function(o){return o.value});
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=Array.prototype.map.call($('#fmGallery',bg).selectedOptions,function(o){return o.value});p.page=projectHrefOf(p);
       savedModal=true;
       if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — synchronisation automatique en cours.','ok');
     }});
@@ -906,6 +961,8 @@ function projectModal(slug){
     if(!savedModal&&sessionUploads.length){sessionUploads.forEach(discardQueuedImage);sessionUploads=[]}
     origRemove();
   };
+  var gotoSeoBtn=$('#fmGotoSeo',projectDialog);
+  if(gotoSeoBtn&&pHref)gotoSeoBtn.addEventListener('click',function(){projectDialog.remove();openPageSeo(pHref)});
   var coverListEl=$('#fmCoverList',projectDialog),coverCountEl=$('#fmCoverCount',projectDialog),coverClearBtn=$('#fmCoverClear',projectDialog),coverDropEl=$('#fmCoverDrop',projectDialog),coverInputEl=$('#fmCoverUpload',projectDialog),galSelectEl=$('#fmGallery',projectDialog);
   function ensureGalleryHasOption(path,selectIt){
     var ex=Array.prototype.find.call(galSelectEl.options,function(o){return o.value===path});
@@ -1022,6 +1079,7 @@ function projectModal(slug){
 
 /* ==================== CONTENUS ==================== */
 function viewContent(){
+  syncProjectPages();
   var d=store.data,h='';
   h+='<div class="card"><h2>Pitched deck — promesse</h2>'
     +'<label class="lbl">Accroche principale (index)</label><textarea id="ctTag">'+esc(d.pitch.tagline)+'</textarea>'
@@ -1032,10 +1090,10 @@ function viewContent(){
     h+='<div class="item"><div style="flex:1"><strong>'+esc(s.title)+'</strong><small class="mut">'+esc(s.desc)+'</small></div><button class="btn btn-ghost btn-sm" data-sv="'+i+'">Modifier</button><button class="btn btn-danger btn-sm" data-svdel="'+i+'" aria-label="Retirer">'+ic('close')+'</button></div>';
   });
   h+='<button class="btn btn-ghost btn-sm" id="svAdd" style="margin-top:.6rem;display:inline-flex;align-items:center;gap:.35rem">'+ic('add')+' Ajouter un service</button></div>';
-  h+='<div class="card"><h2>Pages du site ('+d.pages.length+')</h2><div style="overflow-x:auto"><table><thead><tr><th>Page</th><th>Fichier</th><th>Menu</th><th>SEO</th></tr></thead><tbody>';
+  h+='<div class="card"><h2>Pages du site ('+d.pages.length+')</h2><div style="overflow-x:auto"><table><thead><tr><th>Page</th><th>Fichier / lien</th><th>Menu</th><th>SEO</th></tr></thead><tbody>';
   d.pages.forEach(function(pg){
     var seo=store.seo[pg.file];var flag=seo&&seo.title&&seo.desc;
-    h+='<tr><td><strong>'+esc(pg.name)+'</strong></td><td><code style="font-size:.8rem">'+esc(pg.file)+'</code></td><td>'+(pg.inMenu===undefined?'<span class="pill neut">Non renseigné</span>':pg.inMenu?'<span class="pill ok">Oui</span>':'<span class="pill neut">Non</span>')+'</td><td>'+(flag?'<span class="pill ok">Renseigné</span>':'<span class="pill warn">À vérifier</span>')+'</td></tr>';
+    h+='<tr><td><strong>'+esc(pg.name)+'</strong></td><td><a href="'+esc(pg.file)+'" target="_blank" rel="noopener"><code style="font-size:.8rem">'+esc(pg.file)+'</code> ↗</a></td><td>'+(pg.inMenu===undefined?'<span class="pill neut">Non renseigné</span>':pg.inMenu?'<span class="pill ok">Oui</span>':'<span class="pill neut">Non</span>')+'</td><td><button type="button" class="pill '+(flag?'ok':'warn')+'" style="cursor:pointer" data-goto-seo="'+esc(pg.file)+'" title="Modifier le SEO de '+esc(pg.name)+'">'+(flag?'Renseigné · éditer':'À vérifier · éditer')+'</button></td></tr>';
   });
   h+='</tbody></table></div><button class="btn btn-ghost btn-sm" data-goto="seo" style="margin-top:.6rem">Gérer le SEO de ces pages '+ic('arrow_forward')+'</button></div>';
   h+='<div class="card"><h2>Autres contenus du site</h2><p class="help">Modifiez les champs de texte et listes. Le Hub applique ces données aux pages publiques lors de la synchronisation.</p><label class="lbl">Processus (JSON)</label><textarea id="cxProcess" rows="10">'+esc(JSON.stringify(d.process||{},null,2))+'</textarea><label class="lbl">Champs d’intervention (JSON)</label><textarea id="cxFields" rows="10">'+esc(JSON.stringify({heading:d.fieldsHeading||'',items:d.fields||[]},null,2))+'</textarea><label class="lbl">À propos (JSON)</label><textarea id="cxAbout" rows="10">'+esc(JSON.stringify(d.about||{},null,2))+'</textarea><label class="lbl">Contact (JSON)</label><textarea id="cxContact" rows="8">'+esc(JSON.stringify(d.contact||{},null,2))+'</textarea><label class="lbl">Supports et réseaux (JSON)</label><textarea id="cxSupports" rows="10">'+esc(JSON.stringify({supports:d.supports||[],profiles:d.profiles||[]},null,2))+'</textarea><label class="lbl">Portrait de la page À propos</label><select id="cxPortrait">'+imageLibraryOptions((d.about||{}).portrait||'',false)+'</select><label class="btn btn-ghost btn-sm" for="cxPortraitUpload" style="margin-top:.5rem">Importer un portrait</label><input id="cxPortraitUpload" type="file" accept="image/*" hidden><button class="btn btn-primary btn-sm" id="cxSave">Enregistrer ces contenus</button></div>';
@@ -1046,6 +1104,7 @@ function viewContent(){
   $('#svAdd').addEventListener('click',function(){serviceModal(null)});
   $all('[data-sv]').forEach(function(b){b.addEventListener('click',function(){serviceModal(+b.dataset.sv)})});
   $all('[data-svdel]').forEach(function(b){b.addEventListener('click',function(){var s=d.services[+b.dataset.svdel];confirmModal('Retirer « '+s.title+' » ?','Il disparaîtra de la liste au prochain export.',function(){d.services.splice(+b.dataset.svdel,1);log('Service retiré',s.title);save();viewContent()})})});
+  $all('[data-goto-seo]',$('#view')).forEach(function(b){b.addEventListener('click',function(){openPageSeo(b.dataset.gotoSeo)})});
   var gg=$('[data-goto]');if(gg)gg.addEventListener('click',function(){go('seo')});
 }
 function serviceModal(i){
@@ -1124,13 +1183,26 @@ function viewSkills(){
 
 /* ==================== SEO & PARTAGE ==================== */
 function viewSeo(){
+  syncProjectPages();
   var d=store.data;
-  var h='<div class="card"><h2>SEO par page</h2><p class="help" style="margin-bottom:.8rem">Les champs pré-remplis proviennent de l\'analyse réelle des pages en ligne. Vos modifications sont locales : elles prennent effet sur le site après export → commit (voir Publication).</p>'
-    +'<div class="toolbar" style="margin-bottom:0"><select id="seoPage" aria-label="Choisir une page">'+d.pages.map(function(pg){return '<option value="'+esc(pg.file)+'">'+esc(pg.name)+' ('+esc(pg.file)+')</option>'}).join('')+'</select>'
+  var pageSet={};d.pages.forEach(function(pg){pageSet[pg.file]=1});
+  var readyProjects=(d.projects||[]).filter(function(p){return p&&p.status==='ready'&&!pageSet[projectHrefOf(p)]});
+  var pageOptions=d.pages.map(function(pg){return '<option value="'+esc(pg.file)+'">'+esc(pg.name)+' ('+esc(pg.file)+')</option>'}).join('');
+  if(readyProjects.length){
+    pageOptions='<optgroup label="Pages publiées du site">'+pageOptions+'</optgroup>'
+      +'<optgroup label="Projets prêts à publier (préparation SEO)">'+readyProjects.map(function(p){var pf=projectHrefOf(p);return '<option value="'+esc(pf)+'">Étude : '+esc(p.title)+' ('+esc(pf)+')</option>'}).join('')+'</optgroup>';
+  }
+  var h='<div class="card"><h2>SEO par page</h2><p class="help" style="margin-bottom:.8rem">Les pages principales ainsi que toutes les études de projets publiées depuis le Hub apparaissent automatiquement ci-dessous. Vos modifications sont publiées automatiquement sur le site.</p>'
+    +'<div class="toolbar" style="margin-bottom:0"><select id="seoPage" aria-label="Choisir une page">'+pageOptions+'</select>'
+    +'<a class="btn btn-ghost btn-sm" id="seoOpenLive" href="index.html" target="_blank" rel="noopener">Voir la page ↗</a>'
     +'<button class="btn btn-ghost btn-sm" id="seoFetch">'+ic('refresh')+' Relire la page en ligne</button></div></div>'
     +'<div id="seoForm"></div>';
   $('#view').innerHTML=h;
+  var wantedPage=sessionStorage.getItem('hub2_seo_page');
+  if(wantedPage){sessionStorage.removeItem('hub2_seo_page');if(Array.prototype.some.call($('#seoPage').options,function(o){return o.value===wantedPage}))$('#seoPage').value=wantedPage}
   function load(file){
+    var openBtn=$('#seoOpenLive');
+    if(openBtn){openBtn.href=file;openBtn.classList.toggle('hidden',!pageSet[file])}
     var cur=store.seo[file]||{};
     var f='<div class="card"><h2>Édition — <code style="text-transform:none">'+esc(file)+'</code></h2>'
       +'<label class="lbl req">Titre (50–60 caractères) <span id="ctT" class="mut" style="text-transform:none;font-weight:400"></span></label>'
@@ -1189,8 +1261,9 @@ function viewSeo(){
 
 /* ==================== SURVEILLANCE ==================== */
 function viewWatch(){
+  syncProjectPages();
   var d=store.data;
-  var h='<div class="card"><h2>Contrôle des pages</h2><p class="help" style="margin-bottom:.8rem">Contrôles réels effectués depuis votre navigateur : code HTTP + temps de réponse mesuré au moment du clic. Pas de surveillance continue (site statique sans serveur).</p>'
+  var h='<div class="card"><h2>Contrôle des pages</h2><p class="help" style="margin-bottom:.8rem">Contrôles réels effectués depuis votre navigateur : code HTTP + temps de réponse mesuré au moment du clic. Les pages des projets publiés depuis le Hub sont incluses automatiquement.</p>'
     +'<div class="toolbar"><button class="btn btn-primary" id="wRun">'+ic('play_arrow')+' Tout contrôler maintenant</button><span class="pill neut" id="wLast">Dernier passage : '+(lastWatchTs()?new Date(lastWatchTs()).toLocaleString('fr-FR'):'jamais')+'</span></div>'
     +'<p class="help" id="wProgress" role="status" aria-live="polite">Prêt à contrôler '+store.watchCfg.length+' page(s).</p><div id="wTable" style="overflow-x:auto"></div></div>';
   $('#view').innerHTML=h;
@@ -1205,12 +1278,15 @@ function watchRows(url){var value=store.watchHist&&store.watchHist[url];if(Array
 function lastWatchTs(){var ts=null;store.watchHist=normalizeWatchHistory(store.watchHist);Object.keys(store.watchHist).forEach(function(u){var r=watchRows(u);if(r.length){var t=r[r.length-1].ts;if(t&&(!ts||t>ts))ts=t}});return ts}
 function drawWatch(){
   store.watchHist=normalizeWatchHistory(store.watchHist);
-  var t='<table><thead><tr><th>État</th><th>URL</th><th>HTTP</th><th>Temps</th><th>Dernier contrôle</th></tr></thead><tbody>';
+  var pageNames={};((store.data&&store.data.pages)||[]).forEach(function(pg){if(pg&&pg.file)pageNames[pg.file]=pg.name||pg.title||pg.file});
+  var t='<table><thead><tr><th>État</th><th>Page / URL</th><th>HTTP</th><th>Temps</th><th>Dernier contrôle</th></tr></thead><tbody>';
   store.watchCfg.forEach(function(u){
     var r=watchRows(u).slice(-1)[0];
     var pill='<span class="pill neut"><span class="dot neut"></span>jamais contrôlé</span>';
     if(r){var k=r.state==='accessible'?'ok':(r.state==='injoignable'?'err':'warn');pill='<span class="pill '+pillFor(k)+'"><span class="dot '+k+'"></span>'+esc(r.state)+'</span>'}
-    t+='<tr><td>'+pill+'</td><td style="word-break:break-all"><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u.replace(/^https?:\/\/[^/]+/,'')||'/')+'</a></td>'
+    var relU=u.replace(/^https?:\/\/[^/]+\/?/,'')||'index.html';
+    var pgLabel=pageNames[relU];
+    t+='<tr><td>'+pill+'</td><td style="word-break:break-all">'+(pgLabel?'<strong>'+esc(pgLabel)+'</strong><br>':'')+'<a href="'+esc(u)+'" target="_blank" rel="noopener"><code style="font-size:.78rem">'+esc(u.replace(/^https?:\/\/[^/]+/,'')||'/')+'</code> ↗</a></td>'
       +'<td>'+(r?(r.http||'—'):'—')+'</td><td>'+(r&&r.ms?r.ms+' ms':'—')+'</td><td><small class="mut">'+(r?new Date(r.ts).toLocaleString('fr-FR'):'—')+'</small></td></tr>';
   });
   $('#wTable').innerHTML=t+'</tbody></table>';
@@ -1266,6 +1342,7 @@ function viewPublish(){
   $('#expShow').addEventListener('click',function(){modal('Contenu de l\'export','<pre class="exp">'+esc(exportPayload())+'</pre>')});
 }
 function exportPayload(){
+  syncProjectPages();
   var d=JSON.parse(JSON.stringify(store.data));
   d.meta=d.meta||{};d.meta.version='4.0';d.meta.generated=new Date().toISOString().slice(0,10);d.meta.updatedAt=new Date().toISOString();
   d.seo=store.seo;d.checklist=store.checklist;

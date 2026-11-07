@@ -193,6 +193,199 @@
     return '';
   }
 
+  var CORE_SITE_PAGES = [
+    { file: 'index.html', title: 'Accueil', inMenu: true },
+    { file: 'work.html', title: 'Projets', inMenu: true },
+    { file: 'about.html', title: 'À propos', inMenu: true },
+    { file: 'services.html', title: 'Services', inMenu: true },
+    { file: 'contact.html', title: 'Contact', inMenu: true },
+    { file: 'print.html', title: 'Imprimés', inMenu: false },
+    { file: 'social.html', title: 'Réseaux sociaux', inMenu: false }
+  ];
+
+  function defaultProjectDesc(p) {
+    if (!p) return '';
+    var title = String(p.title || 'Projet').trim();
+    var tag = String(p.tagline || '').replace(/\s+/g, ' ').trim();
+    var ov = String(p.overview || '').replace(/\s+/g, ' ').trim();
+    var cats = Array.isArray(p.category) && p.category.length ? p.category.join(', ') : '';
+    var text = '';
+    if (tag && ov && tag.toLowerCase() !== ov.toLowerCase()) {
+      text = 'Étude de cas ' + title + ' par Vasilías — ' + tag.replace(/[.!?]+$/, '') + '. ' + ov;
+    } else if (ov) {
+      text = ov.indexOf(title) >= 0 ? ov : ('Étude de cas ' + title + ' par Vasilías : ' + ov);
+    } else if (tag) {
+      text = 'Étude de cas ' + title + ' par Vasilías — ' + tag + (cats ? ' (' + cats + ').' : '.');
+    } else {
+      text = 'Étude de cas ' + title + ' par Vasilías Studio' + (cats ? ' : ' + cats + '.' : '.');
+    }
+    if (text.length > 160) {
+      var cut = text.slice(0, 157);
+      var sp = cut.lastIndexOf(' ');
+      text = (sp > 110 ? cut.slice(0, sp) : cut).replace(/[,;:\s]+$/, '') + '…';
+    }
+    return text;
+  }
+
+  function findProjectByFile(data, pageFile) {
+    if (!data || !Array.isArray(data.projects) || !pageFile) return null;
+    for (var i = 0; i < data.projects.length; i++) {
+      var p = data.projects[i];
+      if (p && projectHref(p) === pageFile) return p;
+    }
+    return null;
+  }
+
+  function reconcileData(data, extraWatch) {
+    if (!data || typeof data !== 'object') return data;
+    var projects = Array.isArray(data.projects) ? data.projects : (data.projects = []);
+
+    /* 1. Garantir p.page = work-<slug>.html sur chaque projet */
+    projects.forEach(function (p) {
+      if (!p) return;
+      p.page = projectHref(p);
+    });
+
+    var pubProjects = getPublishedProjects(data);
+    var pubFilesMap = {};
+    pubProjects.forEach(function (p) {
+      pubFilesMap[projectHref(p)] = p;
+    });
+
+    /* 2. Réconcilier data.pages (pages cœur + pages custom non-projet + tous les projets publiés) */
+    var existingPages = Array.isArray(data.pages) ? data.pages : [];
+    var existingByFile = {};
+    existingPages.forEach(function (pg) {
+      if (pg && pg.file) existingByFile[pg.file] = pg;
+    });
+
+    var nextPages = [];
+    var seenPage = {};
+    CORE_SITE_PAGES.forEach(function (core) {
+      var prev = existingByFile[core.file];
+      seenPage[core.file] = 1;
+      nextPages.push({
+        file: core.file,
+        title: (prev && prev.title) ? prev.title : core.title,
+        inMenu: (prev && typeof prev.inMenu === 'boolean') ? prev.inMenu : core.inMenu
+      });
+    });
+    existingPages.forEach(function (pg) {
+      if (!pg || !pg.file || seenPage[pg.file]) return;
+      if (/^work-[^/]+\.html$/i.test(pg.file)) return;
+      seenPage[pg.file] = 1;
+      nextPages.push({
+        file: pg.file,
+        title: pg.title || pg.name || pg.file,
+        inMenu: Boolean(pg.inMenu)
+      });
+    });
+    pubProjects.forEach(function (p) {
+      var file = projectHref(p);
+      if (seenPage[file]) return;
+      seenPage[file] = 1;
+      var prev = existingByFile[file];
+      nextPages.push({
+        file: file,
+        title: 'Étude : ' + (p.title || p.slug || file),
+        inMenu: Boolean(prev && prev.inMenu)
+      });
+    });
+    data.pages = nextPages;
+
+    /* 3. Réconcilier data.seo : créer/compléter automatiquement l'entrée SEO de chaque projet publié ou prêt */
+    if (!data.seo || typeof data.seo !== 'object') data.seo = {};
+    projects.forEach(function (p) {
+      if (!p) return;
+      var file = projectHref(p);
+      var shouldSeed = (p.status === 'published' || p.status === 'ready' || Boolean(data.seo[file]));
+      if (!shouldSeed) return;
+      var cur = data.seo[file] || {};
+      var isAuto = !data.seo[file] || (cur.auto === true && !cur.updated);
+      var defTitle = (p.title || p.slug || 'Projet') + ' — Vasilías';
+      var defDesc = defaultProjectDesc(p);
+      var cover = getPrimaryCover(p);
+      var fallbackOg = (data.seo['work.html'] && data.seo['work.html'].img)
+        || (data.seo['index.html'] && data.seo['index.html'].img)
+        || (SITE_ORIGIN + 'assets/og/og-image-v2.jpg');
+      var defImg = cover ? fullUrl(cover) : fallbackOg;
+      var entry = {
+        title: isAuto ? defTitle : (cur.title || defTitle),
+        ogTitle: isAuto ? defTitle : (cur.ogTitle || cur.title || defTitle),
+        desc: isAuto ? defDesc : (cur.desc || defDesc),
+        ogDesc: isAuto ? defDesc : (cur.ogDesc || cur.desc || defDesc),
+        img: isAuto ? defImg : (cur.img || defImg),
+        canonical: cur.canonical || (SITE_ORIGIN + file)
+      };
+      if (isAuto) entry.auto = true;
+      if (cur.updated) entry.updated = cur.updated;
+      if (cur.imgWidth) entry.imgWidth = cur.imgWidth;
+      if (cur.imgHeight) entry.imgHeight = cur.imgHeight;
+      data.seo[file] = entry;
+    });
+
+    /* 4. Réconcilier data.watch (Surveillance) avec toutes les pages cœur + projets publiés */
+    var nextWatch = [];
+    var seenWatch = {};
+    function addWatch(u) {
+      if (!u) return;
+      var s = String(u).trim();
+      if (!s || seenWatch[s]) return;
+      seenWatch[s] = 1;
+      nextWatch.push(s);
+    }
+    CORE_SITE_PAGES.forEach(function (core) { addWatch(core.file); });
+    pubProjects.forEach(function (p) { addWatch(projectHref(p)); });
+    ['robots.txt', 'sitemap.xml'].forEach(addWatch);
+    [data.watch, extraWatch].forEach(function (list) {
+      if (!Array.isArray(list)) return;
+      list.forEach(function (u) {
+        if (!u) return;
+        var clean = String(u).trim().replace(/^https?:\/\/vasilias-studio\.github\.io\//i, '');
+        if (/^work-[^/]+\.html$/i.test(clean) && !pubFilesMap[clean]) return;
+        addWatch(u);
+      });
+    });
+    data.watch = nextWatch;
+
+    /* 5. Enrichir data.media[*].used pour refléter les pages projets & SEO */
+    if (Array.isArray(data.media)) {
+      var usageMap = {};
+      function markUsed(rawPath, label) {
+        var rel = relAssetPath(normalizeAssetPath(rawPath));
+        if (!rel) return;
+        if (!usageMap[rel]) usageMap[rel] = [];
+        if (usageMap[rel].indexOf(label) < 0) usageMap[rel].push(label);
+      }
+      projects.forEach(function (p) {
+        if (!p || p.status === 'archived') return;
+        var pFile = projectHref(p);
+        var pPrimary = getPrimaryCover(p);
+        if (pPrimary && p.status === 'published') {
+          markUsed(pPrimary, 'index.html');
+          markUsed(pPrimary, 'work.html');
+        }
+        getProjectCovers(p).forEach(function (c) { markUsed(c, pFile); });
+        (Array.isArray(p.gallery) ? p.gallery : []).forEach(function (g) { markUsed(g, pFile); });
+      });
+      Object.keys(data.seo || {}).forEach(function (pgFile) {
+        var s = data.seo[pgFile];
+        if (!s || !s.img) return;
+        var local = String(s.img).replace(/^https?:\/\/vasilias-studio\.github\.io\//i, '');
+        if (!/^https?:/i.test(local)) markUsed(local, 'SEO ' + pgFile);
+      });
+      data.media.forEach(function (m) {
+        if (!m) return;
+        var rel = relAssetPath(normalizeAssetPath(m.path || m.file));
+        if (rel && usageMap[rel] && usageMap[rel].length) {
+          m.used = usageMap[rel].join(', ');
+        }
+      });
+    }
+
+    return data;
+  }
+
   function setMeta(doc, selector, attr, val) {
     if (val == null || val === '') return;
     var el = doc.querySelector(selector);
@@ -202,19 +395,23 @@
   function applySeo(doc, data, pageFile) {
     var seoMap = (data && data.seo) || {};
     var seo = seoMap[pageFile] || {};
-    if (seo.title) {
+    var proj = /^work-/i.test(pageFile || '') ? findProjectByFile(data, pageFile) : null;
+    var effTitle = seo.title || (proj ? ((proj.title || proj.slug || 'Projet') + ' — Vasilías') : '');
+    var effDesc = seo.desc || (proj ? defaultProjectDesc(proj) : '');
+    if (effTitle) {
       var titleEl = doc.querySelector('title');
-      if (titleEl) titleEl.textContent = seo.title;
-      setMeta(doc, 'meta[property="og:title"]', 'content', seo.ogTitle || seo.title);
-      setMeta(doc, 'meta[name="twitter:title"]', 'content', seo.ogTitle || seo.title);
+      if (titleEl) titleEl.textContent = effTitle;
+      setMeta(doc, 'meta[property="og:title"]', 'content', seo.ogTitle || effTitle);
+      setMeta(doc, 'meta[name="twitter:title"]', 'content', seo.ogTitle || effTitle);
     }
-    if (seo.desc) {
-      setMeta(doc, 'meta[name="description"]', 'content', seo.desc);
-      setMeta(doc, 'meta[property="og:description"]', 'content', seo.ogDesc || seo.desc);
-      setMeta(doc, 'meta[name="twitter:description"]', 'content', seo.ogDesc || seo.desc);
+    if (effDesc) {
+      setMeta(doc, 'meta[name="description"]', 'content', effDesc);
+      setMeta(doc, 'meta[property="og:description"]', 'content', seo.ogDesc || effDesc);
+      setMeta(doc, 'meta[name="twitter:description"]', 'content', seo.ogDesc || effDesc);
     }
     var globalSeo = ((data && data.seo) || {})['index.html'] || {};
-    var shareImage = seo.img || globalSeo.img;
+    var projCover = proj ? getPrimaryCover(proj) : '';
+    var shareImage = seo.img || projCover || globalSeo.img;
     if (shareImage) {
       var imgUrl = fullUrl(shareImage);
       var prevImgEl = doc.querySelector('meta[property="og:image"]');
@@ -235,9 +432,10 @@
     }
     if (seo.imgWidth) setMeta(doc, 'meta[property="og:image:width"]', 'content', seo.imgWidth);
     if (seo.imgHeight) setMeta(doc, 'meta[property="og:image:height"]', 'content', seo.imgHeight);
-    if (seo.canonical) {
-      setMeta(doc, 'link[rel="canonical"]', 'href', seo.canonical);
-      setMeta(doc, 'meta[property="og:url"]', 'content', seo.canonical);
+    var effCanonical = seo.canonical || (proj ? (SITE_ORIGIN + pageFile) : '');
+    if (effCanonical) {
+      setMeta(doc, 'link[rel="canonical"]', 'href', effCanonical);
+      setMeta(doc, 'meta[property="og:url"]', 'content', effCanonical);
     }
   }
 
@@ -863,10 +1061,10 @@
     var availability = contact.availability || 'Disponible pour projets';
     var seo = ((data && data.seo) && data.seo[file]) || {};
     var pageTitle = seo.title || (project.title + ' — Vasilías');
-    var pageDesc = seo.desc || project.tagline || project.overview || ('Étude de cas ' + project.title + ' par Vasilías Studio.');
+    var pageDesc = seo.desc || defaultProjectDesc(project);
     var coverAsset = getPrimaryCover(project);
     var globalShareImage = (((data && data.seo) || {})['index.html'] || {}).img;
-    var ogImage = fullUrl(seo.img || globalShareImage || coverAsset || 'assets/og/og-image-v2.jpg');
+    var ogImage = fullUrl(seo.img || coverAsset || globalShareImage || 'assets/og/og-image-v2.jpg');
     var canonical = seo.canonical || (SITE_ORIGIN + file);
     var alts = (data && data.alts) || {};
     var heroBlockHtml = buildProjectCoverHeroHtml(project, data, false);
@@ -996,7 +1194,7 @@
       + '    </div>\n'
       + '  </footer>\n'
       + '  <script>document.getElementById(\'year\').textContent = new Date().getFullYear();</script>\n'
-      + '  <script src="js/hub-sync.js?v=12"></script>\n'
+      + '  <script src="js/hub-sync.js?v=13"></script>\n'
       + '  <script src="js/main.js?v=15"></script>\n'
       + '</body>\n'
       + '</html>\n';
@@ -1140,6 +1338,8 @@
     relAssetPath: relAssetPath,
     fullUrl: fullUrl,
     projectHref: projectHref,
+    defaultProjectDesc: defaultProjectDesc,
+    reconcileData: reconcileData,
     getPublishedProjects: getPublishedProjects,
     getProjectCovers: getProjectCovers,
     getPrimaryCover: getPrimaryCover,
