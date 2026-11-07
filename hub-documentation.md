@@ -38,7 +38,7 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 
 - `hub-data.json` v4 est la source de contenu commune.
 - `js/hub-sync.js` expose `window.VasiliasSync` (et `module.exports` pour les tests Node). Il hydrate le DOM public depuis le cache local/les données publiées, met à jour le head SEO, les sections éditoriales, le pied de page, les médias et les cartes de projets. Il fournit aussi la sérialisation HTML, la génération des pages projet et du sitemap.
-- Les neuf pages publiques chargent `js/hub-sync.js?v=10` avant `js/main.js?v=14`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
+- Les neuf pages publiques chargent `js/hub-sync.js?v=11` avant `js/main.js?v=14`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
 - Les sauvegardes locales du Hub sont partagées avec le site public du même navigateur via `BroadcastChannel('vasilias_hub')` et `localStorage`. Les autres appareils reçoivent le changement après le déploiement GitHub Pages.
 - Le client de publication lit la branche et les blobs GitHub, compare les contenus, crée uniquement les blobs modifiés, puis crée un arbre/commit et avance `refs/heads/main` sans force-push. `hub2_pending_sync` est posé pendant les modifications non publiées et retiré après succès.
 

@@ -382,15 +382,15 @@
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794020342426-mqul-og-iage.png",
+      "img": "assets/og/og-home-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/",
       "updated": "2026-11-07T02:59:06.534Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
       "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
-      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
-      "canonical": "https://vasilias-studio.com/work.html",
+      "img": "assets/og/og-home-v2.jpg",
+      "canonical": "https://vasilias-studio.github.io/work.html",
       "updated": "2026-11-07T00:51:43.374Z"
     },
     "about.html": {
@@ -398,7 +398,7 @@
       "ogTitle": "À Propos — Vasilías",
       "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
       "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/about.html"
     },
     "services.html": {
@@ -406,22 +406,24 @@
       "ogTitle": "Services & Expertises — Vasilías",
       "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
       "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/services.html"
     },
     "contact.html": {
       "title": "Contact — Vasilías",
       "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T16:57:25.076Z"
+      "updated": "2026-11-07T16:57:25.076Z",
+      "ogTitle": "Contact — Vasilías",
+      "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging."
     },
     "print.html": {
       "title": "Imprimés — Vasilías",
       "ogTitle": "Imprimés — Vasilías",
       "desc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
       "ogDesc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/print.html"
     },
     "social.html": {
@@ -429,7 +431,7 @@
       "ogTitle": "Réseaux Sociaux — Vasilías",
       "desc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
       "ogDesc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
       "canonical": "https://vasilias-studio.github.io/social.html"
     },
     "work-nebulo.html": {
@@ -750,11 +752,6 @@
       "used": "Ajouté via Hub"
     },
     {
-      "path": "assets/hub-uploads/1794013046836-udr4-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "bytes": 777681,
-      "used": "Ajouté via Hub"
-    },
-    {
       "path": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "bytes": 777681,
       "used": "Ajouté via Hub"
@@ -766,6 +763,11 @@
     },
     {
       "path": "assets/hub-uploads/1794020342426-mqul-og-iage.png",
+      "bytes": 320223,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/og/og-home-v2.jpg",
       "bytes": 320223,
       "used": "Ajouté via Hub"
     }
