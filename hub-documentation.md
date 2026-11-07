@@ -38,7 +38,7 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 
 - `hub-data.json` v4 est la source de contenu commune.
 - `js/hub-sync.js` expose `window.VasiliasSync` (et `module.exports` pour les tests Node). Il hydrate le DOM public depuis le cache local/les données publiées, met à jour le head SEO, les sections éditoriales, le pied de page, les médias et les cartes de projets. Il fournit aussi la sérialisation HTML, la génération des pages projet et du sitemap.
-- Les neuf pages publiques chargent `js/hub-sync.js?v=1` avant `js/main.js?v=7`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
+- Les neuf pages publiques chargent `js/hub-sync.js?v=10` avant `js/main.js?v=14`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
 - Les sauvegardes locales du Hub sont partagées avec le site public du même navigateur via `BroadcastChannel('vasilias_hub')` et `localStorage`. Les autres appareils reçoivent le changement après le déploiement GitHub Pages.
 - Le client de publication lit la branche et les blobs GitHub, compare les contenus, crée uniquement les blobs modifiés, puis crée un arbre/commit et avance `refs/heads/main` sans force-push. `hub2_pending_sync` est posé pendant les modifications non publiées et retiré après succès.
 
@@ -58,4 +58,4 @@ Le verrou par code du Hub est un contrôle de confort exécuté côté navigateu
 
 ## Dépendances et publication
 
-Aucun backend ni service d’upload distinct n’est utilisé : le déploiement statique existant GitHub Pages publie la branche `main`. Le navigateur doit être connecté à Internet, autoriser `api.github.com` et utiliser un navigateur compatible `fetch`, `DOMParser`, `localStorage` et `WebCrypto`.
+La publication du contenu n’utilise aucun backend ni service d’upload distinct : le déploiement statique existant GitHub Pages publie la branche `main`. Seuls les formulaires Contact et Devis passent par le Google Apps Script décrit dans `backend/apps-script/README.md`. Le navigateur doit être connecté à Internet, autoriser `api.github.com` et utiliser un navigateur compatible `fetch`, `DOMParser`, `localStorage` et `WebCrypto`.

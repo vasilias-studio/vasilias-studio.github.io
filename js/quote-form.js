@@ -73,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
       return host === 'script.google.com' || host === 'script.googleusercontent.com' || host.endsWith('.script.googleusercontent.com');
     } catch (error) { return false; }
   }
+  function resetSubmitLabel() {
+    submitButton.textContent = 'Envoyer ma demande de devis';
+  }
   function setLive(text, isError) {
     liveMessage.textContent = text || '';
     liveMessage.classList.toggle('is-error', !!isError);
@@ -369,6 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         sending = false;
         sendingOverlay.hidden = true;
         submitButton.disabled = false;
+        resetSubmitLabel();
         previousButton.disabled = currentStep === 1;
         setLive('La réponse tarde à arriver. Vérifiez votre e-mail avant de renvoyer la demande, afin d’éviter un doublon.', true);
       }, 60000);
@@ -399,6 +403,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (heading) heading.focus({ preventScroll: true });
     } else {
       submitButton.disabled = false;
+      resetSubmitLabel();
       previousButton.disabled = currentStep === 1;
       setLive('L’envoi n’a pas abouti. Vos informations restent dans le formulaire; corrigez ou réessayez.', true);
       activeNonce = '';

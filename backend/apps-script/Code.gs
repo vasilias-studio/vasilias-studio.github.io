@@ -362,7 +362,7 @@ function purgeOldSubmissions() {
   // This query only targets messages created by these two forms.
   var oldThreads;
   do {
-    oldThreads = GmailApp.search('subject:SITE-FORM older_than:3m', 0, 100);
+    oldThreads = GmailApp.search('subject:SITE-FORM older_than:' + FORM_CONFIG.retentionMonths + 'm', 0, 100);
     if (oldThreads.length) GmailApp.moveThreadsToTrash(oldThreads);
   } while (oldThreads.length === 100);
 }
