@@ -1241,6 +1241,11 @@ html,.home-v2{overflow-x:clip}
 .slider-next { right: 0.75rem; }
 @media (min-width: 768px) { .slider-btn { width: 3.25rem; height: 3.25rem; } .slider-btn .ico { width: 2.5rem; height: 2.5rem; } .slider-prev { left: 1.25rem; } .slider-next { right: 1.25rem; } }
 .case-slider.is-single .slider-btn { display: none; }
+/* Bureau : la couverture tient dans l'écran, sans recadrer l'image */
+@media (min-width: 1024px) {
+  .case-slider .slider-track { aspect-ratio: auto; height: min(56.25vw, 68vh); max-height: 680px; }
+  .case-slider .slider-track img { object-fit: contain; background: var(--surface); }
+}
 @media (prefers-reduced-motion: reduce) { .case-slider .slider-track { transition: none; } }
 
 /* ============================================================
