@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-07T17:56:08.412Z"
+    "updatedAt": "2026-11-07T17:56:53.026Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -440,11 +440,10 @@
     },
     "work-orquid-spices.html": {
       "title": "ORQUID SPICES — Vasilías",
-      "ogTitle": "ORQUID SPICES — Vasilías",
       "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
-      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
-      "img": "https://vasilias-studio.github.io/assets/projects/orquid-spices/Cover.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html"
+      "img": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
+      "updated": "2026-11-07T17:56:28.840Z"
     }
   },
   "alts": {
@@ -785,6 +784,11 @@
     {
       "path": "assets/hub-uploads/1794074161411-zuzp-Contact.jpg",
       "bytes": 160415,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
+      "bytes": 438249,
       "used": "Ajouté via Hub"
     }
   ]
