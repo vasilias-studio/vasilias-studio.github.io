@@ -410,6 +410,17 @@
     }
   }
 
+  /* Boutons « Demander un devis » : catégorie du formulaire de devis déduite du titre du service */
+  var QUOTE_BTN_ARROW = '<svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>';
+  function quoteCategoryFor(title) {
+    var t = String(title || '').toLowerCase();
+    if (/packag|emball|étiquet|etiquet/.test(t)) return 'packaging';
+    if (/réseaux|reseaux|social/.test(t)) return 'social';
+    if (/logo|identit|brandboard|charte/.test(t)) return 'identity';
+    if (/support|communication|print|affiche|flyer|brochure/.test(t)) return 'graphic';
+    return 'other';
+  }
+
   function applyServices(doc, data) {
     var grid = doc.querySelector('.services-grid');
     if (!grid || !Array.isArray(data.services)) return;
@@ -425,7 +436,9 @@
         + '<h2 class="service-title">' + esc(s.title) + '</h2>'
         + '<p class="service-desc">' + esc(s.desc || '') + '</p>'
         + '</div>'
-        + '<div class="service-foot"><span>' + esc(s.foot || '') + '</span></div>'
+        + '<div class="service-foot"><span>' + esc(s.foot || '') + '</span>'
+        + '<a class="btn btn-dark service-quote-btn" href="#quoteSectionTitle" data-quote-category="' + quoteCategoryFor(s.title) + '" aria-label="Demander un devis : ' + esc(s.title) + '">Demander un devis ' + QUOTE_BTN_ARROW + '</a>'
+        + '</div>'
         + '<figure class="service-media"><img src="' + esc(img) + '" alt="" width="1180" height="1180" loading="lazy" decoding="async"></figure>'
         + '</div>';
     }).join('\n      ');

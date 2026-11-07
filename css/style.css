@@ -1481,3 +1481,11 @@ html,.home-v2{overflow-x:clip}
   .contact-form-wrap{order:3}
   .contact-socials{order:4}
 }
+
+/* Services : bouton « Demander un devis » dans chaque carte */
+.service-foot{display:flex;flex-direction:column;align-items:flex-start;gap:1.5rem}
+.service-quote-btn{padding:.8rem 1.35rem;font-size:.75rem}
+.service-quote-btn .ico{width:.95rem;height:.95rem;transition:transform .25s ease}
+.service-quote-btn:hover .ico{transform:translateY(3px)}
+.quote-section{scroll-margin-top:5.5rem}
+#quoteSectionTitle{scroll-margin-top:6rem}
