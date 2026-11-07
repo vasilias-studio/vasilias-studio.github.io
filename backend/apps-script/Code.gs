@@ -244,27 +244,48 @@ function buildNotificationText_(title, id, receivedAt, sections) {
 }
 
 function buildNotificationHtml_(title, id, receivedAt, sections) {
-  var cards = sections.map(function (section) {
-    var rows = section.rows.map(function (row) {
+  var FONT = "'Josefin Sans','Helvetica Neue',Helvetica,Arial,sans-serif";
+  var INK = '#161513', MUTED = '#6a665c', RULE = '#e6e1d9', HAIR = '#f0ece6', BRONZE = '#BF814B';
+
+  var blocks = sections.map(function (section) {
+    var rows = section.rows.map(function (row, index) {
       var content = row.html || escapeEmailHtml_(row.value).replace(/\r?\n/g, '<br>');
-      return '<tr><td valign="top" style="padding:11px 14px;border-top:1px solid #eee9e3;color:#6a665c;font:12px/1.5 Arial,sans-serif;width:34%">' +
-        escapeEmailHtml_(row.label) + '</td><td valign="top" style="padding:11px 14px;border-top:1px solid #eee9e3;color:#24211e;font:14px/1.6 Arial,sans-serif;word-break:break-word">' + content + '</td></tr>';
+      var border = index === 0 ? '' : 'border-top:1px solid ' + HAIR + ';';
+      return '<tr>' +
+        '<td valign="top" width="34%" style="padding:12px 16px 12px 0;' + border + 'color:' + MUTED + ';font:12px/1.5 ' + FONT + ';letter-spacing:.3px">' + escapeEmailHtml_(row.label) + '</td>' +
+        '<td valign="top" style="padding:12px 0;' + border + 'color:' + INK + ';font:15px/1.65 ' + FONT + ';word-break:break-word">' + content + '</td>' +
+        '</tr>';
     }).join('');
-    return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 16px;border:1px solid #e8e2da;border-collapse:separate;background:#fff">' +
-      '<tr><td colspan="2" style="padding:13px 14px;background:#f7f5f1;color:#6a665c;font:bold 11px/1.4 Arial,sans-serif;letter-spacing:1.2px">' + escapeEmailHtml_(section.title) + '</td></tr>' + rows + '</table>';
+    return '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 28px;border-collapse:collapse">' +
+      '<tr><td colspan="2" style="padding:0 0 10px;border-bottom:1px solid ' + RULE + ';color:' + BRONZE + ';font:bold 11px/1.4 ' + FONT + ';letter-spacing:2.4px">' + escapeEmailHtml_(section.title) + '</td></tr>' +
+      rows + '</table>';
   }).join('');
-  return '<!doctype html><html lang="fr"><head><meta charset="utf-8"></head><body style="margin:0;padding:24px 12px;background:#f1efeb">' +
+
+  return '<!doctype html><html lang="fr"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head>' +
+    '<body style="margin:0;padding:28px 12px;background:#f7f5f1">' +
     '<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center">' +
-    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:660px;background:#fff;border:1px solid #e8e2da">' +
-    '<tr><td style="padding:26px 28px;background:#161513;color:#fff;border-bottom:4px solid #BF814B">' +
-    '<div style="color:#d8b18f;font:bold 11px/1.4 Arial,sans-serif;letter-spacing:2px">VASILÍAS STUDIO</div>' +
-    '<h1 style="margin:12px 0 8px;color:#fff;font:bold 23px/1.25 Arial,sans-serif">' + escapeEmailHtml_(title) + '</h1>' +
-    '<div style="color:#dedbd5;font:13px/1.5 Arial,sans-serif">Nouvelle demande reçue depuis le site</div></td></tr>' +
-    '<tr><td style="padding:22px 22px 8px"><div style="margin:0 0 16px;padding:12px 14px;background:#f7f5f1;color:#514b44;font:13px/1.5 Arial,sans-serif">' +
-    '<strong style="color:#24211e">Référence :</strong> ' + escapeEmailHtml_(id) + '</div>' + cards +
-    '<div style="padding:14px 0 4px;color:#6a665c;font:12px/1.6 Arial,sans-serif">Reçu le ' + escapeEmailHtml_(formatEmailDate_(receivedAt)) +
-    '<br>Vous pouvez répondre directement à cet e-mail pour contacter la personne.</div></td></tr>' +
-    '<tr><td style="padding:14px 22px;background:#f7f5f1;color:#8a847b;font:11px/1.5 Arial,sans-serif">Notification automatique — Vasilías Studio</td></tr>' +
+    '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#ffffff;border:1px solid ' + RULE + '">' +
+    // En-tête
+    '<tr><td style="padding:36px 36px 8px">' +
+      '<div style="color:' + BRONZE + ';font:bold 11px/1.4 ' + FONT + ';letter-spacing:3px">VASILÍAS STUDIO</div>' +
+      '<h1 style="margin:18px 0 8px;color:' + INK + ';font:300 28px/1.25 ' + FONT + '">' + escapeEmailHtml_(title) + '</h1>' +
+      '<div style="color:' + MUTED + ';font:14px/1.5 ' + FONT + '">Nouvelle demande reçue depuis le site</div>' +
+      '<div style="width:44px;height:2px;margin:22px 0 0;background:' + BRONZE + ';line-height:2px;font-size:2px">&nbsp;</div>' +
+    '</td></tr>' +
+    // Référence
+    '<tr><td style="padding:20px 36px 24px;color:' + MUTED + ';font:12px/1.7 ' + FONT + '">' +
+      '<span style="letter-spacing:1.5px">RÉFÉRENCE</span>&nbsp;&nbsp;<span style="color:' + INK + '">' + escapeEmailHtml_(id) + '</span><br>' +
+      '<span style="letter-spacing:1.5px">REÇU LE</span>&nbsp;&nbsp;<span style="color:' + INK + '">' + escapeEmailHtml_(formatEmailDate_(receivedAt)) + '</span>' +
+    '</td></tr>' +
+    // Contenu
+    '<tr><td style="padding:8px 36px 4px">' + blocks + '</td></tr>' +
+    // Pied
+    '<tr><td style="padding:20px 36px 30px;border-top:1px solid ' + RULE + ';color:' + MUTED + ';font:12px/1.7 ' + FONT + '">' +
+      'Répondez directement à cet e-mail pour contacter la personne.<br>' +
+      '<span style="color:#8a847b">Notification automatique · Vasilías Studio</span>' +
+    '</td></tr>' +
     '</table></td></tr></table></body></html>';
 }
 
