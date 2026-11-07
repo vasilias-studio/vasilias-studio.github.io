@@ -53,6 +53,7 @@ function setupStorage() {
 
   ensureSheet_(spreadsheet, 'Devis', QUOTE_HEADERS);
   ensureSheet_(spreadsheet, 'Contact', CONTACT_HEADERS);
+  ensureQuoteSheets_(spreadsheet);
   installCleanupTrigger_();
 
   Logger.log('Stockage privé prêt. Sheet : ' + spreadsheet.getUrl());
@@ -64,6 +65,9 @@ function doPost(e) {
   var p = (e && e.parameter) || {};
   var type = field_(p, 'formType').toLowerCase();
   var clientNonce = field_(p, 'clientNonce').slice(0, 100);
+
+  // Appels d'administration du Hub (devis) : protégés par une clé secrète, jamais par le formulaire public.
+  if (field_(p, 'action').indexOf('quotes.') === 0) return handleQuoteAdmin_(p);
 
   // Honeypot: bots receive a generic success result, but no data is stored or emailed.
   if (field_(p, '_honey')) return responsePage_(true, type, clientNonce);
@@ -117,6 +121,17 @@ function sendQuote_(p, all, senderEmail) {
 
   var details = parseQuoteSummary_(summary);
   var project = details && details.project || {};
+
+  // Devis automatique : la demande est déjà enregistrée, un échec ici ne doit jamais la bloquer.
+  var devis = null;
+  try {
+    devis = createQuoteFromRequest_(details, {
+      requestId: id, receivedAt: receivedAt, name: name, email: senderEmail,
+      phone: phone, company: company, website: website
+    });
+  } catch (err) {
+    console.error('Automatic quote failed: ' + String((err && err.message) || 'unknown error'));
+  }
   var sections = [
     {
       title: 'COORDONNÉES',
@@ -146,6 +161,19 @@ function sendQuote_(p, all, senderEmail) {
     }
   ];
   if (!details) sections[1].rows = emailRows_([['Détails du projet', summary]]);
+  sections.unshift({
+    title: 'DEVIS AUTOMATIQUE',
+    rows: devis
+      ? emailRows_([
+          ['Numéro', devis.number],
+          ['Statut', devis.status],
+          ['Total', devis.totals.unpricedCount
+            ? 'À chiffrer (' + devis.totals.unpricedCount + ' ligne(s) sans tarif)'
+            : String(devis.totals.total).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ' + devis.currency],
+          ['À consulter', 'Hub, onglet Devis']
+        ])
+      : emailRows_([['Devis automatique', 'Non créé — voir les journaux Apps Script']])
+  });
 
   var fileRows = saved.names.map(function (fileName, index) {
     var fileUrl = saved.links[index] || '';
@@ -372,6 +400,7 @@ function purgeOldSubmissions() {
       if (date instanceof Date && date < cutoff) sheet.deleteRow(i + 2);
     }
   });
+  purgeStaleQuotes_(cutoff);
 
   var folder = getFolderFromProperty_(STORAGE_KEYS.attachmentsFolder);
   var files = folder.getFiles();
@@ -522,6 +551,8 @@ function safeFilename_(value) {
 }
 
 function safeCell_(value) {
+  // Un nombre fini ne peut pas contenir de formule : on le garde numérique (totaux, sommes dans la feuille).
+  if (typeof value === 'number' && isFinite(value)) return value;
   var text = String(value == null ? '' : value);
   return /^[=+\-@]/.test(text) ? "'" + text : text;
 }

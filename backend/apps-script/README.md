@@ -40,3 +40,28 @@ La durée configurée est de trois mois. Le déclencheur quotidien supprime les 
 3. Envoyer un test Devis avec un petit fichier, puis contrôler la ligne `Devis`, la présence du fichier dans Drive et l’e-mail avec pièce jointe.
 4. Après mise à jour du site, tester les deux formulaires depuis le navigateur, puis tester les limites de fichiers jusqu’à la taille maximale affichée.
 5. Confirmer dans Drive que le dossier, le classeur et les pièces jointes ne sont pas partagés publiquement.
+
+## Devis automatiques
+
+Chaque demande de devis du site crée automatiquement un devis en brouillon (numéro `DEV-AAAA-NNN`) dans la feuille privée **Devis générés**. Le devis apparaît dans l’onglet **Devis** du Hub.
+
+**Mise en place (une seule fois)**
+1. Dans l’éditeur Apps Script, ajoutez un fichier `Quotes.gs` (contenu de ce dossier) et remplacez `Code.gs`.
+2. Exécutez `setupQuotes()` : crée les feuilles « Devis générés » et « Tarifs » (préremplie avec les 31 prestations du formulaire).
+3. Exécutez `setupAdminKey()` et copiez la clé affichée dans le journal d’exécution.
+4. Déployez une **nouvelle version** du Web App (l’URL `/exec` ne change pas).
+5. Dans le Hub : Paramètres → Devis, collez la clé et cliquez sur « Enregistrer la clé et tester ».
+
+**Les prix** se saisissent dans la feuille **Tarifs** (colonne « Prix unitaire (Ar) »). Une prestation sans prix reste « à chiffrer » : aucun montant n’est inventé. Les devis déjà créés ne sont pas recalculés quand vous modifiez les tarifs.
+
+**Statuts** : À chiffrer → Brouillon (automatique quand toutes les lignes ont un prix) → Envoyé → Accepté / Refusé / Expiré.
+
+**Sécurité**
+- Les devis ne quittent jamais votre Google Sheet : le Hub les lit via l’API protégée par la clé (`VAS_ADMIN_KEY`, propriété de script). Aucune donnée client n’est écrite dans le dépôt public.
+- 8 essais avec une mauvaise clé verrouillent l’API pendant 15 minutes (protège contre la force brute, mais quelqu’un pourrait aussi vous verrouiller brièvement).
+- Pour changer la clé : relancez `setupAdminKey()` (l’ancienne devient invalide) et collez la nouvelle dans le Hub.
+- Modifiez les devis **dans le Hub**, pas dans la feuille : la colonne « Données (JSON) » fait foi.
+- Deux appareils qui modifient le même devis ne s’écrasent pas : le Hub signale le conflit.
+
+**Rétention** : comme les demandes, les devis sont supprimés après `FORM_CONFIG.retentionMonths` mois (promesse de la page confidentialité). Pour garder certains statuts plus longtemps, ajoutez-les à `QUOTE_CONFIG.keepStatuses` dans `Quotes.gs` **et** adaptez la page confidentialité. Enregistrez en PDF les devis que vous devez conserver.
+

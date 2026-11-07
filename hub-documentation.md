@@ -34,6 +34,13 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 | Historique & sauvegardes | Journal et instantanés locaux; ceux-ci sont propres au navigateur et ne remplacent pas l’historique Git. |
 | Paramètres | Token GitHub, synchronisation manuelle, session et données locales. |
 
+### Devis (onglet « Devis »)
+- Chaque demande envoyée depuis le formulaire du site crée un devis en brouillon, lu en direct depuis le Google Sheet privé (rien n’est écrit dans le dépôt public).
+- Liste filtrable (statut, recherche), pastille « à chiffrer » dans le menu, édition des lignes, remise, TVA, statut, validité, remarques, conditions.
+- « Aperçu / PDF » ouvre un devis prêt à imprimer (Imprimer → Enregistrer en PDF). « E-mail au client » et « WhatsApp » préparent le message.
+- Configuration : Paramètres → Devis (clé d’accès + mentions légales du pied de page). Installation complète : `backend/apps-script/README.md`.
+- Le module est dans `js/hub-quotes.js` ; la clé est conservée uniquement dans ce navigateur.
+
 ## Architecture de synchronisation
 
 - `hub-data.json` v4 est la source de contenu commune.

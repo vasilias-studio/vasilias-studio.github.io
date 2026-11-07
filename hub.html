@@ -408,6 +408,8 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
     <button class="nav-btn" data-view="content"><span class="ic" data-ic="edit_note"></span> Contenus</button>
     <button class="nav-btn" data-view="media"><span class="ic" data-ic="photo_library"></span> Médiathèque</button>
     <button class="nav-btn" data-view="skills"><span class="ic" data-ic="auto_awesome"></span> Compétences</button>
+    <p class="nav-label">Clients</p>
+    <button class="nav-btn" data-view="quotes"><span class="ic" data-ic="description"></span> Devis <span class="q-badge" id="qBadge" hidden></span></button>
     <p class="nav-label">Diffusion</p>
     <button class="nav-btn" data-view="seo"><span class="ic" data-ic="travel_explore"></span> SEO &amp; partage</button>
     <button class="nav-btn" data-view="publish"><span class="ic" data-ic="publish"></span> Publication</button>
@@ -443,6 +445,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
 
 <script src="js/forms-config.js?v=1"></script>
 <script src="js/quote-config.js?v=1"></script>
+<script src="js/hub-quotes.js?v=1"></script>
 <script src="js/hub-sync.js?v=12"></script>
 <script>
 'use strict';
@@ -597,7 +600,7 @@ function enter(){
     if(err){$('#view').removeAttribute('aria-busy');$('#view').innerHTML='<div class="card"><p class="pill err">Erreur de chargement</p><p style="margin-top:.5rem">'+esc(err.message)+'</p><p class="help">Vérifiez que hub-data.json est présent à la racine du site et que vous êtes connecté à internet.</p></div>';return}
     renderNotif();
     if(store.dirty)$('#dirtyPill').classList.remove('hidden');else $('#dirtyPill').classList.add('hidden');
-    normalizeData();migrateStatuses();scanAlerts();bindNav();$('#view').removeAttribute('aria-busy');go(routeFromHash()||'dashboard',true);if(store.dirty&&ghToken())setTimeout(syncGitHub,1200);
+    normalizeData();migrateStatuses();scanAlerts();bindNav();$('#view').removeAttribute('aria-busy');go(routeFromHash()||'dashboard',true);if(window.quotesBadgeRefresh)quotesBadgeRefresh();if(store.dirty&&ghToken())setTimeout(syncGitHub,1200);
   });
 }
 /* Tolérance au format de hub-data.json : champs absents ou nommés autrement (non énumérables => jamais ré-exportés) */
@@ -685,7 +688,7 @@ function loadAll(cb){
 }
 
 /* ---------- navigation ---------- */
-var VIEWS={dashboard:'Vue d\'ensemble',projects:'Projets',content:'Contenus',media:'Médiathèque',skills:'Compétences & outils',seo:'SEO & partage',watch:'Surveillance',publish:'Publication',history:'Historique & sauvegardes',settings:'Paramètres'};
+var VIEWS={dashboard:'Vue d\'ensemble',projects:'Projets',content:'Contenus',media:'Médiathèque',skills:'Compétences & outils',seo:'SEO & partage',watch:'Surveillance',publish:'Publication',history:'Historique & sauvegardes',settings:'Paramètres',quotes:'Devis'};
 var currentView=null;
 function routeFromHash(){var v=(location.hash||'').replace('#','');return VIEWS[v]?v:null}
 function go(v,fromHash){
@@ -694,7 +697,7 @@ function go(v,fromHash){
   $('#viewTitle').textContent=VIEWS[v];
   document.title=VIEWS[v]+' — Hub Vasilías Studio';
   if(!fromHash&&location.hash!=='#'+v)location.hash=v;
-  ({dashboard:viewDashboard,projects:viewProjects,content:viewContent,media:viewMedia,skills:viewSkills,seo:viewSeo,watch:viewWatch,publish:viewPublish,history:viewHistory,settings:viewSettings})[v]();
+  ({dashboard:viewDashboard,projects:viewProjects,content:viewContent,media:viewMedia,skills:viewSkills,seo:viewSeo,watch:viewWatch,publish:viewPublish,history:viewHistory,settings:viewSettings,quotes:(typeof viewQuotes==='function'?viewQuotes:function(){$('#view').innerHTML='<div class="card"><p class="help">Le module Devis (js/hub-quotes.js) n’a pas pu être chargé.</p></div>'})})[v]();
   window.scrollTo(0,0);
   if(!fromHash||document.activeElement===document.body)$('#viewTitle').focus({preventScroll:true});
 }
@@ -1341,8 +1344,7 @@ function viewSettings(){
     +'<button class="btn btn-ghost btn-sm" id="stLogout" style="margin-top:.7rem">Terminer la session</button></div>';
   h+='<div class="card"><h2>Données locales</h2><p style="font-size:.875rem">'+fmtBytes(used)+' utilisés par le hub dans ce navigateur (brouillons, journal, checklist, sauvegardes).</p>'
     +'<button class="btn btn-danger btn-sm" id="stWipe" style="margin-top:.7rem">Réinitialiser les données locales…</button></div></div>';
-  h+='<div class="card"><h2>Demandes de devis</h2><p style="font-size:.875rem">Les demandes et pièces jointes seront conservées dans votre Google Drive privé. Les statuts, notes, filtres et tris se gèrent dans la feuille Google dédiée.</p>'
-    +(quoteSheetHref?'<p style="margin-top:.75rem"><a class="btn btn-primary btn-sm" href="'+esc(quoteSheetHref)+'" target="_blank" rel="noopener noreferrer">Ouvrir la feuille privée</a></p>':'<p class="help" style="margin-top:.75rem">Lien disponible après la configuration du projet Apps Script dans <code>js/quote-config.js</code>.</p>')+'</div>';
+  h+='<div id="quoteSettingsSlot"></div>';
   h+='<div class="card"><h2>Publication automatique — GitHub</h2><p class="help">'+(ghToken()?'Token enregistré sur cet appareil. Les modifications sont envoyées automatiquement à '+GH_OWNER+'/'+GH_REPO+' (branche '+GH_BRANCH+').':'Aucun token enregistré : les modifications restent locales jusqu’à la connexion.')+'</p><div class="toolbar"><input type="password" id="settingsGhToken" autocomplete="off" placeholder="'+(ghToken()?'Remplacer le token GitHub':'Coller un token GitHub (Contents: Read and write)')+'"><button class="btn btn-primary btn-sm" id="saveSettingsGh">Enregistrer</button><button class="btn btn-ghost btn-sm" id="removeSettingsGh">Supprimer le token</button><button class="btn btn-ghost btn-sm" id="syncNow">Synchroniser maintenant</button></div><p class="help">Le token n’est jamais écrit dans le dépôt. Toute personne ayant accès à ce navigateur peut toutefois l’utiliser.</p></div>'
     +'<div class="card"><h2>Architecture (publication depuis le navigateur)</h2><ul style="margin-left:1.2rem;font-size:.875rem;line-height:2">'
     +'<li><strong>Hébergement :</strong> GitHub Pages (statique) — <a href="https://vasilias-studio.github.io/" target="_blank" rel="noopener">site public</a></li>'
@@ -1352,6 +1354,7 @@ function viewSettings(){
     +'<li><strong>Sauvegardes :</strong> instantanés navigateur (12 max) + exports téléchargeables.</li></ul></div>';
   h+='<div class="card"><h2>Documentation</h2><p style="font-size:.875rem"><a href="hub-documentation.md" target="_blank" rel="noopener">Ouvrir hub-documentation.md</a> — guide complet du hub (accès, workflow, sauvegardes, rollback, évolutions).</p></div>';
   $('#view').innerHTML=h;
+  if(window.quotesSettingsMount)quotesSettingsMount();
   $('#saveSettingsGh').addEventListener('click',function(){var t=$('#settingsGhToken').value.trim();if(!t){toast('Collez d’abord le token.','warn');return}localStorage.setItem('hub2_gh_token',t);$('#settingsGhToken').value='';toast('Token enregistré uniquement dans ce navigateur.','ok');viewSettings()});$('#removeSettingsGh').addEventListener('click',function(){localStorage.removeItem('hub2_gh_token');toast('Token supprimé de ce navigateur.','ok');viewSettings()});$('#syncNow').addEventListener('click',function(){if(!ghToken()){toast('Enregistrez un token GitHub d’abord.','warn');return}syncGitHub()});
   $('#stLogout').addEventListener('click',function(){sessionEnd();location.reload()});
   $('#stWipe').addEventListener('click',function(){confirmModal('Réinitialiser les données locales ?','Journal, checklist, sauvegardes et modifications non exportées seront définitivement perdus. Le fichier hub-data.json du site n\'est PAS touché.',function(){
