@@ -47,10 +47,12 @@ Chaque demande de devis du site crée automatiquement un devis en brouillon (num
 
 **Mise en place (une seule fois)**
 1. Dans l’éditeur Apps Script, ajoutez un fichier `Quotes.gs` (contenu de ce dossier) et remplacez `Code.gs`.
-2. Exécutez `setupQuotes()` : crée les feuilles « Devis générés » et « Tarifs » (préremplie avec les 31 prestations du formulaire).
+2. Exécutez `setupQuotes()` : crée les feuilles « Devis générés » et « Tarifs ». « Tarifs » contient les 3 packs (prix et contenu déjà renseignés), les 31 prestations individuelles (prix à saisir) et l’option « Fichiers sources » (prix à saisir). Sans risque à relancer : il ajoute ce qui manque sans jamais toucher à vos prix.
 3. Exécutez `setupAdminKey()` et copiez la clé affichée dans le journal d’exécution.
 4. Déployez une **nouvelle version** du Web App (l’URL `/exec` ne change pas).
 5. Dans le Hub : Paramètres → Devis, collez la clé et cliquez sur « Enregistrer la clé et tester ».
+
+**Fichiers sources** : le formulaire propose Oui / Non / Je ne sais pas encore. Si le client en veut et que son pack ne les inclut pas (Pack Logo + Brandboard, ou prestations individuelles), le devis ajoute une ligne « Fichiers sources » à chiffrer. Prínkipas et Vasilías les incluent déjà : aucune ligne en plus.
 
 **Les prix** se saisissent dans la feuille **Tarifs** (colonne « Prix unitaire (Ar) »). Une prestation sans prix reste « à chiffrer » : aucun montant n’est inventé. Les devis déjà créés ne sont pas recalculés quand vous modifiez les tarifs.
 

@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     social: 'Réseaux sociaux', other: 'Autres prestations'
   };
   var optionsByCategory = {
-    identity: ['Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète'],
+    identity: ['Pack Logo + Brandboard', 'Pack Prínkipas', 'Pack Vasilías', 'Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète'],
     graphic: ['Affiche publicitaire', 'Flyer', 'Brochure', 'Carte de visite', 'Catalogue', 'Supports imprimés'],
     packaging: ['Design de boîte', 'Design d’étiquette', 'Design de bouteille ou contenant', 'Déclinaisons de packaging', 'Mockups de présentation'],
     social: ['Templates de publications', 'Templates de stories', 'Couverture Facebook', 'Couverture et bannière', 'Visuels publicitaires', 'Templates promotionnels', 'Identité visuelle pour les réseaux sociaux'],
@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var styles = selectedValues('style').join(', ');
     summary.innerHTML =
       summarySection('Informations client', 1, [summaryRow('Nom', fieldValue('clientName')), summaryRow('E-mail', fieldValue('email')), summaryRow('WhatsApp', fieldValue('whatsapp')), summaryRow('Entreprise', fieldValue('company')), summaryRow('Site / réseau', fieldValue('website'))]) +
-      summarySection('Projet', 2, [summaryRow('Catégories', cats), summaryRow('Autre projet', fieldValue('otherProject')), summaryRow('Prestations', services), summaryRow('Livrables souhaités', fieldValue('deliverables')), summaryRow('Description', fieldValue('projectDescription')), summaryRow('Objectifs', fieldValue('objectives')), summaryRow('Public cible', fieldValue('audience'))]) +
+      summarySection('Projet', 2, [summaryRow('Catégories', cats), summaryRow('Autre projet', fieldValue('otherProject')), summaryRow('Prestations', services), summaryRow('Livrables souhaités', fieldValue('deliverables')), summaryRow('Fichiers sources', selectedValues('sourceFiles')[0] || ''), summaryRow('Description', fieldValue('projectDescription')), summaryRow('Objectifs', fieldValue('objectives')), summaryRow('Public cible', fieldValue('audience'))]) +
       summarySection('Budget et délais', 4, [summaryRow('Budget estimé', selectedValues('budget')[0] || ''), summaryRow('Délai souhaité', selectedValues('deadline')[0] || ''), summaryRow('Date précise', fieldValue('targetDate'))]) +
       summarySection('Univers et références', 5, [summaryRow('Style graphique', styles), summaryRow('Fichiers joints', fileNames)]);
     submitButton.disabled = !(isAppsScriptEndpoint(config.endpoint) && config.enabled && config.privacyApproved && !sending);
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return JSON.stringify({
       client: { name: fieldValue('clientName'), email: fieldValue('email'), whatsapp: fieldValue('whatsapp'), company: fieldValue('company'), website: fieldValue('website') },
       project: { categories: categories, otherProject: fieldValue('otherProject'), deliverables: services, deliverablesDescription: fieldValue('deliverables'), description: fieldValue('projectDescription'), objectives: fieldValue('objectives'), audience: fieldValue('audience') },
-      budget: selectedValues('budget')[0] || '', deadline: selectedValues('deadline')[0] || '', targetDate: fieldValue('targetDate'),
+      sourceFiles: selectedValues('sourceFiles')[0] || '', budget: selectedValues('budget')[0] || '', deadline: selectedValues('deadline')[0] || '', targetDate: fieldValue('targetDate'),
       styles: selectedValues('style'), attachments: files.map(function (file) { return { name: file.name, size: humanSize(file.size) }; }),
       consentement: 'accepté'
     }, null, 2);

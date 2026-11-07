@@ -53,7 +53,7 @@ function setupStorage() {
 
   ensureSheet_(spreadsheet, 'Devis', QUOTE_HEADERS);
   ensureSheet_(spreadsheet, 'Contact', CONTACT_HEADERS);
-  ensureQuoteSheets_(spreadsheet);
+  ensureQuoteSheets_(spreadsheet, true);
   installCleanupTrigger_();
 
   Logger.log('Stockage privé prêt. Sheet : ' + spreadsheet.getUrl());
@@ -145,6 +145,7 @@ function sendQuote_(p, all, senderEmail) {
       rows: emailRows_([
         ['Catégories', project.categories], ['Autre projet', project.otherProject],
         ['Prestations demandées', project.deliverables], ['Précisions sur les livrables', project.deliverablesDescription],
+        ['Fichiers sources', details && details.sourceFiles],
         ['Description', project.description], ['Objectifs', project.objectives], ['Public cible', project.audience]
       ])
     },

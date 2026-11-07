@@ -194,7 +194,7 @@ sandbox.Utilities.formatDate = (d, tz, fmt) => (fmt === 'yyyy' ? String(d.getUTC
 
 fakeBook.insertSheet('Devis');
 sandbox.ensureQuoteSheets_(fakeBook);
-const catalogSize = 8 + 6 + 5 + 7 + 5;
+const catalogSize = 3 + 8 + 6 + 5 + 7 + 5 + 1; // 3 packs + 31 prestations + option « Fichiers sources »
 assert.equal(fakeSheets['Tarifs'].rows.length, catalogSize + 1, 'la grille de tarifs est préremplie avec toutes les prestations du formulaire');
 const logoRow = fakeSheets['Tarifs'].rows.find((r) => r[1] === 'Logo principal');
 logoRow[2] = '300 000';
@@ -233,5 +233,52 @@ assert.deepEqual(fakeSheets['Devis générés'].rows.slice(1).map((r) => r[0]), 
 sandbox.QUOTE_CONFIG.keepStatuses = [];
 sandbox.purgeStaleQuotes_(new Date('2027-01-01T00:00:00Z'));
 assert.equal(fakeSheets['Devis générés'].rows.length, 1, 'sinon tout est purgé après la durée de rétention');
+
+
+// Packs et fichiers sources.
+const tariffRows = fakeSheets['Tarifs'].rows;
+const packRow = tariffRows.find((r) => r[1] === 'Pack Prínkipas');
+assert.equal(packRow[2], 450000, 'les packs sont préchiffrés dans la grille');
+assert.equal(tariffRows.find((r) => r[1] === 'Pack Logo + Brandboard')[2], 200000);
+assert.equal(tariffRows.find((r) => r[1] === 'Pack Vasilías')[2], 800000);
+assert.match(tariffRows.find((r) => r[1] === 'Pack Logo + Brandboard')[4], /Fichiers sources non inclus/);
+assert.equal(tariffRows.find((r) => r[1] === 'Fichiers sources')[2], '', 'le prix de l’option sources reste à saisir');
+const YES = 'Oui, je souhaite les fichiers sources';
+const NO = 'Non, les fichiers finaux me suffisent';
+
+const qPack = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Pack Prínkipas'] }, sourceFiles: YES }, meta('2026-11-08T10:00:00Z'));
+assert.equal(qPack.lines.length, 1, 'Prínkipas inclut déjà les sources : pas de ligne en plus');
+assert.equal(qPack.totals.total, 450000);
+assert.equal(qPack.status, 'Brouillon', 'un pack seul est chiffré automatiquement');
+assert.equal(qPack.request.sourceFiles, YES);
+assert.match(qPack.lines[0].description, /Fichiers sources inclus/);
+
+const qLogoSrc = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Pack Logo + Brandboard'] }, sourceFiles: YES }, meta('2026-11-08T11:00:00Z'));
+assert.deepEqual(Array.from(qLogoSrc.lines.map((l) => l.label)), ['Pack Logo + Brandboard', 'Fichiers sources'], 'sources demandées hors pack => ligne en option');
+assert.equal(qLogoSrc.lines[1].unitPrice, null);
+assert.equal(qLogoSrc.status, 'À chiffrer');
+assert.equal(qLogoSrc.totals.total, 200000);
+
+const qLogoNo = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Pack Logo + Brandboard'] }, sourceFiles: NO }, meta('2026-11-08T12:00:00Z'));
+assert.equal(qLogoNo.lines.length, 1);
+assert.equal(qLogoNo.status, 'Brouillon');
+assert.equal(sandbox.buildQuoteLines_({ project: { deliverables: ['Flyer'] }, sourceFiles: YES }, {}).length, 2, 'prestation individuelle + sources => ligne en option');
+assert.equal(sandbox.buildQuoteLines_({ project: { deliverables: ['Flyer'] }, sourceFiles: 'Je ne sais pas encore' }, {}).length, 1);
+assert.equal(sandbox.buildQuoteLines_({ project: { description: 'x' }, sourceFiles: YES }, {}).length, 2, 'même sans prestation choisie');
+
+// Complément de la grille : ajoute ce qui manque, sans jamais toucher aux prix saisis.
+const flyerIdx = tariffRows.findIndex((r) => r[1] === 'Flyer');
+tariffRows.splice(flyerIdx, 1);
+const packIdx = tariffRows.findIndex((r) => r[1] === 'Pack Vasilías');
+tariffRows.splice(packIdx, 1);
+assert.equal(tariffRows.length, catalogSize + 1 - 2);
+sandbox.ensureQuoteSheets_(fakeBook, false);
+assert.equal(tariffRows.length, catalogSize + 1 - 2, 'sans complément, rien n’est ajouté');
+sandbox.ensureQuoteSheets_(fakeBook, true);
+assert.equal(tariffRows.length, catalogSize + 1, 'le complément réajoute exactement les deux lignes manquantes');
+assert.equal(tariffRows.find((r) => r[1] === 'Pack Vasilías')[2], 800000);
+assert.equal(tariffRows.find((r) => r[1] === 'Logo principal')[2], '300 000', 'les prix saisis ne sont jamais écrasés');
+sandbox.ensureQuoteSheets_(fakeBook, true);
+assert.equal(tariffRows.length, catalogSize + 1, 'idempotent');
 
 console.log('Apps Script static/unit checks passed: validation, private storage, retention, iframe response, readable HTML/text email layouts, and automatic quotes (pricing, patching, admin key).');

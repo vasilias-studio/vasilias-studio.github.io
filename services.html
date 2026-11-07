@@ -131,6 +131,7 @@
             <p class="quote-step-description">Les options ci-dessous s’adaptent aux catégories choisies.</p>
             <div class="quote-services-options" id="quoteServicesOptions"></div>
             <label class="quote-field quote-field-spaced">Décrivez précisément les livrables souhaités <span class="quote-optional">Facultatif</span><textarea id="quoteDeliverables" name="deliverables" rows="4" maxlength="2500" placeholder="Formats, quantités, supports ou autres précisions…"></textarea></label>
+            <fieldset class="quote-choice-group quote-source-group"><legend>Fichiers sources <span class="quote-optional">Facultatif</span></legend><p class="quote-step-description">Les fichiers sources sont les fichiers éditables de vos créations. Le Pack Logo + Brandboard ne les inclut pas ; les packs Prínkipas et Vasilías les incluent.</p><div class="quote-budget-grid"><label class="quote-radio-card"><input type="radio" name="sourceFiles" value="Oui, je souhaite les fichiers sources"><span>Oui, je souhaite les fichiers sources</span></label><label class="quote-radio-card"><input type="radio" name="sourceFiles" value="Non, les fichiers finaux me suffisent"><span>Non, les fichiers finaux me suffisent</span></label><label class="quote-radio-card"><input type="radio" name="sourceFiles" value="Je ne sais pas encore"><span>Je ne sais pas encore</span></label></div></fieldset>
           </section>
 
           <section class="quote-step" data-quote-step="4" aria-labelledby="quoteStep4Title" hidden="">
@@ -232,7 +233,7 @@
   <script src="js/hub-sync.js?v=13"></script>
   <script src="js/main.js?v=15"></script>
   <script src="js/quote-config.js?v=4"></script>
-  <script src="js/quote-form.js?v=12"></script>
+  <script src="js/quote-form.js?v=13"></script>
   <script>
   /* Boutons « Demander un devis » : coche la catégorie correspondante dans le formulaire de devis */
   document.addEventListener('click', function (ev) {

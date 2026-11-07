@@ -281,7 +281,7 @@
     r = r || {};
     function row(label, v) { return v && String(v).length ? '<dt>' + esc(label) + '</dt><dd>' + esc(Array.isArray(v) ? v.join(', ') : v) + '</dd>' : ''; }
     var html = row('Catégories', r.categories) + row('Budget indiqué par le client', r.budget) + row('Délai souhaité', r.deadline) + row('Date précise', r.targetDate) +
-      row('Description du projet', r.description) + row('Précisions sur les livrables', r.deliverablesDescription) + row('Objectifs', r.objectives) + row('Public cible', r.audience) + row('Style graphique', r.styles);
+      row('Description du projet', r.description) + row('Précisions sur les livrables', r.deliverablesDescription) + row('Fichiers sources', r.sourceFiles) + row('Objectifs', r.objectives) + row('Public cible', r.audience) + row('Style graphique', r.styles);
     return html ? '<dl class="qt-req">' + html + '</dl>' : '<p class="help">Aucun détail enregistré.</p>';
   }
 

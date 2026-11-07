@@ -35,13 +35,29 @@ var QUOTE_SHEET_HEADERS = [
 var TARIFF_HEADERS = ['Catégorie', 'Prestation', 'Prix unitaire (Ar)', 'Unité', 'Description (facultatif)'];
 
 // Même liste que le formulaire (js/quote-form.js). Sert à préremplir la feuille Tarifs.
+// Un élément peut être une simple chaîne (prix à saisir) ou { label, price, unit, description }.
 var SERVICE_CATALOG = [
+  ['Packs identité visuelle', [
+    { label: 'Pack Logo + Brandboard', price: 200000, unit: 'pack',
+      description: 'Logo final, palette de couleurs, sélection typographique, brandboard récapitulatif, 1 template réseaux sociaux. 1 proposition, 2 retouches incluses. Livrés : PNG, PDF, JPG. Fichiers sources non inclus.' },
+    { label: 'Pack Prínkipas', price: 450000, unit: 'pack',
+      description: 'Logo et déclinaisons (icône, versions noir et blanc…), palette complète, typographies titres et textes, mini-charte graphique PDF, 3 templates réseaux sociaux. 2 propositions, 5 retouches incluses. Livrés : PNG, PDF, JPG, SVG. Fichiers sources inclus.' },
+    { label: 'Pack Vasilías', price: 800000, unit: 'pack',
+      description: 'Identité visuelle complète, charte graphique détaillée, supports de communication supplémentaires (carte de visite, couverture, bannière…). 2 propositions, 10 retouches incluses. Livrés : PNG, PDF, JPG, SVG. Fichiers sources inclus.' }
+  ]],
   ['Identité visuelle', ['Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète']],
   ['Design graphique', ['Affiche publicitaire', 'Flyer', 'Brochure', 'Carte de visite', 'Catalogue', 'Supports imprimés']],
   ['Packaging', ['Design de boîte', 'Design d’étiquette', 'Design de bouteille ou contenant', 'Déclinaisons de packaging', 'Mockups de présentation']],
   ['Réseaux sociaux', ['Templates de publications', 'Templates de stories', 'Couverture Facebook', 'Couverture et bannière', 'Visuels publicitaires', 'Templates promotionnels', 'Identité visuelle pour les réseaux sociaux']],
-  ['Autres prestations', ['Direction artistique', 'Présentation professionnelle', 'Supports de communication spécifiques', 'Projet graphique complexe ou multidisciplinaire', 'Autre prestation']]
+  ['Autres prestations', ['Direction artistique', 'Présentation professionnelle', 'Supports de communication spécifiques', 'Projet graphique complexe ou multidisciplinaire', 'Autre prestation']],
+  ['Options', [
+    { label: 'Fichiers sources', unit: 'forfait',
+      description: 'Livraison des fichiers sources éditables (option, hors packs Prínkipas et Vasilías qui les incluent).' }
+  ]]
 ];
+
+// Packs dont les fichiers sources sont (true) ou ne sont pas (false) inclus. Clé = libellé en minuscules.
+var PACK_INCLUDES_SOURCES = { 'pack logo + brandboard': false, 'pack prínkipas': true, 'pack vasilías': true };
 
 /* ------------------------------------------------------------------ */
 /* Fonctions pures (testées dans test-validation.js)                   */
@@ -69,6 +85,10 @@ function formatQuoteNumber_(prefix, year, sequence) {
   var padded = String(sequence);
   while (padded.length < 3) padded = '0' + padded;
   return prefix + '-' + year + '-' + padded;
+}
+
+function wantsSources_(value) {
+  return /^oui/i.test(cleanText_(value, 120));
 }
 
 function normalizeQuoteLines_(input) {
@@ -124,6 +144,21 @@ function buildQuoteLines_(details, tariffs) {
       quantity: 1,
       unit: 'forfait',
       unitPrice: null
+    });
+  }
+
+  // Fichiers sources demandés : ligne en option, sauf si un pack choisi les inclut déjà.
+  var sourcesCovered = deliverables.some(function (item) {
+    return PACK_INCLUDES_SOURCES[cleanText_(item, 200).toLowerCase()] === true;
+  });
+  if (wantsSources_(d.sourceFiles) && !sourcesCovered && lines.length < QUOTE_CONFIG.maxLines) {
+    var sourcesTariff = grid['fichiers sources'] || null;
+    lines.push({
+      label: 'Fichiers sources',
+      description: sourcesTariff ? sourcesTariff.description : '',
+      quantity: 1,
+      unit: sourcesTariff ? sourcesTariff.unit : 'forfait',
+      unitPrice: sourcesTariff ? sourcesTariff.price : null
     });
   }
   return lines;
@@ -235,20 +270,44 @@ function applyQuotePatch_(quote, patch, nowIso) {
 /* Stockage                                                            */
 /* ------------------------------------------------------------------ */
 
-function ensureQuoteSheets_(spreadsheet) {
+function catalogRows_() {
+  var rows = [];
+  SERVICE_CATALOG.forEach(function (group) {
+    group[1].forEach(function (item) {
+      var o = typeof item === 'string' ? { label: item } : item;
+      rows.push([group[0], o.label, o.price == null ? '' : o.price, o.unit || 'forfait', o.description || '']);
+    });
+  });
+  return rows;
+}
+
+/**
+ * Crée les feuilles si besoin. Avec topUp, ajoute aussi les prestations du catalogue absentes de
+ * « Tarifs » (sans jamais modifier une ligne existante ni vos prix).
+ */
+function ensureQuoteSheets_(spreadsheet, topUp) {
   ensureSheet_(spreadsheet, QUOTE_CONFIG.sheetName, QUOTE_SHEET_HEADERS);
   var tariffs = spreadsheet.getSheetByName(QUOTE_CONFIG.tariffSheetName);
-  if (!tariffs) {
-    tariffs = spreadsheet.insertSheet(QUOTE_CONFIG.tariffSheetName);
-  }
+  if (!tariffs) tariffs = spreadsheet.insertSheet(QUOTE_CONFIG.tariffSheetName);
+  var catalog = catalogRows_();
+
   if (tariffs.getLastRow() === 0) {
     tariffs.getRange(1, 1, 1, TARIFF_HEADERS.length).setValues([TARIFF_HEADERS]);
     tariffs.setFrozenRows(1);
-    var rows = [];
-    SERVICE_CATALOG.forEach(function (group) {
-      group[1].forEach(function (service) { rows.push([group[0], service, '', 'forfait', '']); });
-    });
-    tariffs.getRange(2, 1, rows.length, TARIFF_HEADERS.length).setValues(rows);
+  }
+  if (tariffs.getLastRow() <= 1) {
+    tariffs.getRange(2, 1, catalog.length, TARIFF_HEADERS.length).setValues(catalog);
+    return;
+  }
+  if (!topUp) return;
+
+  var existing = {};
+  tariffs.getRange(2, 2, tariffs.getLastRow() - 1, 1).getValues().forEach(function (row) {
+    existing[String(row[0]).trim().toLowerCase()] = true;
+  });
+  var missing = catalog.filter(function (row) { return !existing[String(row[1]).trim().toLowerCase()]; });
+  if (missing.length) {
+    tariffs.getRange(tariffs.getLastRow() + 1, 1, missing.length, TARIFF_HEADERS.length).setValues(missing);
   }
 }
 
@@ -326,6 +385,7 @@ function createQuoteFromRequest_(details, meta) {
       audience: cleanText_(project.audience, 500),
       deliverablesDescription: cleanText_(project.deliverablesDescription, 1500),
       budget: cleanText_(d.budget, 120),
+      sourceFiles: cleanText_(d.sourceFiles, 120),
       deadline: cleanText_(d.deadline, 120),
       targetDate: cleanText_(d.targetDate, 60),
       styles: Array.isArray(d.styles) ? d.styles.map(function (s) { return cleanText_(s, 60); }).slice(0, 10) : []
@@ -422,7 +482,7 @@ function setupAdminKey() {
 
 /** Initialise (ou complète) les feuilles « Devis générés » et « Tarifs ». Sans risque à relancer. */
 function setupQuotes() {
-  ensureQuoteSheets_(getSpreadsheet_());
+  ensureQuoteSheets_(getSpreadsheet_(), true);
   Logger.log('Feuilles « ' + QUOTE_CONFIG.sheetName + ' » et « ' + QUOTE_CONFIG.tariffSheetName + ' » prêtes.');
 }
 
