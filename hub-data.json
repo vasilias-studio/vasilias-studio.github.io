@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-07T17:55:25.017Z"
+    "updatedAt": "2026-11-07T17:56:08.412Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -402,18 +402,17 @@
     },
     "services.html": {
       "title": "Services & Expertises — Vasilías",
-      "ogTitle": "Services & Expertises — Vasilías",
       "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
-      "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
-      "canonical": "https://vasilias-studio.github.io/services.html"
+      "img": "assets/hub-uploads/1794074141932-tzms-Service.jpg",
+      "canonical": "https://vasilias-studio.github.io/services.html",
+      "updated": "2026-11-07T17:55:46.960Z"
     },
     "contact.html": {
       "title": "Contact — Vasilías",
       "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794012362937-318z-og-iage.png",
+      "img": "assets/hub-uploads/1794074161411-zuzp-Contact.jpg",
       "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T16:57:25.076Z"
+      "updated": "2026-11-07T17:56:06.612Z"
     },
     "print.html": {
       "title": "Imprimés — Vasilías",
@@ -776,6 +775,16 @@
     {
       "path": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
       "bytes": 163323,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794074141932-tzms-Service.jpg",
+      "bytes": 154352,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794074161411-zuzp-Contact.jpg",
+      "bytes": 160415,
       "used": "Ajouté via Hub"
     }
   ]
