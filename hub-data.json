@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T09:07:48.089Z"
+    "updatedAt": "2026-11-07T09:24:50.631Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -410,11 +410,12 @@
     },
     "about.html": {
       "title": "À Propos — Vasilías",
-      "ogTitle": "À Propos — Vasilías",
       "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
-      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
-      "canonical": "https://vasilias-studio.github.io/about.html"
+      "img": "assets/hub-uploads/1794073410597-8f00--propos.jpg",
+      "canonical": "https://vasilias-studio.github.io/about.html",
+      "updated": "2026-11-07T09:24:49.715Z",
+      "ogTitle": "À Propos — Vasilías",
+      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle."
     },
     "services.html": {
       "title": "Services & Expertises — Vasilías",
