@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T21:06:54.583Z"
+    "updatedAt": "2026-11-07T21:10:00.427Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -227,11 +227,21 @@
       "tagline": "Identité globale et packaging premium pour épices d'exception.",
       "overview": "Le projet ORQUID SPICES m'a été confié dans sa globalité. Il s'agissait de construire de zéro l'identité visuelle d'une maison d'épices fines contemporaines fondée à Madagascar, avec un positionnement ancré dans l'univers de la parfumerie de niche et de l'édition haut de gamme. Le défi était de créer quelque chose qui ne ressemble à aucun packaging alimentaire existant, avec un système visuel où le silence, la précision et la matière font tout le travail.",
       "page": "work-orquid-spices.html",
-      "cover": "assets/projects/orquid-spices/Cover.jpg",
+      "cover": "assets/projects/orquid-spices/6.jpg",
       "gallery": [],
       "covers": [
-        "assets/projects/orquid-spices/Cover.jpg",
-        "assets/projects/orquid-spices/6.jpg"
+        "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
+        "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
+        "assets/hub-uploads/1794085740820-3-1dlv-03.jpg",
+        "assets/hub-uploads/1794085760976-4-yglc-04.jpg",
+        "assets/hub-uploads/1794085760979-5-l6ur-05.jpg",
+        "assets/projects/orquid-spices/6.jpg",
+        "assets/hub-uploads/1794085760982-6-0vxf-06.jpg",
+        "assets/hub-uploads/1794085760983-7-pkkt-07.jpg",
+        "assets/hub-uploads/1794085791384-8-ar6f-08.jpg",
+        "assets/hub-uploads/1794085791387-9-dy2f-09.jpg",
+        "assets/hub-uploads/1794085791389-10-ibsw-10.jpg",
+        "assets/hub-uploads/1794085791391-11-xhch-12.jpg"
       ]
     },
     {
@@ -805,6 +815,61 @@
     {
       "path": "assets/hub-uploads/1794085528856-2-ltkj-Contact.jpg",
       "bytes": 160415,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
+      "bytes": 633402,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
+      "bytes": 68623,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085740820-3-1dlv-03.jpg",
+      "bytes": 121804,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085760976-4-yglc-04.jpg",
+      "bytes": 475929,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085760979-5-l6ur-05.jpg",
+      "bytes": 410272,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085760982-6-0vxf-06.jpg",
+      "bytes": 229559,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085760983-7-pkkt-07.jpg",
+      "bytes": 229295,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085791384-8-ar6f-08.jpg",
+      "bytes": 985673,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085791387-9-dy2f-09.jpg",
+      "bytes": 319284,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085791389-10-ibsw-10.jpg",
+      "bytes": 337287,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794085791391-11-xhch-12.jpg",
+      "bytes": 551504,
       "used": "Ajouté via Hub"
     }
   ]
