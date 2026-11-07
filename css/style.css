@@ -1231,13 +1231,15 @@ html,.home-v2{overflow-x:clip}
 .case-slider { position: relative; }
 .case-slider .slider-track { display: flex; width: 100%; aspect-ratio: 16 / 9; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); touch-action: pan-y; }
 .case-slider .slider-track img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; user-select: none; }
-.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid rgba(255,255,255,0.55); border-radius: 50%; background: rgba(22,21,19,0.45); color: #fff; cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease; }
-.slider-btn .ico { width: 1.25rem; height: 1.25rem; }
-.slider-btn:hover { background: #fff; color: var(--ink); border-color: #fff; }
+.slider-btn { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 0; border-radius: 0; background: transparent; color: #fff; cursor: pointer; filter: drop-shadow(0 1px 4px rgba(22,21,19,0.55)); transition: transform 0.25s ease, opacity 0.25s ease; }
+.slider-btn .ico { width: 2rem; height: 2rem; stroke-width: 2; }
+.slider-btn:hover { background: transparent; color: #fff; opacity: 0.8; }
+.slider-prev:hover { transform: translateY(-50%) translateX(-3px); }
+.slider-next:hover { transform: translateY(-50%) translateX(3px); }
 .slider-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .slider-prev { left: 0.75rem; }
 .slider-next { right: 0.75rem; }
-@media (min-width: 768px) { .slider-btn { width: 3.25rem; height: 3.25rem; } .slider-prev { left: 1.25rem; } .slider-next { right: 1.25rem; } }
+@media (min-width: 768px) { .slider-btn { width: 3.25rem; height: 3.25rem; } .slider-btn .ico { width: 2.5rem; height: 2.5rem; } .slider-prev { left: 1.25rem; } .slider-next { right: 1.25rem; } }
 .case-slider.is-single .slider-btn { display: none; }
 @media (prefers-reduced-motion: reduce) { .case-slider .slider-track { transition: none; } }
 
