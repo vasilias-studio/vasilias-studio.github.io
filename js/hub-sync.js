@@ -159,8 +159,21 @@
     var shareImage = seo.img || globalSeo.img;
     if (shareImage) {
       var imgUrl = fullUrl(shareImage);
+      var prevImgEl = doc.querySelector('meta[property="og:image"]');
+      var prevImg = prevImgEl ? (prevImgEl.getAttribute('content') || '') : '';
       setMeta(doc, 'meta[property="og:image"]', 'content', imgUrl);
       setMeta(doc, 'meta[name="twitter:image"]', 'content', imgUrl);
+      /* Type MIME déduit de l'extension, pour rester cohérent avec l'image choisie dans le Hub */
+      var imgExt = ((imgUrl.split('?')[0].match(/\.([a-z0-9]+)$/i) || [])[1] || '').toLowerCase();
+      var imgMime = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif' }[imgExt];
+      if (imgMime) setMeta(doc, 'meta[property="og:image:type"]', 'content', imgMime);
+      /* Nouvelle image sans dimensions connues : retirer les anciennes valeurs, devenues fausses */
+      if (prevImg && prevImg !== imgUrl && !seo.imgWidth && !seo.imgHeight) {
+        ['og:image:width', 'og:image:height'].forEach(function (prop) {
+          var el = doc.querySelector('meta[property="' + prop + '"]');
+          if (el && el.parentNode) el.parentNode.removeChild(el);
+        });
+      }
     }
     if (seo.imgWidth) setMeta(doc, 'meta[property="og:image:width"]', 'content', seo.imgWidth);
     if (seo.imgHeight) setMeta(doc, 'meta[property="og:image:height"]', 'content', seo.imgHeight);

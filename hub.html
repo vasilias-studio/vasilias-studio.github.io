@@ -411,7 +411,7 @@ details.technical summary,.lock-more summary{text-transform:uppercase;letter-spa
 <div id="toasts" aria-live="polite"></div>
 
 <script src="js/quote-config.js?v=1"></script>
-<script src="js/hub-sync.js?v=9"></script>
+<script src="js/hub-sync.js?v=10"></script>
 <script>
 'use strict';
 /* Icones : Material Symbols (Google Fonts Icons) - SVG inline officiels, zero dependance reseau */
@@ -973,7 +973,12 @@ function viewSeo(){
     $('#seoSave').addEventListener('click',function(){
       var t=$('#sfT').value.trim(),dd=$('#sfD').value.trim();
       if(!t||!dd){toast('Titre et description obligatoires.','err');return}
-      store.seo[file]={title:t,desc:dd,img:$('#sfImg').value.trim(),canonical:$('#sfC').value.trim(),updated:new Date().toISOString()};
+      var prevSeo=store.seo[file]||{},nextSeo={title:t,desc:dd,img:$('#sfImg').value.trim(),canonical:$('#sfC').value.trim(),updated:new Date().toISOString()};
+      /* Conserver les surcharges propres au partage tant que le champ correspondant n'a pas changé */
+      if(prevSeo.ogTitle&&prevSeo.title===t)nextSeo.ogTitle=prevSeo.ogTitle;
+      if(prevSeo.ogDesc&&prevSeo.desc===dd)nextSeo.ogDesc=prevSeo.ogDesc;
+      if(prevSeo.img===nextSeo.img){if(prevSeo.imgWidth)nextSeo.imgWidth=prevSeo.imgWidth;if(prevSeo.imgHeight)nextSeo.imgHeight=prevSeo.imgHeight}
+      store.seo[file]=nextSeo;
       lsSet(LS.seo,store.seo);save();
       log('SEO mis à jour',file);toast('SEO enregistré pour '+file+'.','ok');
     });
