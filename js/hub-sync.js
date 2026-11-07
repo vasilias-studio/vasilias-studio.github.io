@@ -84,7 +84,7 @@
   }
 
   function fullUrl(p) {
-    if (!p) return SITE_ORIGIN + 'assets/og/og-image.png';
+    if (!p) return SITE_ORIGIN + 'assets/og/og-image-v2.jpg';
     var s = String(p).trim();
     if (/^https?:\/\//i.test(s)) return s;
     var asset = normalizeAssetPath(s);
@@ -754,7 +754,7 @@
     var pageDesc = seo.desc || project.tagline || project.overview || ('Étude de cas ' + project.title + ' par Vasilías Studio.');
     var coverAsset = normalizeAssetPath(project.cover);
     var globalShareImage = (((data && data.seo) || {})['index.html'] || {}).img;
-    var ogImage = fullUrl(seo.img || globalShareImage || coverAsset || 'assets/og/og-image.png');
+    var ogImage = fullUrl(seo.img || globalShareImage || coverAsset || 'assets/og/og-image-v2.jpg');
     var canonical = seo.canonical || (SITE_ORIGIN + file);
     var alts = (data && data.alts) || {};
     var coverRel = relAssetPath(coverAsset);
@@ -803,6 +803,7 @@
       + '  <meta property="og:image" content="' + esc(ogImage) + '">\n'
       + '  <meta property="og:image:width" content="' + esc(seo.imgWidth || 1200) + '">\n'
       + '  <meta property="og:image:height" content="' + esc(seo.imgHeight || 630) + '">\n'
+      + '  <meta property="og:image:type" content="' + (/\.png(\?|$)/i.test(ogImage) ? 'image/png' : 'image/jpeg') + '">\n'
       + '  <meta name="twitter:card" content="summary_large_image">\n'
       + '  <meta name="twitter:title" content="' + esc(pageTitle) + '">\n'
       + '  <meta name="twitter:description" content="' + esc(pageDesc) + '">\n'
