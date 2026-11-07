@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T04:05:11.091Z"
+    "updatedAt": "2026-11-08T05:17:16.253Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -205,10 +205,10 @@
       "tagline": "Système d'identité contemporain et dynamique pour Nébulo.",
       "overview": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Le système d'identité se déploie à travers une typographie dynamique, une construction géométrique précise et des animations de marque expressives.",
       "page": "work-nebulo.html",
-      "cover": "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
+      "cover": "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
       "gallery": [],
       "covers": [
-        "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
+        "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
         "assets/hub-uploads/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
         "assets/hub-uploads/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
         "assets/hub-uploads/1794106632598-2-8uqu-Plan-de-travail-2.jpg"
@@ -927,6 +927,11 @@
       "path": "assets/hub-uploads/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
       "bytes": 628279,
       "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
+      "bytes": 108388,
+      "used": "index.html, work.html, work-nebulo.html"
     }
   ]
 }
