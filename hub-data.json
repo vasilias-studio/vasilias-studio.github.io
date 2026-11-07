@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T10:20:47.583Z"
+    "updatedAt": "2026-11-07T10:23:32.705Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -876,6 +876,16 @@
     {
       "path": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
       "bytes": 320223,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794047011686-1-lcfl-Contact.jpg",
+      "bytes": 160415,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794047011745-2-3msn-Service.jpg",
+      "bytes": 154352,
       "used": "Ajouté via Hub"
     }
   ]
