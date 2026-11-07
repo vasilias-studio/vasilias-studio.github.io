@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T21:11:26.873Z"
+    "updatedAt": "2026-11-07T21:12:46.824Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -500,7 +500,6 @@
     "projects/orquid-spices/2.jpg": "Flacon ORQUID SPICES",
     "projects/orquid-spices/3.jpg": "Visuel packaging ORQUID SPICES portrait",
     "projects/orquid-spices/4.jpg": "Détail packaging ORQUID SPICES",
-    "hero-vasilias-v2.jpg": "Visuel hero Vasilías Studio",
     "moi-portrait.jpg": "Portrait du fondateur de Vasilías Studio",
     "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
     "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
@@ -566,11 +565,6 @@
       "path": "assets/about-portrait-v2.png",
       "bytes": 890774,
       "used": "about.html"
-    },
-    {
-      "path": "assets/hero-vasilias-v2.jpg",
-      "bytes": 127642,
-      "used": ""
     },
     {
       "path": "assets/logo-vasilias.svg",
