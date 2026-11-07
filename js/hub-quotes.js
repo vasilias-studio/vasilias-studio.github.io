@@ -528,8 +528,16 @@
       '@media print{.bar,.warn{display:none}.page{padding:0}}';
     return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Devis ' + esc(d.number) + ' — Vasilías Studio</title>' +
       '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
-      '<style>' + css + '</style></head><body>' +
-      '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button onclick="window.print()">Imprimer / Enregistrer en PDF</button></div>' +
+      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+      '<script>function dlPdf(){var b=document.getElementById("dl"),el=document.querySelector(".page");' +
+      'if(!window.html2pdf){window.print();return;}' +
+      'var t=b.textContent;b.disabled=true;b.textContent="Génération du PDF…";' +
+      '(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){' +
+      'return html2pdf().set({margin:[12,12,12,12],filename:"Devis-' + esc(d.number) + '.pdf",image:{type:"jpeg",quality:0.98},' +
+      'html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},' +
+      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).save();' +
+      '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script></head><body>' +
+      '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
       '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) + (me.email ? '<br>' + esc(me.email) : '') + '</div></div>' +
       '<div><h1>DEVIS</h1><div class="ref">N° ' + esc(d.number) + '<br>Émis le ' + esc(fdate(d.issued)) + '<br>Valable jusqu’au ' + esc(fdate(d.until)) + '</div></div></div>' +
