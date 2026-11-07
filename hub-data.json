@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T02:44:42.273Z"
+    "updatedAt": "2026-11-07T15:47:13.027Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -536,47 +536,47 @@
   "checklist": [
     {
       "label": "Texte relu (orthographe, années, noms)",
-      "done": true,
+      "done": false,
       "required": true
     },
     {
       "label": "Type client / concept confirmé",
-      "done": true,
+      "done": false,
       "required": true
     },
     {
       "label": "Année et rôle vérifiés",
-      "done": true,
+      "done": false,
       "required": true
     },
     {
       "label": "Images définitives présentes, optimisées, avec texte alt",
-      "done": true,
+      "done": false,
       "required": false
     },
     {
       "label": "Liens testés",
-      "done": true,
+      "done": false,
       "required": true
     },
     {
       "label": "Affichage mobile vérifié (menu, boutons, images)",
-      "done": true,
+      "done": false,
       "required": false
     },
     {
       "label": "SEO renseigné (title + meta description)",
-      "done": true,
+      "done": false,
       "required": true
     },
     {
       "label": "Prévisualisation approuvée",
-      "done": true,
+      "done": false,
       "required": false
     },
     {
       "label": "Déploiement terminé et page publique contrôlée",
-      "done": true,
+      "done": false,
       "required": false
     }
   ],
@@ -880,11 +880,6 @@
       "path": "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
       "bytes": 326402,
       "used": "index.html, work.html, work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
-      "bytes": 320223,
-      "used": "SEO index.html"
     },
     {
       "path": "assets/hub-uploads/1794086547914-14-crgv-Contact.jpg",
