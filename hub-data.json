@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T09:26:29.110Z"
+    "updatedAt": "2026-11-07T09:29:47.983Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -180,17 +180,12 @@
       "role": "",
       "tagline": "Blabla",
       "overview": "Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que je ne sais pas si tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous",
-      "gallery": [
-        "assets/about-portrait-v2.png",
-        "assets/hero-vasilias-v2.jpg",
-        "assets/logo-vasilias.svg",
-        "assets/moi-portrait.jpg",
-        "assets/moi-portrait.png",
-        "assets/social-2.jpg",
-        "assets/social-visuals.jpg"
-      ],
+      "gallery": [],
       "covers": [
-        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
+        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+        "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
+        "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
+        "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
       ]
     },
     {
@@ -405,7 +400,7 @@
       "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
       "img": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
       "canonical": "https://vasilias-studio.github.io/work.html",
-      "updated": "2026-11-07T09:25:25.389Z",
+      "updated": "2026-11-07T09:27:17.517Z",
       "ogTitle": "Projets — Vasilías",
       "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design."
     },
@@ -500,7 +495,6 @@
     "logo-vasilias.svg": "Logo Vasilías Studio",
     "pin-blue.png": "Épingle décorative bleue",
     "placeholders/portrait-placeholder.svg": "Emplacement portrait",
-    "og/og-image.svg": "Carte vectorielle Open Graph Vasilías Studio",
     "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
     "icons/adobeindesign.svg": "Icône Adobe InDesign",
     "icons/adobephotoshop.svg": "Icône Adobe Photoshop",
@@ -667,11 +661,6 @@
       "used": "about.html"
     },
     {
-      "path": "assets/og/og-image.svg",
-      "bytes": 764,
-      "used": ""
-    },
-    {
       "path": "assets/placeholders/portrait-placeholder.svg",
       "bytes": 637,
       "used": ""
@@ -789,6 +778,21 @@
     {
       "path": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
       "bytes": 438249,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
+      "bytes": 39938,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
+      "bytes": 225462,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
+      "bytes": 316739,
       "used": "Ajouté via Hub"
     }
   ]
