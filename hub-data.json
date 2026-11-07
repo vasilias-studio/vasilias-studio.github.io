@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T15:47:13.027Z"
+    "updatedAt": "2026-11-07T15:49:01.511Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -444,9 +444,9 @@
     "contact.html": {
       "title": "Contact — Vasilías",
       "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794085528856-2-ltkj-Contact.jpg",
+      "img": "assets/hub-uploads/1794066539514-2-vte0-Contact.jpg",
       "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T21:05:30.618Z",
+      "updated": "2026-11-07T15:49:01.510Z",
       "ogTitle": "Contact — Vasilías",
       "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging."
     },
@@ -477,12 +477,12 @@
     },
     "work-orquid-spices.html": {
       "title": "ORQUID SPICES — Vasilías",
-      "ogTitle": "ORQUID SPICES — Vasilías",
       "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
-      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
-      "img": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
+      "img": "assets/hub-uploads/1794066494480-1-n82n-Orquid.jpg",
       "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
-      "updated": "2026-11-07T21:18:36.881Z"
+      "updated": "2026-11-07T15:48:16.538Z",
+      "ogTitle": "ORQUID SPICES — Vasilías",
+      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías."
     },
     "work-monreleve.html": {
       "title": "monrelevé — Vasilías",
@@ -889,6 +889,16 @@
     {
       "path": "assets/hub-uploads/1794086547916-15-i02k-Service.jpg",
       "bytes": 154352,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794066494480-1-n82n-Orquid.jpg",
+      "bytes": 176147,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794066539514-2-vte0-Contact.jpg",
+      "bytes": 160415,
       "used": "Ajouté via Hub"
     }
   ]
