@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T02:43:47.629Z"
+    "updatedAt": "2026-11-08T02:44:42.273Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -546,37 +546,37 @@
     },
     {
       "label": "Année et rôle vérifiés",
-      "done": false,
+      "done": true,
       "required": true
     },
     {
       "label": "Images définitives présentes, optimisées, avec texte alt",
-      "done": false,
+      "done": true,
       "required": false
     },
     {
       "label": "Liens testés",
-      "done": false,
+      "done": true,
       "required": true
     },
     {
       "label": "Affichage mobile vérifié (menu, boutons, images)",
-      "done": false,
+      "done": true,
       "required": false
     },
     {
       "label": "SEO renseigné (title + meta description)",
-      "done": false,
+      "done": true,
       "required": true
     },
     {
       "label": "Prévisualisation approuvée",
-      "done": false,
+      "done": true,
       "required": false
     },
     {
       "label": "Déploiement terminé et page publique contrôlée",
-      "done": false,
+      "done": true,
       "required": false
     }
   ],
