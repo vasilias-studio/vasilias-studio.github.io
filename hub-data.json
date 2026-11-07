@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T10:48:58.464Z"
+    "updatedAt": "2026-11-07T11:38:49.484Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -506,7 +506,6 @@
     "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
     "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
     "logo-vasilias.svg": "Logo Vasilías Studio",
-    "pin-blue.png": "Épingle décorative bleue",
     "placeholders/portrait-placeholder.svg": "Emplacement portrait",
     "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
     "icons/adobeindesign.svg": "Icône Adobe InDesign",
@@ -587,11 +586,6 @@
       "path": "assets/moi-portrait.webp",
       "bytes": 213644,
       "used": "index.html"
-    },
-    {
-      "path": "assets/pin-blue.png",
-      "bytes": 126102,
-      "used": ""
     },
     {
       "path": "assets/print-1.jpg",
