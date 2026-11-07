@@ -24,7 +24,7 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 | Section | Fonction |
 |---|---|
 | Vue d’ensemble | État du portfolio, activité, tâches et notifications locales. |
-| Projets | Création et modification du statut, année, nature, catégories, client, rôle, accroche, présentation et galerie. Couverture et galerie se choisissent visuellement dans la médiathèque ou s’importent directement depuis l’appareil; plus besoin de saisir les chemins. Création de pages pour les nouveaux projets publiés. |
+| Projets | Création et modification du statut, année, nature, catégories, client, rôle, accroche, présentation, images de couverture et galerie. Import multiple en une seule fois des images de couverture (ou glisser-déposer / sélection multiple dans la médiathèque), choix de la vignette principale et réorganisation de l’ordre : dès que plusieurs couvertures sont définies, un carrousel s’affiche automatiquement sur la page du projet. Création de pages pour les nouveaux projets publiés. |
 | Contenus | Accroche, présentation, services, processus, champs d’intervention, textes À propos et Contact, supports et profils sociaux; les champs structurés avancés sont éditables en JSON. Le processus de la page À propos (`about.workProcess`) comprend ses trois étapes et la citation de conclusion. |
 | Médiathèque | Import multiple vers `assets/hub-uploads/`, suppression de fichiers, recherche et texte alternatif. L’import est téléversé automatiquement lors du commit. Les sélecteurs de couverture, galerie, image Open Graph et portrait réutilisent cette bibliothèque. |
 | Compétences | Listes de compétences et outils. Sur la page À propos, les six expertises sont présentées avec leurs descriptions éditoriales et les six logiciels avec leurs logos officiels déjà présents dans le dépôt. |
@@ -38,7 +38,7 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 
 - `hub-data.json` v4 est la source de contenu commune.
 - `js/hub-sync.js` expose `window.VasiliasSync` (et `module.exports` pour les tests Node). Il hydrate le DOM public depuis le cache local/les données publiées, met à jour le head SEO, les sections éditoriales, le pied de page, les médias et les cartes de projets. Il fournit aussi la sérialisation HTML, la génération des pages projet et du sitemap.
-- Les neuf pages publiques chargent `js/hub-sync.js?v=11` avant `js/main.js?v=14`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
+- Les pages publiques chargent `js/hub-sync.js?v=12` avant `js/main.js?v=15`. L’événement `vasilias:hydrated` relance les observateurs Reveal, filtres, espacements et carrousels après les modifications DOM.
 - Les sauvegardes locales du Hub sont partagées avec le site public du même navigateur via `BroadcastChannel('vasilias_hub')` et `localStorage`. Les autres appareils reçoivent le changement après le déploiement GitHub Pages.
 - Le client de publication lit la branche et les blobs GitHub, compare les contenus, crée uniquement les blobs modifiés, puis crée un arbre/commit et avance `refs/heads/main` sans force-push. `hub2_pending_sync` est posé pendant les modifications non publiées et retiré après succès.
 

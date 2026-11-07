@@ -119,6 +119,64 @@
     });
   }
 
+  function getProjectCovers(p) {
+    if (!p) return [];
+    var raw = Array.isArray(p.covers)
+      ? p.covers
+      : ((p.cover && p.cover !== 'none') ? [p.cover] : []);
+    var seen = {};
+    var out = [];
+    raw.forEach(function (c) {
+      var norm = normalizeAssetPath(c);
+      if (norm && !seen[norm]) {
+        seen[norm] = 1;
+        out.push(norm);
+      }
+    });
+    return out;
+  }
+
+  function getPrimaryCover(p) {
+    if (!p) return '';
+    var covers = getProjectCovers(p);
+    if (p.cover && p.cover !== 'none') {
+      var main = normalizeAssetPath(p.cover);
+      if (main && (!covers.length || covers.indexOf(main) >= 0)) return main;
+    }
+    return covers[0] || '';
+  }
+
+  var SLIDER_PREV_BTN = '<button type="button" class="slider-btn slider-prev" aria-label="Image précédente"><svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button>';
+  var SLIDER_NEXT_BTN = '<button type="button" class="slider-btn slider-next" aria-label="Image suivante"><svg aria-hidden="true" focusable="false" class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
+
+  function buildProjectCoverHeroHtml(project, data, inView) {
+    var covers = getProjectCovers(project);
+    if (!covers.length) return '';
+    var primary = getPrimaryCover(project);
+    var alts = (data && data.alts) || {};
+    var revCls = 'reveal reveal-right' + (inView ? ' in-view' : '');
+    if (covers.length === 1) {
+      var src = covers[0];
+      var rel = relAssetPath(src);
+      var alt = alts[rel] || ('Visuel principal du projet ' + project.title);
+      return '<div class="case-hero ' + revCls + '" data-hub="project-covers"><img data-hub="project-cover" src="' + esc(encodeURI(src)) + '" alt="' + esc(alt) + '" loading="eager" fetchpriority="high" decoding="async"></div>';
+    }
+    var mainIdx = covers.indexOf(primary);
+    if (mainIdx < 0) mainIdx = 0;
+    var slidesHtml = covers.map(function (cSrc, idx) {
+      var cRel = relAssetPath(cSrc);
+      var cAlt = alts[cRel] || (idx === 0 ? ('Visuel principal du projet ' + project.title) : ('Visuel de couverture ' + (idx + 1) + ' — ' + project.title));
+      var hubAttr = idx === mainIdx ? ' data-hub="project-cover"' : '';
+      var loadAttr = idx === 0 ? ' loading="eager" fetchpriority="high" decoding="async"' : ' loading="lazy" decoding="async"';
+      return '<img' + hubAttr + ' src="' + esc(encodeURI(cSrc)) + '" alt="' + esc(cAlt) + '"' + loadAttr + '>';
+    }).join('');
+    return '<div class="case-hero case-slider ' + revCls + '" data-hub="project-covers" data-slider="" aria-roledescription="carrousel">'
+      + '<div class="slider-track">' + slidesHtml + '</div>'
+      + SLIDER_PREV_BTN
+      + SLIDER_NEXT_BTN
+      + '</div>';
+  }
+
   function projectHref(p) {
     if (!p) return 'work.html';
     if (p.page && /\.html$/i.test(p.page)) return p.page;
@@ -288,7 +346,7 @@
       getPublishedProjects(data).forEach(function (p) {
         cards.push({
           href: projectHref(p),
-          cover: p.cover,
+          cover: getPrimaryCover(p),
           title: p.title,
           desc: p.tagline || '',
           tags: p.category || []
@@ -352,7 +410,7 @@
           var clientLbl = projectClientLabel(p);
           var metaTxt = [p.year, clientLbl].filter(Boolean).join(' · ');
           var cats = p.category || [];
-          var cover = normalizeAssetPath(p.cover);
+          var cover = getPrimaryCover(p);
           var rel = relAssetPath(cover);
           var alt = alts[rel] || ('Vignette du projet ' + p.title);
           var anim = idx % 2 === 0 ? 'reveal-right' : 'reveal-down';
@@ -565,7 +623,7 @@
     var mailBtn = doc.querySelector('.mail-actions a.btn-dark');
     if (mailBtn) mailBtn.setAttribute('href', 'mailto:' + email);
     var form = doc.querySelector('#contactForm');
-    var formsEndpoint = window.VAS_FORMS_CONFIG && window.VAS_FORMS_CONFIG.endpoint;
+    var formsEndpoint = typeof window !== 'undefined' && window.VAS_FORMS_CONFIG && window.VAS_FORMS_CONFIG.endpoint;
     if (form && formsEndpoint) form.setAttribute('action', formsEndpoint);
     var formErr = doc.querySelector('#formError');
     if (formErr) {
@@ -646,30 +704,71 @@
       if (ovP) ovP.textContent = p.overview;
     }
 
-    var coverSrc = (p.cover && p.cover !== 'none') ? normalizeAssetPath(p.cover) : '';
-    var covImg = doc.querySelector('[data-hub="project-cover"]');
-    if (coverSrc) {
-      if (!covImg) {
-        var hero = doc.createElement('div');
-        hero.className = 'case-hero reveal reveal-right';
-        covImg = doc.createElement('img');
-        covImg.setAttribute('data-hub', 'project-cover');
-        hero.appendChild(covImg);
-        var metaBlock = doc.querySelector('.case-meta');
-        if (metaBlock && metaBlock.parentNode) metaBlock.parentNode.insertBefore(hero, metaBlock.nextSibling);
+    var oldCovImg = doc.querySelector('[data-hub="project-cover"]');
+    var oldHero = doc.querySelector('[data-hub="project-covers"]')
+      || (oldCovImg && oldCovImg.closest ? oldCovImg.closest('.case-hero') : null)
+      || doc.querySelector('.page > .case-hero');
+
+    if (!Array.isArray(p.covers) && oldHero && oldHero.hasAttribute('data-slider') && oldCovImg) {
+      var legacySrc = getPrimaryCover(p);
+      if (legacySrc) {
+        var legacyRel = relAssetPath(legacySrc);
+        var legacyAlts = (data && data.alts) || {};
+        oldCovImg.setAttribute('src', encodeURI(legacySrc));
+        if (legacyAlts[legacyRel]) oldCovImg.setAttribute('alt', legacyAlts[legacyRel]);
       }
-      if (covImg) {
-        var coverRel = relAssetPath(coverSrc);
-        var alts = (data && data.alts) || {};
-        covImg.setAttribute('src', encodeURI(coverSrc));
-        covImg.setAttribute('alt', alts[coverRel] || ('Visuel principal du projet ' + p.title));
-        covImg.setAttribute('loading', 'eager');
-        covImg.setAttribute('fetchpriority', 'high');
-        covImg.setAttribute('decoding', 'async');
+    } else {
+      var covers = getProjectCovers(p);
+      var primaryCov = getPrimaryCover(p);
+      var altsMap = (data && data.alts) || {};
+      if (!covers.length) {
+        if (oldHero) oldHero.remove();
+      } else {
+        var sameSlides = false;
+        if (oldHero) {
+          var isSliderHero = oldHero.hasAttribute('data-slider');
+          if (covers.length >= 2 && isSliderHero) {
+            var curSlides = oldHero.querySelectorAll('.slider-track > img');
+            if (curSlides.length === covers.length) {
+              sameSlides = Array.prototype.every.call(curSlides, function (im, idx) {
+                return normalizeAssetPath(decodeURI(im.getAttribute('src') || '')) === covers[idx];
+              });
+              if (sameSlides) {
+                var mIdx = covers.indexOf(primaryCov);
+                if (mIdx < 0) mIdx = 0;
+                Array.prototype.forEach.call(curSlides, function (im, idx) {
+                  if (idx === mIdx) im.setAttribute('data-hub', 'project-cover');
+                  else im.removeAttribute('data-hub');
+                  var rPath = relAssetPath(covers[idx]);
+                  if (altsMap[rPath]) im.setAttribute('alt', altsMap[rPath]);
+                });
+              }
+            }
+          } else if (covers.length === 1 && !isSliderHero) {
+            var allImgs = oldHero.querySelectorAll('img');
+            if (allImgs.length === 1 && normalizeAssetPath(decodeURI(allImgs[0].getAttribute('src') || '')) === covers[0]) {
+              sameSlides = true;
+              allImgs[0].setAttribute('data-hub', 'project-cover');
+              var singleRel = relAssetPath(covers[0]);
+              allImgs[0].setAttribute('alt', altsMap[singleRel] || ('Visuel principal du projet ' + p.title));
+            }
+          }
+        }
+        if (!sameSlides) {
+          var wasInView = !!(oldHero && oldHero.classList && oldHero.classList.contains('in-view'));
+          var tmpWrap = doc.createElement('div');
+          tmpWrap.innerHTML = buildProjectCoverHeroHtml(p, data, wasInView);
+          var newHero = tmpWrap.firstElementChild;
+          if (newHero) {
+            if (oldHero && oldHero.parentNode) {
+              oldHero.parentNode.replaceChild(newHero, oldHero);
+            } else {
+              var metaBlock = doc.querySelector('.case-meta');
+              if (metaBlock && metaBlock.parentNode) metaBlock.parentNode.insertBefore(newHero, metaBlock.nextSibling);
+            }
+          }
+        }
       }
-    } else if (covImg) {
-      var oldHero = covImg.closest ? covImg.closest('.case-hero') : null;
-      if (oldHero) oldHero.remove(); else covImg.remove();
     }
 
     var galWrap = doc.querySelector('[data-hub="project-gallery"]');
@@ -753,7 +852,7 @@
   }
 
   function serializeDocument(doc) {
-    return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML + '\n';
+    return '<!DOCTYPE html>\n' + doc.documentElement.outerHTML.replace(/\s*<\/body>\s*<\/html>\s*$/i, '\n</body></html>') + '\n';
   }
 
   function buildProjectPageHtml(project, pubIndex, nextProject, data) {
@@ -765,13 +864,12 @@
     var seo = ((data && data.seo) && data.seo[file]) || {};
     var pageTitle = seo.title || (project.title + ' — Vasilías');
     var pageDesc = seo.desc || project.tagline || project.overview || ('Étude de cas ' + project.title + ' par Vasilías Studio.');
-    var coverAsset = normalizeAssetPath(project.cover);
+    var coverAsset = getPrimaryCover(project);
     var globalShareImage = (((data && data.seo) || {})['index.html'] || {}).img;
     var ogImage = fullUrl(seo.img || globalShareImage || coverAsset || 'assets/og/og-image-v2.jpg');
     var canonical = seo.canonical || (SITE_ORIGIN + file);
     var alts = (data && data.alts) || {};
-    var coverRel = relAssetPath(coverAsset);
-    var coverAlt = alts[coverRel] || ('Visuel principal du projet ' + project.title);
+    var heroBlockHtml = buildProjectCoverHeroHtml(project, data, false);
     var numLabel = pubIndex >= 0 ? ('Projet ' + String(pubIndex + 1).padStart(2, '0')) : 'Projet';
     var catsDot = (project.category || []).join(' · ');
     var profiles = ((data && data.profiles) || []).filter(function (pr) {
@@ -806,7 +904,7 @@
       + '  <link rel="preconnect" href="https://fonts.googleapis.com">\n'
       + '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
       + '  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">\n'
-      + '  <link rel="stylesheet" href="css/style.css?v=53">\n'
+      + '  <link rel="stylesheet" href="css/style.css?v=68">\n'
       + '  <meta property="og:type" content="website">\n'
       + '  <meta property="og:site_name" content="Vasilías Studio">\n'
       + '  <meta property="og:locale" content="fr_FR">\n'
@@ -825,6 +923,7 @@
       + '</head>\n'
       + '<body data-hub-generated="1">\n'
       + '  <div class="preloader"><img class="preloader-logo" src="assets/logo-vasilias.svg" alt="" width="317" height="178"></div>\n'
+      + '  <script>try{if(sessionStorage.getItem("vasilias_nav")==="1")document.querySelector(".preloader").classList.add("from-nav")}catch(e){}<\/script>\n'
       + '  <header class="site-header">\n'
       + '    <div class="container site-header-inner">\n'
       + '      <a href="index.html" class="wordmark">Vasilias</a>\n'
@@ -871,7 +970,7 @@
       + '      <div><p class="k">Client</p><p class="v">' + esc(projectClientLabel(project) || '—') + '</p></div>\n'
       + '      <div style="grid-column:span 2;"><p class="k">Rôles &amp; Disciplines</p><p class="v">' + esc(project.role || catsDot || '—') + '</p></div>\n'
       + '    </div>\n'
-      + (coverAsset ? '    <div class="case-hero reveal reveal-right"><img data-hub="project-cover" src="' + esc(encodeURI(coverAsset)) + '" alt="' + esc(coverAlt) + '" loading="eager" fetchpriority="high" decoding="async"></div>\n' : '')
+      + (heroBlockHtml ? '    ' + heroBlockHtml + '\n' : '')
       + '    <div class="case-overview reveal reveal-down">\n'
       + '      <h2>Aperçu du Projet</h2>\n'
       + '      <p>' + esc(project.overview || project.tagline || '') + '</p>\n'
@@ -897,8 +996,8 @@
       + '    </div>\n'
       + '  </footer>\n'
       + '  <script>document.getElementById(\'year\').textContent = new Date().getFullYear();</script>\n'
-      + '  <script src="js/hub-sync.js?v=5"></script>\n'
-      + '  <script src="js/main.js?v=8"></script>\n'
+      + '  <script src="js/hub-sync.js?v=12"></script>\n'
+      + '  <script src="js/main.js?v=15"></script>\n'
       + '</body>\n'
       + '</html>\n';
   }
@@ -1042,6 +1141,9 @@
     fullUrl: fullUrl,
     projectHref: projectHref,
     getPublishedProjects: getPublishedProjects,
+    getProjectCovers: getProjectCovers,
+    getPrimaryCover: getPrimaryCover,
+    buildProjectCoverHeroHtml: buildProjectCoverHeroHtml,
     applyToDocument: applyToDocument,
     serializeDocument: serializeDocument,
     buildProjectPageHtml: buildProjectPageHtml,

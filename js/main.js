@@ -375,17 +375,24 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---------- Carrousel des images de couverture (pages projet) ---------- */
   function initSliders() {
     document.querySelectorAll('[data-slider]').forEach(function (slider) {
+      var track = slider.querySelector('.slider-track');
+      var initialSlides = track ? track.children : [];
+      if (initialSlides.length < 2) {
+        slider.classList.add('is-single');
+        if (track) track.style.transform = '';
+        return;
+      }
+      slider.classList.remove('is-single');
       if (slider.dataset.sliderBound === '1') return;
       slider.dataset.sliderBound = '1';
-      var track = slider.querySelector('.slider-track');
-      var slides = track ? track.children : [];
       var prev = slider.querySelector('.slider-prev');
       var next = slider.querySelector('.slider-next');
-      var count = slides.length, index = 0;
-      if (count < 2) { slider.classList.add('is-single'); return; }
-      slider.classList.remove('is-single');
+      var index = 0;
       function go(i) {
-        index = (i + count) % count;
+        var slides = track ? track.children : [];
+        var count = slides.length;
+        if (count < 2) return;
+        index = ((i % count) + count) % count;
         track.style.transform = 'translateX(' + (-100 * index) + '%)';
         for (var k = 0; k < count; k++) {
           slides[k].setAttribute('aria-hidden', k === index ? 'false' : 'true');

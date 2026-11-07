@@ -3,8 +3,8 @@
     "site": "Vasilías Studio",
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
-    "generated": "2026-11-06",
-    "updatedAt": "2026-11-07T08:37:26.969Z"
+    "generated": "2026-11-07",
+    "updatedAt": "2026-11-07T09:07:48.089Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -188,6 +188,9 @@
         "assets/moi-portrait.png",
         "assets/social-2.jpg",
         "assets/social-visuals.jpg"
+      ],
+      "covers": [
+        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
       ]
     },
     {
@@ -207,7 +210,11 @@
       "overview": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Le système d'identité se déploie à travers une typographie dynamique, une construction géométrique précise et des animations de marque expressives.",
       "page": "work-nebulo.html",
       "cover": "assets/projects/nebulo/cover.jpg",
-      "gallery": []
+      "gallery": [],
+      "covers": [
+        "assets/projects/nebulo/hero.jpg",
+        "assets/projects/nebulo/cover.jpg"
+      ]
     },
     {
       "id": "orquid-spices",
@@ -226,7 +233,11 @@
       "overview": "Le projet ORQUID SPICES m'a été confié dans sa globalité. Il s'agissait de construire de zéro l'identité visuelle d'une maison d'épices fines contemporaines fondée à Madagascar, avec un positionnement ancré dans l'univers de la parfumerie de niche et de l'édition haut de gamme. Le défi était de créer quelque chose qui ne ressemble à aucun packaging alimentaire existant, avec un système visuel où le silence, la précision et la matière font tout le travail.",
       "page": "work-orquid-spices.html",
       "cover": "assets/projects/orquid-spices/Cover.jpg",
-      "gallery": []
+      "gallery": [],
+      "covers": [
+        "assets/projects/orquid-spices/Cover.jpg",
+        "assets/projects/orquid-spices/6.jpg"
+      ]
     },
     {
       "id": "pellicano",
@@ -245,7 +256,8 @@
       "overview": "",
       "page": "work-pellicano.html",
       "cover": "",
-      "gallery": []
+      "gallery": [],
+      "covers": []
     },
     {
       "id": "dolce",
@@ -264,7 +276,8 @@
       "overview": "",
       "page": "work-dolce.html",
       "cover": "",
-      "gallery": []
+      "gallery": [],
+      "covers": []
     },
     {
       "id": "les-trois-etoiles",
@@ -283,7 +296,8 @@
       "overview": "",
       "page": "work-les-trois-etoiles.html",
       "cover": "",
-      "gallery": []
+      "gallery": [],
+      "covers": []
     }
   ],
   "pages": [
@@ -752,11 +766,6 @@
       "used": "Ajouté via Hub"
     },
     {
-      "path": "assets/hub-uploads/1794013046836-udr4-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "bytes": 777681,
-      "used": "Ajouté via Hub"
-    },
-    {
       "path": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "bytes": 777681,
       "used": "Ajouté via Hub"
@@ -779,16 +788,6 @@
     {
       "path": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
       "bytes": 163323,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794074141932-tzms-Service.jpg",
-      "bytes": 154352,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794074161411-zuzp-Contact.jpg",
-      "bytes": 160415,
       "used": "Ajouté via Hub"
     },
     {
