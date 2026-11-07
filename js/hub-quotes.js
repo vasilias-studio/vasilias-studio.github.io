@@ -57,11 +57,23 @@
   }
 
   /* ---------- calcul (identique au serveur, qui reste la référence) ---------- */
+  function isPct(l) { return l.percent !== null && l.percent !== undefined; }
+  function baseOf(lines) {
+    var b = 0;
+    lines.forEach(function (l) { if (!isPct(l) && l.unitPrice !== null && l.unitPrice !== undefined) b += Math.round(l.quantity * l.unitPrice); });
+    return b;
+  }
+  function lineAmount(l, base) {
+    if (isPct(l)) return Math.round(base * l.percent / 100 * l.quantity);
+    if (l.unitPrice === null || l.unitPrice === undefined) return null;
+    return Math.round(l.quantity * l.unitPrice);
+  }
+  function priceCell(l) { return isPct(l) ? String(l.percent).replace('.', ',') + '%' : (l.unitPrice === null || l.unitPrice === undefined ? '' : String(l.unitPrice)); }
   function totalsOf(lines, discount, rate) {
-    var subtotal = 0, unpriced = 0;
+    var subtotal = 0, unpriced = 0, base = baseOf(lines);
     lines.forEach(function (l) {
-      if (l.unitPrice === null || l.unitPrice === undefined) unpriced++;
-      else subtotal += Math.round(l.quantity * l.unitPrice);
+      var a = lineAmount(l, base);
+      if (a === null) unpriced++; else subtotal += a;
     });
     var disc = Math.min(Math.max(Math.round(discount || 0), 0), subtotal);
     var tr = Math.min(Math.max(rate || 0, 0), 100);
@@ -263,16 +275,17 @@
     return '<label class="qt-f"><span>' + esc(label) + '</span><input class="qt-in" data-f="' + name + '" type="' + (type || 'text') + '" value="' + esc(value) + '" ' + (extra || '') + '></label>';
   }
 
-  function lineHtml(l, i) {
-    var todo = l.unitPrice === null || l.unitPrice === undefined || l.unitPrice === '';
-    var total = todo ? 'À définir' : ar(Math.round(l.quantity * l.unitPrice));
+  function lineHtml(l, i, base) {
+    var amount = lineAmount(l, base || 0);
+    var todo = amount === null;
+    var total = todo ? 'À définir' : ar(amount) + (isPct(l) ? ' (' + String(l.percent).replace('.', ',') + ' % du total des prestations)' : '');
     return '<div class="qt-line' + (todo ? ' todo' : '') + '" data-i="' + i + '">' +
       '<label class="qt-f" style="margin:0"><span>Désignation</span><input class="qt-in" data-l="label" type="text" maxlength="200" value="' + esc(l.label) + '"></label>' +
       '<label class="qt-f" style="margin:0"><span>Description</span><input class="qt-in" data-l="description" type="text" maxlength="600" value="' + esc(l.description) + '"></label>' +
       '<div class="qt-n">' +
       '<label class="qt-f" style="margin:0"><span>Qté</span><input class="qt-in" data-l="quantity" type="number" min="0.01" step="any" inputmode="decimal" value="' + esc(l.quantity) + '"></label>' +
       '<label class="qt-f" style="margin:0"><span>Unité</span><input class="qt-in" data-l="unit" type="text" maxlength="20" value="' + esc(l.unit) + '"></label>' +
-      '<label class="qt-f" style="margin:0"><span>Prix unitaire (Ar)</span><input class="qt-in" data-l="unitPrice" type="number" min="0" step="1" inputmode="numeric" placeholder="À chiffrer" value="' + (todo ? '' : esc(l.unitPrice)) + '"></label>' +
+      '<label class="qt-f" style="margin:0"><span>Prix (Ar ou %)</span><input class="qt-in" data-l="unitPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="À chiffrer ou 20%" value="' + esc(priceCell(l)) + '"></label>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-del="' + i + '" aria-label="Supprimer la ligne ' + (i + 1) + '">' + ic('close') + '</button></div>' +
       '<div class="qt-sub" data-lt="' + i + '">Total ligne : ' + esc(total) + '</div></div>';
   }
@@ -302,7 +315,8 @@
 
   function renderDetail(q) {
     var c = q.client || {};
-    var lines = (q.lines || []).map(function (l) { return { label: l.label, description: l.description, quantity: l.quantity, unit: l.unit, unitPrice: l.unitPrice }; });
+    var lines = (q.lines || []).map(function (l) { return { label: l.label, description: l.description, quantity: l.quantity, unit: l.unit, unitPrice: l.unitPrice, percent: isPct(l) ? l.percent : null }; });
+    var base0 = baseOf(lines);
     var h = '<div class="qt-head"><div><button type="button" class="btn btn-ghost btn-sm" id="qtBack">← Tous les devis</button></div>' +
       '<div class="qt-actions">' + contactLinks(q) + '<button type="button" class="btn btn-ghost btn-sm" id="qtPreview">' + ic('description') + ' Aperçu / PDF</button>' +
       '<button type="button" class="btn btn-primary btn-sm" id="qtSave">' + ic('check') + ' Enregistrer</button></div></div>' +
@@ -315,7 +329,7 @@
       field('Site ou réseau social', 'cWebsite', c.website, 'text', 'maxlength="500"') + '</div>' +
       '<div class="card"><h2>Demande du client</h2>' + reqHtml(q.request) + '</div></div>' +
       '<div class="card"><h2>Lignes du devis</h2><p class="help">Les prix viennent de la feuille « Tarifs ». Une ligne sans prix reste « à chiffrer ».</p>' +
-      '<div id="qtLines">' + lines.map(lineHtml).join('') + '</div>' +
+      '<div id="qtLines">' + lines.map(function (l, i) { return lineHtml(l, i, base0); }).join('') + '</div>' +
       '<button type="button" class="btn btn-ghost btn-sm" id="qtAdd" style="margin-top:.6rem">' + ic('add') + ' Ajouter une ligne</button>' +
       '<div class="qt-warn" id="qtTodoWarn" hidden></div>' +
       '<div class="qt-tot" id="qtTot"></div></div>' +
@@ -340,7 +354,7 @@
     $('#qtSave').addEventListener('click', function () { save(q); });
     $('#qtPreview').addEventListener('click', function () { preview(q); });
     $('#qtAdd').addEventListener('click', function () {
-      var g = gather(q); g.lines.push({ label: '', description: '', quantity: 1, unit: 'forfait', unitPrice: null });
+      var g = gather(q); g.lines.push({ label: '', description: '', quantity: 1, unit: 'forfait', unitPrice: null, percent: null });
       st.work.lines = g.lines; repaintLines(q);
       var last = $all('.qt-line [data-l=label]'); if (last.length) last[last.length - 1].focus();
       st.dirty = true;
@@ -356,7 +370,8 @@
   }
 
   function repaintLines(q) {
-    $('#qtLines').innerHTML = st.work.lines.map(lineHtml).join('');
+    var base = baseOf(st.work.lines);
+    $('#qtLines').innerHTML = st.work.lines.map(function (l, i) { return lineHtml(l, i, base); }).join('');
     fillIcons($('#view'));
     paintTotals(q);
   }
@@ -367,11 +382,15 @@
     function val(n) { var e = f.querySelector('[data-f="' + n + '"]'); return e ? e.value : ''; }
     var lines = $all('.qt-line', f).map(function (row) {
       function lv(n) { return row.querySelector('[data-l="' + n + '"]').value; }
-      var price = lv('unitPrice').trim();
+      var raw = lv('unitPrice').trim();
       var qty = num(lv('quantity'));
+      var pm = raw.match(/^(\d+(?:[.,]\d+)?)\s*%$/);
+      var pct = pm && Number(pm[1].replace(',', '.')) > 0 && Number(pm[1].replace(',', '.')) <= 500 ? Number(pm[1].replace(',', '.')) : null;
       return {
         label: lv('label').trim(), description: lv('description').trim(), quantity: qty > 0 ? qty : 1,
-        unit: lv('unit').trim() || 'forfait', unitPrice: price === '' ? null : Math.max(0, Math.round(num(price)))
+        unit: lv('unit').trim() || 'forfait',
+        unitPrice: pct !== null || raw === '' || pm ? null : Math.max(0, Math.round(num(raw))),
+        percent: pct
       };
     });
     var discountEl = document.getElementById('qtDiscount'), taxEl = document.getElementById('qtTax');
@@ -407,12 +426,13 @@
     $('#qtTaxAmt').textContent = ar(t.tax);
     $('#qtTaxRow').hidden = !t.taxRate;
     $('#qtTotal').textContent = ar(t.total);
+    var base = baseOf(g.lines);
     $all('.qt-line').forEach(function (row, i) {
       var l = g.lines[i]; if (!l) return;
-      var todo = l.unitPrice === null;
+      var amount = lineAmount(l, base), todo = amount === null;
       row.classList.toggle('todo', todo);
       var lt = row.querySelector('[data-lt]');
-      if (lt) lt.textContent = 'Total ligne : ' + (todo ? 'À définir' : ar(Math.round(l.quantity * l.unitPrice)));
+      if (lt) lt.textContent = 'Total ligne : ' + (todo ? 'À définir' : ar(amount) + (isPct(l) ? ' (' + String(l.percent).replace('.', ',') + ' % du total des prestations)' : ''));
     });
     var warn = $('#qtTodoWarn');
     warn.hidden = !t.unpricedCount;
@@ -473,12 +493,14 @@
 
   function docHtml(d) {
     var me = issuer();
+    var docBase = baseOf(d.lines);
     var rows = d.lines.map(function (l) {
-      var todo = l.unitPrice === null;
+      var amount = lineAmount(l, docBase), todo = amount === null;
+      var unitCell = isPct(l) ? esc(String(l.percent).replace('.', ',')) + ' % des prestations' : (todo ? '<em>À définir</em>' : esc(ar(l.unitPrice)));
       return '<tr><td><strong>' + esc(l.label) + '</strong>' + (l.description ? '<div class="d">' + esc(l.description) + '</div>' : '') + '</td>' +
         '<td class="r">' + esc(l.quantity) + ' ' + esc(l.unit) + '</td>' +
-        '<td class="r">' + (todo ? '<em>À définir</em>' : esc(ar(l.unitPrice))) + '</td>' +
-        '<td class="r">' + (todo ? '<em>—</em>' : esc(ar(Math.round(l.quantity * l.unitPrice)))) + '</td></tr>';
+        '<td class="r">' + unitCell + '</td>' +
+        '<td class="r">' + (todo ? '<em>—</em>' : esc(ar(amount))) + '</td></tr>';
     }).join('');
     var t = d.totals, c = d.client;
     var css = '@page{size:A4;margin:16mm}*{box-sizing:border-box}' +

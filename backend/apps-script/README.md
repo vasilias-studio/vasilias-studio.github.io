@@ -54,6 +54,8 @@ Chaque demande de devis du site crée automatiquement un devis en brouillon (num
 
 **Fichiers sources** : le formulaire propose Oui / Non / Je ne sais pas encore. Si le client en veut et que son pack ne les inclut pas (Pack Logo + Brandboard, ou prestations individuelles), le devis ajoute une ligne « Fichiers sources » à chiffrer. Prínkipas et Vasilías les incluent déjà : aucune ligne en plus.
 
+**Prix en pourcentage** : dans la colonne « Prix unitaire », tapez `20%` au lieu d’un montant (par exemple sur la ligne « Fichiers sources »). Le devis calcule alors 20 % du total des autres lignes, et le montant se met à jour dès que vous chiffrez ou modifiez celles-ci. Dans le Hub, vous pouvez aussi saisir `25%` sur n’importe quelle ligne. Si Google Sheets transforme `20%` en `0,2`, c’est reconnu comme 20 %.
+
 **Les prix** se saisissent dans la feuille **Tarifs** (colonne « Prix unitaire (Ar) »). Une prestation sans prix reste « à chiffrer » : aucun montant n’est inventé. Les devis déjà créés ne sont pas recalculés quand vous modifiez les tarifs.
 
 **Statuts** : À chiffrer → Brouillon (automatique quand toutes les lignes ont un prix) → Envoyé → Accepté / Refusé / Expiré.

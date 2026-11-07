@@ -32,7 +32,7 @@ var QUOTE_SHEET_HEADERS = [
   'Numéro', 'Date de création', 'Statut', 'Client', 'Entreprise', 'E-mail',
   'Total (Ar)', 'ID demande', 'Données (JSON — ne pas modifier, utiliser le Hub)'
 ];
-var TARIFF_HEADERS = ['Catégorie', 'Prestation', 'Prix unitaire (Ar)', 'Unité', 'Description (facultatif)'];
+var TARIFF_HEADERS = ['Catégorie', 'Prestation', 'Prix unitaire (Ar ou %)', 'Unité', 'Description (facultatif)'];
 
 // Même liste que le formulaire (js/quote-form.js). Sert à préremplir la feuille Tarifs.
 // Un élément peut être une simple chaîne (prix à saisir) ou { label, price, unit, description }.
@@ -81,6 +81,49 @@ function toAmount_(value, allowZero) {
   return Math.round(n);
 }
 
+/**
+ * Lit la cellule « Prix » de la feuille Tarifs : un montant (« 150 000 ») ou un pourcentage (« 20% »).
+ * Google Sheets convertit « 20% » en 0,2 : un nombre strictement compris entre 0 et 1 est donc
+ * lu comme un pourcentage (aucun prix réel n'est inférieur à 1 Ar).
+ */
+function parseTariffPrice_(value) {
+  if (typeof value === 'number') {
+    if (value > 0 && value < 1) return { price: null, percent: Math.round(value * 10000) / 100 };
+    return { price: toAmount_(value, false), percent: null };
+  }
+  var text = String(value == null ? '' : value).trim();
+  var m = text.match(/^(\d+(?:[.,]\d+)?)\s*%$/);
+  if (m) {
+    var pc = Number(m[1].replace(',', '.'));
+    return { price: null, percent: pc > 0 && pc <= 500 ? pc : null };
+  }
+  return { price: toAmount_(text, false), percent: null };
+}
+
+function toPercent_(value) {
+  if (value === null || value === undefined || value === '') return null;
+  var n = Number(value);
+  return isFinite(n) && n > 0 && n <= 500 ? Math.round(n * 100) / 100 : null;
+}
+
+/** Base d'un pourcentage : total des lignes à montant (hors lignes en pourcentage). */
+function quoteBase_(lines) {
+  var base = 0;
+  (lines || []).forEach(function (l) {
+    if ((l.percent === null || l.percent === undefined) && l.unitPrice !== null && l.unitPrice !== undefined) {
+      base += Math.round(Number(l.quantity) * Number(l.unitPrice));
+    }
+  });
+  return base;
+}
+
+/** Montant d'une ligne, ou null si elle est encore à chiffrer. */
+function lineAmount_(line, base) {
+  if (line.percent !== null && line.percent !== undefined) return Math.round(base * Number(line.percent) / 100 * Number(line.quantity));
+  if (line.unitPrice === null || line.unitPrice === undefined) return null;
+  return Math.round(Number(line.quantity) * Number(line.unitPrice));
+}
+
 function formatQuoteNumber_(prefix, year, sequence) {
   var padded = String(sequence);
   while (padded.length < 3) padded = '0' + padded;
@@ -105,7 +148,8 @@ function normalizeQuoteLines_(input) {
       description: cleanText_(raw.description, 600),
       quantity: Math.round(quantity * 100) / 100,
       unit: cleanText_(raw.unit, 20) || 'forfait',
-      unitPrice: toAmount_(raw.unitPrice, true)
+      percent: toPercent_(raw.percent),
+      unitPrice: toPercent_(raw.percent) !== null ? null : toAmount_(raw.unitPrice, true)
     });
   }
   return lines;
@@ -128,6 +172,7 @@ function buildQuoteLines_(details, tariffs) {
       description: tariff ? tariff.description : '',
       quantity: 1,
       unit: tariff ? tariff.unit : 'forfait',
+      percent: tariff && tariff.percent != null ? tariff.percent : null,
       unitPrice: tariff ? tariff.price : null
     });
   });
@@ -158,6 +203,7 @@ function buildQuoteLines_(details, tariffs) {
       description: sourcesTariff ? sourcesTariff.description : '',
       quantity: 1,
       unit: sourcesTariff ? sourcesTariff.unit : 'forfait',
+      percent: sourcesTariff && sourcesTariff.percent != null ? sourcesTariff.percent : null,
       unitPrice: sourcesTariff ? sourcesTariff.price : null
     });
   }
@@ -167,9 +213,11 @@ function buildQuoteLines_(details, tariffs) {
 function computeQuoteTotals_(lines, discount, taxRate) {
   var subtotal = 0;
   var unpricedCount = 0;
+  var base = quoteBase_(lines);
   (lines || []).forEach(function (line) {
-    if (line.unitPrice === null || line.unitPrice === undefined) unpricedCount++;
-    else subtotal += Math.round(Number(line.quantity) * Number(line.unitPrice));
+    var amount = lineAmount_(line, base);
+    if (amount === null) unpricedCount++;
+    else subtotal += amount;
   });
   var safeDiscount = Math.min(Math.max(Math.round(Number(discount) || 0), 0), subtotal);
   var safeTax = Math.min(Math.max(Number(taxRate) || 0, 0), 100);
@@ -319,8 +367,10 @@ function readTariffs_(spreadsheet) {
   values.forEach(function (row) {
     var label = cleanText_(row[1], 200);
     if (!label) return;
+    var parsed = parseTariffPrice_(row[2]);
     map[label.toLowerCase()] = {
-      price: toAmount_(row[2], false),
+      price: parsed.price,
+      percent: parsed.percent,
       unit: cleanText_(row[3], 20) || 'forfait',
       description: cleanText_(row[4], 600)
     };

@@ -281,4 +281,50 @@ assert.equal(tariffRows.find((r) => r[1] === 'Logo principal')[2], '300 000', 'l
 sandbox.ensureQuoteSheets_(fakeBook, true);
 assert.equal(tariffRows.length, catalogSize + 1, 'idempotent');
 
+
+// Prix en pourcentage (ex. fichiers sources = 20 % du prix de la prestation).
+const pj = (v) => JSON.parse(JSON.stringify(sandbox.parseTariffPrice_(v)));
+assert.deepEqual(pj('20%'), { price: null, percent: 20 });
+assert.deepEqual(pj(' 12,5 % '), { price: null, percent: 12.5 });
+assert.deepEqual(pj(0.2), { price: null, percent: 20 }, 'Google Sheets convertit « 20% » en 0,2');
+assert.deepEqual(pj(0.125), { price: null, percent: 12.5 });
+assert.deepEqual(pj(300000), { price: 300000, percent: null });
+assert.deepEqual(pj('150 000'), { price: 150000, percent: null });
+assert.deepEqual(pj('0%'), { price: null, percent: null });
+assert.deepEqual(pj('600%'), { price: null, percent: null });
+assert.deepEqual(pj(''), { price: null, percent: null });
+
+const pctLines = [{ quantity: 1, unitPrice: 200000 }, { quantity: 1, unitPrice: null, percent: 20 }];
+assert.equal(sandbox.computeQuoteTotals_(pctLines, 0, 0).subtotal, 240000, 'le pourcentage s’applique au total des autres lignes');
+assert.equal(sandbox.computeQuoteTotals_(pctLines, 0, 0).unpricedCount, 0, 'une ligne en pourcentage n’est pas « à chiffrer »');
+const pctPartial = sandbox.computeQuoteTotals_([{ quantity: 1, unitPrice: 200000 }, { quantity: 1, unitPrice: null }, { quantity: 1, unitPrice: null, percent: 20 }], 0, 0);
+assert.equal(pctPartial.subtotal, 240000);
+assert.equal(pctPartial.unpricedCount, 1, 'reste à chiffrer tant qu’une prestation de base n’a pas de prix');
+assert.equal(sandbox.computeQuoteTotals_([{ quantity: 1, unitPrice: null, percent: 20 }], 0, 0).subtotal, 0);
+assert.equal(sandbox.quoteStatusFor_(sandbox.computeQuoteTotals_([{ quantity: 1, unitPrice: null, percent: 20 }], 0, 0)), 'À chiffrer');
+const normPct = JSON.parse(JSON.stringify(sandbox.normalizeQuoteLines_([
+  { label: 'Sources', quantity: 1, unitPrice: 5000, percent: '15' }, { label: 'X', quantity: 1, percent: 0, unitPrice: 100 }, { label: 'Y', percent: -3 }
+])));
+assert.equal(normPct[0].percent, 15);
+assert.equal(normPct[0].unitPrice, null, 'un pourcentage remplace le prix fixe');
+assert.equal(normPct[1].percent, null, 'pourcentage invalide ignoré');
+assert.equal(normPct[1].unitPrice, 100);
+
+// Intégration : « 20% » saisi dans la feuille Tarifs (texte ou format pourcentage de Sheets).
+const srcRow = fakeSheets['Tarifs'].rows.find((r) => r[1] === 'Fichiers sources');
+srcRow[2] = '20%';
+const qPct = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Pack Logo + Brandboard'] }, sourceFiles: YES }, meta('2026-11-09T10:00:00Z'));
+assert.equal(qPct.lines[1].percent, 20);
+assert.equal(qPct.lines[1].unitPrice, null);
+assert.equal(qPct.totals.total, 240000, '200 000 + 20 % de 200 000');
+assert.equal(qPct.status, 'Brouillon', 'tout est chiffré => brouillon');
+srcRow[2] = 0.2;
+const qPct2 = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Pack Prínkipas', 'Flyer'] }, sourceFiles: YES }, meta('2026-11-09T11:00:00Z'));
+assert.equal(qPct2.lines.length, 2, 'sources déjà incluses dans Prínkipas');
+const qPct3 = sandbox.createQuoteFromRequest_({ project: { deliverables: ['Flyer'] }, sourceFiles: YES }, meta('2026-11-09T12:00:00Z'));
+assert.equal(qPct3.lines[1].percent, 20, 'le format pourcentage de Sheets (0,2) est reconnu');
+const patchedPct = sandbox.applyQuotePatch_(qPct3, { lines: [{ label: 'Flyer', quantity: 2, unitPrice: 50000 }, { label: 'Fichiers sources', quantity: 1, percent: 20 }] }, '2026-11-10T08:00:00.000Z');
+assert.equal(patchedPct.totals.total, 120000, '2 × 50 000 + 20 %');
+assert.equal(patchedPct.status, 'Brouillon');
+
 console.log('Apps Script static/unit checks passed: validation, private storage, retention, iframe response, readable HTML/text email layouts, and automatic quotes (pricing, patching, admin key).');
