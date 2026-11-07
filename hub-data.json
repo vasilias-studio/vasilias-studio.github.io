@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-06",
-    "updatedAt": "2026-11-07T17:56:53.026Z"
+    "updatedAt": "2026-11-07T08:34:49.976Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -168,8 +168,8 @@
       "title": "monrelevé",
       "status": "published",
       "year": 2026,
-      "nature": "Concept fictif",
-      "client": "",
+      "nature": "Collaboration",
+      "client": "Monrelevé",
       "category": [
         "Branding",
         "Identité visuelle",
@@ -177,7 +177,7 @@
         "UI/UX"
       ],
       "cover": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "role": "",
+      "role": "Brand designer",
       "tagline": "",
       "overview": "",
       "gallery": [
@@ -382,37 +382,41 @@
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794020342426-mqul-og-iage.png",
-      "canonical": "https://vasilias-studio.github.io/",
-      "updated": "2026-11-07T02:59:06.534Z"
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.com/",
+      "updated": "2026-11-06T09:14:47.104Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
+      "ogTitle": "Projets — Vasilías",
       "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
-      "img": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
-      "canonical": "https://vasilias-studio.com/work.html",
-      "updated": "2026-11-07T17:55:25.016Z"
+      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/work.html"
     },
     "about.html": {
       "title": "À Propos — Vasilías",
+      "ogTitle": "À Propos — Vasilías",
       "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
-      "img": "assets/hub-uploads/1794073410597-8f00--propos.jpg",
-      "canonical": "https://vasilias-studio.github.io/about.html",
-      "updated": "2026-11-07T17:43:40.618Z"
+      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/about.html"
     },
     "services.html": {
       "title": "Services & Expertises — Vasilías",
+      "ogTitle": "Services & Expertises — Vasilías",
       "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
-      "img": "assets/hub-uploads/1794074141932-tzms-Service.jpg",
-      "canonical": "https://vasilias-studio.github.io/services.html",
-      "updated": "2026-11-07T17:55:46.960Z"
+      "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/services.html"
     },
     "contact.html": {
       "title": "Contact — Vasilías",
+      "ogTitle": "Contact — Vasilías",
       "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794074161411-zuzp-Contact.jpg",
-      "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T17:56:06.612Z"
+      "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging.",
+      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
+      "canonical": "https://vasilias-studio.github.io/contact.html"
     },
     "print.html": {
       "title": "Imprimés — Vasilías",
@@ -440,10 +444,11 @@
     },
     "work-orquid-spices.html": {
       "title": "ORQUID SPICES — Vasilías",
+      "ogTitle": "ORQUID SPICES — Vasilías",
       "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
-      "img": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
-      "updated": "2026-11-07T17:56:28.840Z"
+      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
+      "img": "https://vasilias-studio.github.io/assets/projects/orquid-spices/Cover.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html"
     }
   },
   "alts": {
