@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T15:32:02.754Z"
+    "updatedAt": "2026-11-08T02:42:43.840Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -208,8 +208,8 @@
       "cover": "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
       "gallery": [],
       "covers": [
-        "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
-        "assets/projects/nebulo/cover.jpg"
+        "assets/projects/nebulo/cover.jpg",
+        "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg"
       ]
     },
     {
@@ -410,9 +410,9 @@
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794063773248-1-dwt9-Accueil.jpg",
-      "canonical": "https://vasilias-studio.github.io/",
-      "updated": "2026-11-07T15:02:59.641Z"
+      "img": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
+      "canonical": "https://vasilias-studio.com/",
+      "updated": "2026-11-07T21:13:42.257Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
@@ -435,18 +435,18 @@
     "services.html": {
       "title": "Services & Expertises — Vasilías",
       "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
-      "img": "assets/hub-uploads/1794047011745-2-3msn-Service.jpg",
+      "img": "assets/hub-uploads/1794085512921-1-eurk-Service.jpg",
       "canonical": "https://vasilias-studio.github.io/services.html",
-      "updated": "2026-11-07T10:25:02.129Z",
+      "updated": "2026-11-07T21:05:15.670Z",
       "ogTitle": "Services & Expertises — Vasilías",
       "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías."
     },
     "contact.html": {
       "title": "Contact — Vasilías",
       "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794047011686-1-lcfl-Contact.jpg",
+      "img": "assets/hub-uploads/1794085528856-2-ltkj-Contact.jpg",
       "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T10:24:40.752Z",
+      "updated": "2026-11-07T21:05:30.618Z",
       "ogTitle": "Contact — Vasilías",
       "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging."
     },
@@ -480,9 +480,9 @@
       "ogTitle": "ORQUID SPICES — Vasilías",
       "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
       "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
-      "img": "assets/hub-uploads/1794064067712-2-z0dl-Orquid.jpg",
+      "img": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
       "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
-      "updated": "2026-11-07T15:08:01.258Z"
+      "updated": "2026-11-07T21:18:36.881Z"
     },
     "work-monreleve.html": {
       "title": "monrelevé — Vasilías",
@@ -524,6 +524,8 @@
     "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
     "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
     "logo-vasilias.svg": "Logo Vasilías Studio",
+    "pin-blue.png": "Épingle décorative bleue",
+    "placeholders/portrait-placeholder.svg": "Emplacement portrait",
     "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
     "icons/adobeindesign.svg": "Icône Adobe InDesign",
     "icons/adobephotoshop.svg": "Icône Adobe Photoshop",
@@ -605,6 +607,11 @@
       "used": "index.html"
     },
     {
+      "path": "assets/pin-blue.png",
+      "bytes": 126102,
+      "used": ""
+    },
+    {
       "path": "assets/print-1.jpg",
       "bytes": 154745,
       "used": "print.html"
@@ -678,6 +685,11 @@
       "path": "assets/icons/figma.svg",
       "bytes": 1108,
       "used": "about.html"
+    },
+    {
+      "path": "assets/placeholders/portrait-placeholder.svg",
+      "bytes": 637,
+      "used": ""
     },
     {
       "path": "assets/projects/nebulo/asset-1.jpg",
@@ -755,6 +767,11 @@
       "used": "index.html, work.html, work-orquid-spices.html"
     },
     {
+      "path": "assets/hub-uploads/1793955464264-OSIA-drinkosia-Instagram-photos-and-videos.jpeg",
+      "bytes": 158804,
+      "used": "Ajouté via Hub"
+    },
+    {
       "path": "assets/hub-uploads/1794012362937-318z-og-iage.png",
       "bytes": 320223,
       "used": "Ajouté via Hub"
@@ -805,19 +822,9 @@
       "used": "work-monreleve.html"
     },
     {
-      "path": "assets/hub-uploads/1794085512921-1-eurk-Service.jpg",
-      "bytes": 154352,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794085528856-2-ltkj-Contact.jpg",
-      "bytes": 160415,
-      "used": "Ajouté via Hub"
-    },
-    {
       "path": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
       "bytes": 633402,
-      "used": "index.html, work.html, work-orquid-spices.html"
+      "used": "index.html, work.html, work-orquid-spices.html, SEO work-orquid-spices.html"
     },
     {
       "path": "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
@@ -877,32 +884,17 @@
     {
       "path": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
       "bytes": 320223,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794047011686-1-lcfl-Contact.jpg",
-      "bytes": 160415,
-      "used": "SEO contact.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794047011745-2-3msn-Service.jpg",
-      "bytes": 154352,
-      "used": "SEO services.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794063773248-1-dwt9-Accueil.jpg",
-      "bytes": 83984,
       "used": "SEO index.html"
     },
     {
-      "path": "assets/hub-uploads/1794064067712-2-z0dl-Orquid.jpg",
-      "bytes": 176147,
-      "used": "SEO work-orquid-spices.html"
+      "path": "assets/hub-uploads/1794086547914-14-crgv-Contact.jpg",
+      "bytes": 160415,
+      "used": "Ajouté via Hub"
     },
     {
-      "path": "assets/hub-uploads/1794064568851-1-6pwe-N-bulo.jpg",
-      "bytes": 37549,
-      "used": "SEO work-nebulo.html"
+      "path": "assets/hub-uploads/1794086547916-15-i02k-Service.jpg",
+      "bytes": 154352,
+      "used": "Ajouté via Hub"
     }
   ]
 }
