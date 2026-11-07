@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T09:24:50.631Z"
+    "updatedAt": "2026-11-07T09:26:29.110Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -402,11 +402,12 @@
     },
     "work.html": {
       "title": "Projets — Vasilías",
-      "ogTitle": "Projets — Vasilías",
       "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
-      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image.png",
-      "canonical": "https://vasilias-studio.github.io/work.html"
+      "img": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
+      "canonical": "https://vasilias-studio.github.io/work.html",
+      "updated": "2026-11-07T09:25:25.389Z",
+      "ogTitle": "Projets — Vasilías",
+      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design."
     },
     "about.html": {
       "title": "À Propos — Vasilías",
@@ -499,7 +500,6 @@
     "logo-vasilias.svg": "Logo Vasilías Studio",
     "pin-blue.png": "Épingle décorative bleue",
     "placeholders/portrait-placeholder.svg": "Emplacement portrait",
-    "og/og-image.png": "Carte de partage Open Graph Vasilías Studio",
     "og/og-image.svg": "Carte vectorielle Open Graph Vasilías Studio",
     "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
     "icons/adobeindesign.svg": "Icône Adobe InDesign",
@@ -665,11 +665,6 @@
       "path": "assets/icons/figma.svg",
       "bytes": 1108,
       "used": "about.html"
-    },
-    {
-      "path": "assets/og/og-image.png",
-      "bytes": 193334,
-      "used": "index.html, work.html, about.html, services.html, contact.html, print.html, social.html"
     },
     {
       "path": "assets/og/og-image.svg",
