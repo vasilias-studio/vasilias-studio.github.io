@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-07T15:49:01.511Z"
+    "updatedAt": "2026-11-07T15:50:23.771Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -410,9 +410,9 @@
     "index.html": {
       "title": "Vasilías — Graphic & Digital Designer",
       "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794086019681-13-r18w-og-iage.png",
+      "img": "assets/hub-uploads/1794066582617-4-q58u-Accueil.jpg",
       "canonical": "https://vasilias-studio.com/",
-      "updated": "2026-11-07T21:13:42.257Z"
+      "updated": "2026-11-07T15:49:44.826Z"
     },
     "work.html": {
       "title": "Projets — Vasilías",
@@ -435,9 +435,9 @@
     "services.html": {
       "title": "Services & Expertises — Vasilías",
       "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
-      "img": "assets/hub-uploads/1794085512921-1-eurk-Service.jpg",
+      "img": "assets/hub-uploads/1794066558447-3-qp71-Service.jpg",
       "canonical": "https://vasilias-studio.github.io/services.html",
-      "updated": "2026-11-07T21:05:15.670Z",
+      "updated": "2026-11-07T15:49:19.956Z",
       "ogTitle": "Services & Expertises — Vasilías",
       "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías."
     },
@@ -899,6 +899,16 @@
     {
       "path": "assets/hub-uploads/1794066539514-2-vte0-Contact.jpg",
       "bytes": 160415,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794066558447-3-qp71-Service.jpg",
+      "bytes": 154352,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets/hub-uploads/1794066582617-4-q58u-Accueil.jpg",
+      "bytes": 83984,
       "used": "Ajouté via Hub"
     }
   ]
