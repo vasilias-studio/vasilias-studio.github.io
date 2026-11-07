@@ -878,7 +878,7 @@
       + '        <div><p class="brand">Vasilías</p><p>' + esc(positioning) + '</p><p>' + esc(availability) + '</p></div>\n'
       + '        <div><h4>Navigation</h4><ul><li><a href="work.html">Index des Projets</a></li><li><a href="about.html">À Propos &amp; Parcours</a></li><li><a href="services.html">Services &amp; Expertises</a></li><li><a href="contact.html">Prise de Contact</a></li></ul></div>\n'
       + '        <div><h4>Réseaux &amp; Profils</h4><ul data-hub="footer-profiles">' + footerProfilesHtml + '</ul></div>\n'
-      + '        <div class="legal"><p>Droits &amp; Mentions</p><p>© <span id="year"></span> Vasilías. Tous droits réservés.</p><p class="small">Portfolio conçu &amp; développé selon la direction artistique éditoriale.</p></div>\n'
+      + '        <div class="legal"><p>Droits &amp; Mentions</p><p>© <span id="year"></span> Vasilías. Tous droits réservés.</p></div>\n'
       + '      </div>\n'
       + '    </div>\n'
       + '  </footer>\n'
