@@ -139,6 +139,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (min-width: 640px) { .wordmark { font-size: 1.5rem; } }
 .wordmark:hover { color: var(--accent-text); }
+/* Survol : le logotype texte laisse place au logo */
+.wordmark { position: relative; display: inline-block; }
+.wordmark::after {
+  content: ''; position: absolute; left: 0; top: 50%; width: 4.6rem; height: 2.6rem;
+  transform: translateY(-50%); background-color: currentColor; opacity: 0; pointer-events: none;
+  -webkit-mask: url('../assets/logo-vasilias.svg') left center / contain no-repeat;
+  mask: url('../assets/logo-vasilias.svg') left center / contain no-repeat;
+  transition: opacity 0.25s ease;
+}
+.wordmark { transition: color 0.25s ease, -webkit-text-fill-color 0.25s ease; }
+@media (hover: hover) {
+  .wordmark:hover, .wordmark:focus-visible { -webkit-text-fill-color: transparent; }
+  .wordmark:hover::after, .wordmark:focus-visible::after { opacity: 1; }
+}
 
 .nav-desktop { display: none; align-items: center; gap: 2rem; }
 @media (min-width: 768px) { .nav-desktop { display: flex; } }
