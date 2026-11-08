@@ -880,6 +880,19 @@
     }
   }
 
+  function projectSectionsHtml(sections) {
+    return (Array.isArray(sections) ? sections : []).map(function (sec, i) {
+      var title = String((sec && sec.title) || '').trim();
+      var text = String((sec && sec.text) || '').trim();
+      if (!title && !text) return '';
+      var paras = text ? text.split(/\n{2,}/).map(function (t) { return t.trim(); }).filter(Boolean).map(function (t) {
+        return '<p>' + esc(t).replace(/\n/g, '<br>') + '</p>';
+      }).join('') : '';
+      return '<div class="case-block case-block-text reveal ' + (i % 2 ? 'reveal-up' : 'reveal-zoom') + '" data-hub="project-section">'
+        + (title ? '<h3>' + esc(title) + '</h3>' : '') + paras + '</div>';
+    }).join('\n    ');
+  }
+
   function applyProjectPage(doc, data, pageFile) {
     var projects = (data && data.projects) || [];
     var baseSlug = pageFile.replace(/\.html$/i, '');
@@ -921,6 +934,15 @@
     if (p.overview) {
       var ovP = doc.querySelector('.case-overview p');
       if (ovP) ovP.textContent = p.overview;
+    }
+
+    if (Array.isArray(p.sections)) {
+      Array.prototype.slice.call(doc.querySelectorAll('.case-block-text')).forEach(function (el) {
+        if (el.parentNode) el.parentNode.removeChild(el);
+      });
+      var secHtml = projectSectionsHtml(p.sections);
+      var ovBlock = doc.querySelector('.case-overview');
+      if (secHtml && ovBlock) ovBlock.insertAdjacentHTML('afterend', '\n    ' + secHtml);
     }
 
     var oldCovImg = doc.querySelector('[data-hub="project-cover"]');
@@ -1194,6 +1216,7 @@
       + '      <h2>Aperçu du Projet</h2>\n'
       + '      <p>' + esc(project.overview || project.tagline || '') + '</p>\n'
       + '    </div>\n'
+      + (projectSectionsHtml(project.sections) ? '    ' + projectSectionsHtml(project.sections) + '\n' : '')
       + '    <div class="case-block reveal reveal-up" data-hub="project-gallery">' + galleryHtml + '</div>\n'
       + '    <section class="next-project reveal reveal-up">' + nextHtml + '</section>\n'
       + '  </article>\n'

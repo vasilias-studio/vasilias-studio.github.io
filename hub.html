@@ -1037,6 +1037,7 @@ function projectModal(slug){
   var catChoices=CATEGORIES.slice();cats.forEach(function(c){if(c&&catChoices.indexOf(c)<0)catChoices.push(c)});
   var natChoices=NATURES.slice();if(p&&p.nature&&natChoices.indexOf(p.nature)<0)natChoices.unshift(p.nature);
   var selectedCovers=p?projectCovers(p).slice():[];
+  var sections=(p&&Array.isArray(p.sections)?p.sections:[]).map(function(x){return {title:String(x.title||''),text:String(x.text||'')}});
   var selectedGallery=[];(p?(p.gallery||[]):[]).forEach(function(g){var n=normalizedImagePath(g);if(n&&selectedGallery.indexOf(n)<0)selectedGallery.push(n)});
   var primaryCover=p?primaryCoverOf(p):(selectedCovers[0]||'');
   var sessionUploads=[],savedModal=false;
@@ -1065,7 +1066,11 @@ function projectModal(slug){
     +'<p class="help">Importez une ou plusieurs images de couverture en une seule fois (ou glissez-déposez-les ci-dessus). Avec plusieurs images, un carrousel s\'affiche automatiquement sur la page du projet; « Vignette » désigne l\'aperçu utilisé sur l\'accueil et la liste des projets.</p>'
     +'<label class="lbl">Rôle / contribution</label><input type="text" id="fmRole" value="'+esc(p?(p.role||''):'')+'">'
     +'<label class="lbl">Accroche</label><textarea id="fmTagline">'+esc(p?(p.tagline||''):'')+'</textarea>'
-    +'<label class="lbl">Présentation du projet</label><textarea id="fmOverview">'+esc(p?(p.overview||''):'')+'</textarea>'
+    +'<label class="lbl">Aperçu du projet (texte d\'introduction)</label><textarea id="fmOverview">'+esc(p?(p.overview||''):'')+'</textarea>'
+    +'<label class="lbl">Sections de description <span id="fmSecCount" class="mut" style="text-transform:none;font-weight:400;letter-spacing:0"></span></label>'
+    +'<div id="fmSecList"></div>'
+    +'<button type="button" class="btn btn-ghost btn-sm" id="fmSecAdd" style="margin-top:.5rem">'+ic('add')+' Ajouter une section</button>'
+    +'<p class="help">Chaque section a un titre et un texte (ex. « Logotype &amp; Symbole »). Elles s\'affichent sous l\'aperçu, dans cet ordre. Séparez les paragraphes par une ligne vide.</p>'
     +'<label class="lbl">Images de la galerie <span id="fmGalCount" class="mut" style="text-transform:none;font-weight:400;letter-spacing:0"></span></label>'
     +'<div class="toolbar" style="margin-bottom:.5rem">'
     +'<label class="btn btn-primary btn-sm" for="fmGalleryUpload" style="cursor:pointer">'+ic('upload')+' Importer des images</label>'
@@ -1092,7 +1097,7 @@ function projectModal(slug){
         p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
       var finalCovers=selectedCovers.slice();
       var finalPrimary=finalCovers.length?((primaryCover&&finalCovers.indexOf(primaryCover)>=0)?primaryCover:finalCovers[0]):'none';
-      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=selectedGallery.slice();p.page=projectHrefOf(p);
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=selectedGallery.slice();p.sections=sections.map(function(x){return {title:x.title.trim(),text:x.text.trim()}}).filter(function(x){return x.title||x.text});p.page=projectHrefOf(p);
       savedModal=true;
       if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — synchronisation automatique en cours.','ok');
     }});
@@ -1220,6 +1225,36 @@ function projectModal(slug){
     openLibPicker({title:'Choisir des images de la galerie',help:'Cliquez sur une ou plusieurs images pour les ajouter à la galerie ou les retirer. L\'ordre de sélection est conservé.',current:selectedGallery,currentLabel:'Galerie actuelle',onDone:function(list){selectedGallery=list;renderGallery()}});
   });
   renderGallery();
+  /* ---- Sections de description (titre + texte) ---- */
+  var secListEl=$('#fmSecList',projectDialog),secCountEl=$('#fmSecCount',projectDialog);
+  function renderSections(){
+    secCountEl.textContent=sections.length?'('+sections.length+')':'(aucune)';
+    if(!sections.length){secListEl.innerHTML='<div class="help" style="margin:.25rem 0">Aucune section. Utilisez le bouton ci-dessous pour en ajouter une.</div>';return}
+    secListEl.innerHTML=sections.map(function(sec,i){
+      return '<div class="card" style="padding:.75rem;margin:.5rem 0" data-sec="'+i+'">'
+        +'<div style="display:flex;gap:.35rem;align-items:center;margin-bottom:.4rem"><strong style="font-size:.75rem;letter-spacing:.06em">SECTION '+String(i+1).padStart(2,'0')+'</strong><span style="flex:1"></span>'
+        +'<button type="button" class="c-move" data-secmv="-1" data-si="'+i+'" aria-label="Monter" title="Monter"'+(i===0?' disabled':'')+'>↑</button>'
+        +'<button type="button" class="c-move" data-secmv="1" data-si="'+i+'" aria-label="Descendre" title="Descendre"'+(i===sections.length-1?' disabled':'')+'>↓</button>'
+        +'<button type="button" class="btn btn-danger btn-sm" data-secdel="'+i+'" aria-label="Supprimer la section" title="Supprimer">'+ic('close')+'</button></div>'
+        +'<input type="text" data-sectitle="'+i+'" placeholder="Titre (ex. Logotype &amp; Symbole)" value="'+esc(sec.title)+'" style="margin-bottom:.4rem">'
+        +'<textarea data-sectext="'+i+'" rows="5" placeholder="Texte de la section">'+esc(sec.text)+'</textarea></div>';
+    }).join('');
+  }
+  secListEl.addEventListener('input',function(e){
+    var ti=e.target.closest('[data-sectitle]');if(ti){sections[+ti.dataset.sectitle].title=ti.value;return}
+    var tx=e.target.closest('[data-sectext]');if(tx)sections[+tx.dataset.sectext].text=tx.value;
+  });
+  secListEl.addEventListener('click',function(e){
+    var del=e.target.closest('[data-secdel]');
+    if(del){sections.splice(+del.dataset.secdel,1);renderSections();return}
+    var mv=e.target.closest('[data-secmv]');
+    if(mv){var i=+mv.dataset.si,n=i+(+mv.dataset.secmv);if(n>=0&&n<sections.length){var t=sections[i];sections[i]=sections[n];sections[n]=t;renderSections()}}
+  });
+  $('#fmSecAdd',projectDialog).addEventListener('click',function(){
+    sections.push({title:'',text:''});renderSections();
+    var last=secListEl.querySelector('[data-sectitle="'+(sections.length-1)+'"]');if(last)last.focus();
+  });
+  renderSections();
   $all('[data-cat]',projectDialog).forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.className='pill '+(!on?'info':'neut');b.innerHTML=(!on?ic('check')+' ':'')+esc(b.dataset.cat)})});
 }
 
