@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T20:35:26.593Z"
+    "updatedAt": "2026-11-08T20:36:15.326Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -532,9 +532,9 @@
       "ogTitle": "Akk-Oho — Vasilías",
       "desc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
       "ogDesc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
-      "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "img": "assets/hub-uploads/1794170171338-5-nkc6-Akkoho.jpg",
       "canonical": "https://vasilias-studio.github.io/work-akk-oho.html",
-      "auto": true
+      "updated": "2026-11-08T20:36:15.323Z"
     }
   },
   "alts": {
@@ -987,7 +987,7 @@
     {
       "path": "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
       "bytes": 249718,
-      "used": "index.html, work.html, work-akk-oho.html, SEO work-akk-oho.html"
+      "used": "index.html, work.html, work-akk-oho.html"
     },
     {
       "path": "assets/hub-uploads/1794170042574-3-7f4t-Plan-de-travail-3.jpg",
@@ -998,6 +998,11 @@
       "path": "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
       "bytes": 596800,
       "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794170171338-5-nkc6-Akkoho.jpg",
+      "bytes": 51164,
+      "used": "SEO work-akk-oho.html"
     }
   ]
 }
