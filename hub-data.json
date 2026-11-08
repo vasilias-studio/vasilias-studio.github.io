@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T20:39:12.331Z"
+    "updatedAt": "2026-11-08T20:54:49.645Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -190,7 +190,7 @@
     },
     {
       "slug": "monreleve",
-      "title": "monrelevé",
+      "title": "Monrelevé",
       "status": "published",
       "year": 2026,
       "nature": "Collaboration",
@@ -377,7 +377,7 @@
     },
     {
       "file": "work-monreleve.html",
-      "title": "Étude : monrelevé",
+      "title": "Étude : Monrelevé",
       "inMenu": false
     },
     {
@@ -519,10 +519,10 @@
       "updated": "2026-11-07T15:48:16.538Z"
     },
     "work-monreleve.html": {
-      "title": "monrelevé — Vasilías",
-      "ogTitle": "monrelevé — Vasilías",
-      "desc": "Étude de cas monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
-      "ogDesc": "Étude de cas monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
+      "title": "Monrelevé — Vasilías",
+      "ogTitle": "Monrelevé — Vasilías",
+      "desc": "Étude de cas Monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
+      "ogDesc": "Étude de cas Monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
       "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "canonical": "https://vasilias-studio.github.io/work-monreleve.html",
       "auto": true
