@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T05:18:40.414Z"
+    "updatedAt": "2026-11-08T20:31:27.063Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -210,6 +210,7 @@
       "covers": [
         "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
         "assets/hub-uploads/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
+        "assets/hub-uploads/1794169296247-1-v4q7-Plan-de-travail-1-copie-80.jpg",
         "assets/hub-uploads/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
         "assets/hub-uploads/1794106632598-2-8uqu-Plan-de-travail-2.jpg"
       ]
@@ -932,6 +933,11 @@
       "path": "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
       "bytes": 108388,
       "used": "index.html, work.html, work-nebulo.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794169296247-1-v4q7-Plan-de-travail-1-copie-80.jpg",
+      "bytes": 125297,
+      "used": "work-nebulo.html"
     }
   ]
 }
