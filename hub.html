@@ -905,6 +905,7 @@ function projectModal(slug){
   var catChoices=CATEGORIES.slice();cats.forEach(function(c){if(c&&catChoices.indexOf(c)<0)catChoices.push(c)});
   var natChoices=NATURES.slice();if(p&&p.nature&&natChoices.indexOf(p.nature)<0)natChoices.unshift(p.nature);
   var selectedCovers=p?projectCovers(p).slice():[];
+  var selectedGallery=[];(p?(p.gallery||[]):[]).forEach(function(g){var n=normalizedImagePath(g);if(n&&selectedGallery.indexOf(n)<0)selectedGallery.push(n)});
   var primaryCover=p?primaryCoverOf(p):(selectedCovers[0]||'');
   var sessionUploads=[],savedModal=false;
   var pHref=p?projectHrefOf(p):'';
@@ -933,7 +934,15 @@ function projectModal(slug){
     +'<label class="lbl">Rôle / contribution</label><input type="text" id="fmRole" value="'+esc(p?(p.role||''):'')+'">'
     +'<label class="lbl">Accroche</label><textarea id="fmTagline">'+esc(p?(p.tagline||''):'')+'</textarea>'
     +'<label class="lbl">Présentation du projet</label><textarea id="fmOverview">'+esc(p?(p.overview||''):'')+'</textarea>'
-    +'<label class="lbl">Images de la galerie</label><select id="fmGallery" multiple size="5" aria-label="Choisir plusieurs images" style="min-height:8rem">'+imageLibraryOptions(p?(p.gallery||[]):[],true)+'</select><label class="btn btn-ghost btn-sm" for="fmGalleryUpload" style="margin-top:.5rem;cursor:pointer">'+ic('upload')+' Importer des images dans la galerie</label><input id="fmGalleryUpload" type="file" accept="image/*" multiple hidden><p class="help">Sélectionnez une ou plusieurs images de la médiathèque, ou importez-les depuis votre appareil. Utilisez Ctrl/Cmd pour choisir plusieurs images.</p>'
+    +'<label class="lbl">Images de la galerie <span id="fmGalCount" class="mut" style="text-transform:none;font-weight:400;letter-spacing:0"></span></label>'
+    +'<div class="toolbar" style="margin-bottom:.5rem">'
+    +'<label class="btn btn-primary btn-sm" for="fmGalleryUpload" style="cursor:pointer">'+ic('upload')+' Importer des images</label>'
+    +'<input id="fmGalleryUpload" type="file" accept="image/*" multiple hidden>'
+    +'<button type="button" class="btn btn-ghost btn-sm" id="fmGalPickLib">'+ic('photo_library')+' Choisir dans la médiathèque</button>'
+    +'<button type="button" class="btn btn-danger btn-sm hidden" id="fmGalClear">Tout retirer</button>'
+    +'</div>'
+    +'<div id="fmGalDrop" class="cover-dropzone"><div id="fmGalList"></div></div>'
+    +'<p class="help">Importez ou choisissez les images de la galerie : elles s\'affichent ici en aperçu, dans l\'ordre de la page du projet. Utilisez les flèches pour les réordonner.</p>'
     +'<p class="help">Les projets « Brouillon » et « À compléter » ne doivent pas apparaître sur le site public. « Prêt à publier » passe par la checklist de Publication.</p>';
   var pBtns=[{label:'Annuler',cls:'btn-ghost'}];
   if(p)pBtns.push({label:'Archiver',cls:'btn-danger',onClick:function(bg){bg.remove();confirmModal('Archiver '+p.title+' ?','Le projet restera dans le hub mais sera marqué archivé (retiré du site au prochain export).',function(){p.status='archived';log('Projet archivé',p.title);save();viewProjects();toast('Projet archivé','warn')})}});
@@ -951,7 +960,7 @@ function projectModal(slug){
         p={slug:sl};store.data.projects.unshift(p);log('Projet créé',t)}
       var finalCovers=selectedCovers.slice();
       var finalPrimary=finalCovers.length?((primaryCover&&finalCovers.indexOf(primaryCover)>=0)?primaryCover:finalCovers[0]):'none';
-      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=Array.prototype.map.call($('#fmGallery',bg).selectedOptions,function(o){return o.value});p.page=projectHrefOf(p);
+      p.title=t;p.status=$('#fmS',bg).value;p.year=y;p.nature=$('#fmN',bg).value;p.client=$('#fmC',bg).value.trim();p.category=cc;p.covers=finalCovers;p.cover=finalPrimary;p.role=$('#fmRole',bg).value.trim();p.tagline=$('#fmTagline',bg).value.trim();p.overview=$('#fmOverview',bg).value.trim();p.gallery=selectedGallery.slice();p.page=projectHrefOf(p);
       savedModal=true;
       if(!created)log('Projet modifié',t);save();bg.remove();viewProjects();toast('Enregistré — synchronisation automatique en cours.','ok');
     }});
@@ -963,12 +972,8 @@ function projectModal(slug){
   };
   var gotoSeoBtn=$('#fmGotoSeo',projectDialog);
   if(gotoSeoBtn&&pHref)gotoSeoBtn.addEventListener('click',function(){projectDialog.remove();openPageSeo(pHref)});
-  var coverListEl=$('#fmCoverList',projectDialog),coverCountEl=$('#fmCoverCount',projectDialog),coverClearBtn=$('#fmCoverClear',projectDialog),coverDropEl=$('#fmCoverDrop',projectDialog),coverInputEl=$('#fmCoverUpload',projectDialog),galSelectEl=$('#fmGallery',projectDialog);
-  function ensureGalleryHasOption(path,selectIt){
-    var ex=Array.prototype.find.call(galSelectEl.options,function(o){return o.value===path});
-    if(!ex){ex=document.createElement('option');ex.value=path;ex.textContent=(path.split('/').pop()||path)+' · nouvel import';galSelectEl.appendChild(ex)}
-    if(selectIt)ex.selected=true;
-  }
+  var coverListEl=$('#fmCoverList',projectDialog),coverCountEl=$('#fmCoverCount',projectDialog),coverClearBtn=$('#fmCoverClear',projectDialog),coverDropEl=$('#fmCoverDrop',projectDialog),coverInputEl=$('#fmCoverUpload',projectDialog);
+  function ensureGalleryHasOption(){}
   function renderCovers(){
     if(selectedCovers.length&&(!primaryCover||selectedCovers.indexOf(primaryCover)<0))primaryCover=selectedCovers[0];
     if(!selectedCovers.length)primaryCover='';
@@ -1027,20 +1032,18 @@ function projectModal(slug){
   ['dragenter','dragover'].forEach(function(ev){coverDropEl.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();coverDropEl.classList.add('is-dragover')})});
   ['dragleave','drop'].forEach(function(ev){coverDropEl.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();coverDropEl.classList.remove('is-dragover')})});
   coverDropEl.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length)addCoverFiles(e.dataTransfer.files)});
-  $('#fmCoverPickLib',projectDialog).addEventListener('click',function(){
+  function openLibPicker(opts){
     var seen={},allItems=[];
     (store.data.media||[]).forEach(function(m){var path=normalizedImagePath(m.path||m.file);if(!/\.(png|jpe?g|webp|gif|svg|avif)$/i.test(path)||seen[path])return;seen[path]=1;allItems.push({path:path,name:path.split('/').pop()||path,used:m.used||''})});
-    selectedCovers.forEach(function(path){if(path&&!seen[path]){seen[path]=1;allItems.push({path:path,name:path.split('/').pop()||path,used:'Couverture actuelle'})}});
-    var picked=selectedCovers.slice();
+    opts.current.forEach(function(path){if(path&&!seen[path]){seen[path]=1;allItems.push({path:path,name:path.split('/').pop()||path,used:opts.currentLabel})}});
+    var picked=opts.current.slice();
     var pBody='<div class="toolbar" style="margin-bottom:.75rem"><input type="text" id="libFilter" placeholder="Rechercher une image…" aria-label="Rechercher une image" style="flex:1"><span class="pill neut" id="libPickedCount"></span><button type="button" class="btn btn-ghost btn-sm" id="libClearPick">Tout désélectionner</button></div>'
-      +'<p class="help" style="margin:0 0 .65rem">Cliquez sur une ou plusieurs images pour les sélectionner ou les retirer de la couverture.</p>'
+      +'<p class="help" style="margin:0 0 .65rem">'+opts.help+'</p>'
       +'<div id="libPickerGrid" class="lib-picker-grid"></div>';
-    var pickerBg=modal('Choisir des images de couverture',pBody,[
+    var pickerBg=modal(opts.title,pBody,[
       {label:'Annuler',cls:'btn-ghost'},
       {label:'Valider la sélection',cls:'btn-primary',onClick:function(bg){
-        selectedCovers=picked.slice();
-        if(!primaryCover||selectedCovers.indexOf(primaryCover)<0)primaryCover=selectedCovers[0]||'';
-        renderCovers();bg.remove();
+        opts.onDone(picked.slice());bg.remove();
       }}
     ]);
     var gridEl=$('#libPickerGrid',pickerBg),filterEl=$('#libFilter',pickerBg),cntEl=$('#libPickedCount',pickerBg);
@@ -1066,14 +1069,63 @@ function projectModal(slug){
     filterEl.addEventListener('input',drawPicker);
     $('#libClearPick',pickerBg).addEventListener('click',function(){picked=[];drawPicker()});
     drawPicker();
+  }
+  $('#fmCoverPickLib',projectDialog).addEventListener('click',function(){
+    openLibPicker({title:'Choisir des images de couverture',help:'Cliquez sur une ou plusieurs images pour les sélectionner ou les retirer de la couverture.',current:selectedCovers,currentLabel:'Couverture actuelle',onDone:function(list){
+      selectedCovers=list;
+      if(!primaryCover||selectedCovers.indexOf(primaryCover)<0)primaryCover=selectedCovers[0]||'';
+      renderCovers();
+    }});
   });
   renderCovers();
-  $('#fmGalleryUpload',projectDialog).addEventListener('change',function(e){
-    var gFiles=Array.prototype.slice.call(e.target.files||[]);
-    gFiles.forEach(function(file){var path=queueHubImage(file);sessionUploads.push(path);ensureGalleryHasOption(path,true)});
-    e.target.value='';
-    if(gFiles.length)toast(gFiles.length===1?'1 image ajoutée à la galerie.':gFiles.length+' images ajoutées à la galerie.','ok');
+  /* ---- Galerie : aperçu en vignettes (comme la couverture) ---- */
+  var galListEl=$('#fmGalList',projectDialog),galCountEl=$('#fmGalCount',projectDialog),galClearBtn=$('#fmGalClear',projectDialog),galDropEl=$('#fmGalDrop',projectDialog),galInputEl=$('#fmGalleryUpload',projectDialog);
+  function renderGallery(){
+    galCountEl.textContent=selectedGallery.length?'('+selectedGallery.length+' image'+(selectedGallery.length>1?'s':'')+')':'(aucune)';
+    galClearBtn.classList.toggle('hidden',!selectedGallery.length);
+    if(!selectedGallery.length){
+      galListEl.innerHTML='<div class="cover-empty" id="fmGalEmptyClick"><strong>Aucune image dans la galerie</strong>Cliquez pour importer une ou plusieurs images, ou glissez-déposez vos fichiers ici.</div>';
+      var emp=$('#fmGalEmptyClick',galListEl);if(emp)emp.addEventListener('click',function(){galInputEl.click()});
+      return;
+    }
+    var mult=selectedGallery.length>1,html='<div class="cover-grid">';
+    selectedGallery.forEach(function(path,idx){
+      var url=previewImageUrl(path),fname=path.split('/').pop()||path;
+      html+='<div class="cover-item" data-gidx="'+idx+'">'
+        +'<div class="c-thumb"><img src="'+esc(encodeURI(url))+'" alt="'+esc(fname)+'" loading="lazy">'
+        +'<span class="c-idx">'+String(idx+1).padStart(2,'0')+'</span>'
+        +'<button type="button" class="c-del" data-gdel="'+idx+'" aria-label="Retirer '+esc(fname)+'" title="Retirer">'+ic('close')+'</button>'
+        +'</div><div class="c-meta"><span class="c-name" title="'+esc(fname)+'">'+esc(fname)+'</span>'
+        +(mult?'<div class="c-actions">'
+          +'<button type="button" class="c-move" data-gmove="-1" data-gi="'+idx+'" aria-label="Déplacer avant" title="Déplacer avant"'+(idx===0?' disabled':'')+'>←</button>'
+          +'<button type="button" class="c-move" data-gmove="1" data-gi="'+idx+'" aria-label="Déplacer après" title="Déplacer après"'+(idx===selectedGallery.length-1?' disabled':'')+'>→</button>'
+          +'</div>':'')
+        +'</div></div>';
+    });
+    galListEl.innerHTML=html+'</div>';
+  }
+  galListEl.addEventListener('click',function(e){
+    var del=e.target.closest('[data-gdel]');
+    if(del){selectedGallery.splice(+del.dataset.gdel,1);renderGallery();return}
+    var mv=e.target.closest('[data-gmove]');
+    if(mv){var gi=+mv.dataset.gi,ni=gi+(+mv.dataset.gmove);if(ni>=0&&ni<selectedGallery.length){var t=selectedGallery[gi];selectedGallery[gi]=selectedGallery[ni];selectedGallery[ni]=t;renderGallery()}}
   });
+  galClearBtn.addEventListener('click',function(){selectedGallery=[];renderGallery()});
+  function addGalleryFiles(fileList){
+    var files=Array.prototype.slice.call(fileList||[]).filter(function(f){return f&&((f.type&&f.type.indexOf('image/')===0)||/\.(png|jpe?g|webp|gif|svg|avif)$/i.test(f.name||''))});
+    if(!files.length){if(fileList&&fileList.length)toast('Sélectionnez des fichiers image (JPG, PNG, WebP, SVG…).','warn');return}
+    files.forEach(function(file){var path=queueHubImage(file);sessionUploads.push(path);if(selectedGallery.indexOf(path)<0)selectedGallery.push(path)});
+    renderGallery();
+    toast(files.length===1?'1 image ajoutée à la galerie.':files.length+' images ajoutées à la galerie.','ok');
+  }
+  galInputEl.addEventListener('change',function(e){addGalleryFiles(e.target.files);e.target.value=''});
+  ['dragenter','dragover'].forEach(function(ev){galDropEl.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();galDropEl.classList.add('is-dragover')})});
+  ['dragleave','drop'].forEach(function(ev){galDropEl.addEventListener(ev,function(e){e.preventDefault();e.stopPropagation();galDropEl.classList.remove('is-dragover')})});
+  galDropEl.addEventListener('drop',function(e){if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length)addGalleryFiles(e.dataTransfer.files)});
+  $('#fmGalPickLib',projectDialog).addEventListener('click',function(){
+    openLibPicker({title:'Choisir des images de la galerie',help:'Cliquez sur une ou plusieurs images pour les ajouter à la galerie ou les retirer. L\'ordre de sélection est conservé.',current:selectedGallery,currentLabel:'Galerie actuelle',onDone:function(list){selectedGallery=list;renderGallery()}});
+  });
+  renderGallery();
   $all('[data-cat]',projectDialog).forEach(function(b){b.addEventListener('click',function(){var on=b.getAttribute('aria-pressed')==='true';b.setAttribute('aria-pressed',String(!on));b.className='pill '+(!on?'info':'neut');b.innerHTML=(!on?ic('check')+' ':'')+esc(b.dataset.cat)})});
 }
 
