@@ -368,6 +368,11 @@
         getProjectCovers(p).forEach(function (c) { markUsed(c, pFile); });
         (Array.isArray(p.gallery) ? p.gallery : []).forEach(function (g) { markUsed(g, pFile); });
       });
+      ((data && data.supports) || []).forEach(function (sp) {
+        if (!sp || !sp.page) return;
+        if (sp.cover) markUsed(sp.cover, sp.page);
+        (Array.isArray(sp.gallery) ? sp.gallery : []).forEach(function (g) { markUsed(g, sp.page); });
+      });
       Object.keys(data.seo || {}).forEach(function (pgFile) {
         var s = data.seo[pgFile];
         if (!s || !s.img) return;
@@ -856,6 +861,22 @@
     if (sp.cover) {
       var heroImg = doc.querySelector('.case-hero img');
       if (heroImg) heroImg.setAttribute('src', normalizeAssetPath(sp.cover));
+    }
+    var spAlts = (data && data.alts) || {};
+    var spGal = doc.querySelector('[data-hub="support-gallery"]');
+    if (spGal && Array.isArray(sp.gallery)) {
+      var spImgs = sp.gallery.filter(Boolean);
+      spGal.innerHTML = spImgs.length
+        ? '<div class="case-grid-2">' + spImgs.map(function (g) {
+          var gs = normalizeAssetPath(g);
+          var gr = relAssetPath(gs);
+          return '<img src="' + esc(encodeURI(gs)) + '" alt="' + esc(spAlts[gr] || sp.title) + '" loading="lazy" decoding="async">';
+        }).join('') + '</div>'
+        : '';
+    }
+    var spFmt = doc.querySelector('[data-hub="support-formats"]');
+    if (spFmt && Array.isArray(sp.formats) && sp.formats.length) {
+      spFmt.innerHTML = sp.formats.map(function (f) { return '<span>' + esc(f) + '</span>'; }).join('\n        ');
     }
   }
 

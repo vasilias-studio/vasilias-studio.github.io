@@ -148,6 +148,18 @@
       "overview": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes — une communication visuelle cohérente avec l'identité de marque.",
       "cover": "assets/social-visuals.jpg",
       "page": "social.html",
+      "gallery": [
+        "assets/social-1.jpg",
+        "assets/social-2.jpg",
+        "assets/social-3.jpg",
+        "assets/social-visuals.jpg"
+      ],
+      "formats": [
+        "Posts carrés",
+        "Stories / Reels",
+        "Bannières LinkedIn",
+        "Visuels de campagne"
+      ],
       "showOnHome": true
     },
     {
@@ -159,6 +171,17 @@
       "overview": "Cartes de visite, affiches, brochures et papeterie d'exception — des supports imprimés alliant noblesse du papier et précision de mise en page.",
       "cover": "assets/print-visuals.jpg",
       "page": "print.html",
+      "gallery": [
+        "assets/print-1.jpg",
+        "assets/print-2.jpg",
+        "assets/print-visuals.jpg"
+      ],
+      "formats": [
+        "Cartes de visite",
+        "Affiches",
+        "Brochures & catalogues",
+        "Papeterie & menus"
+      ],
       "showOnHome": true
     }
   ],
