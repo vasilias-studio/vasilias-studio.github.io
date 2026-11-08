@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T20:32:44.676Z"
+    "updatedAt": "2026-11-08T20:34:36.835Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -163,6 +163,31 @@
     }
   ],
   "projects": [
+    {
+      "slug": "akk-oho",
+      "title": "Akk-Oho",
+      "status": "published",
+      "year": 2026,
+      "nature": "Projet personnel",
+      "client": "Akk-Oho",
+      "category": [
+        "Identité visuelle",
+        "Packaging"
+      ],
+      "covers": [
+        "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+        "assets/hub-uploads/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
+        "assets/hub-uploads/1794170042574-3-7f4t-Plan-de-travail-3.jpg"
+      ],
+      "cover": "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "role": "",
+      "tagline": "",
+      "overview": "",
+      "gallery": [
+        "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg"
+      ],
+      "page": "work-akk-oho.html"
+    },
     {
       "slug": "monreleve",
       "title": "monrelevé",
@@ -346,6 +371,11 @@
       "inMenu": false
     },
     {
+      "file": "work-akk-oho.html",
+      "title": "Étude : Akk-Oho",
+      "inMenu": false
+    },
+    {
       "file": "work-monreleve.html",
       "title": "Étude : monrelevé",
       "inMenu": false
@@ -403,6 +433,7 @@
     "contact.html",
     "print.html",
     "social.html",
+    "work-akk-oho.html",
     "work-monreleve.html",
     "work-nebulo.html",
     "work-orquid-spices.html",
@@ -494,6 +525,15 @@
       "ogDesc": "Étude de cas monrelevé par Vasilías — Blabla. Je veux bien que tu as tenté de vous contacter car je suis en train de faire un petit mot pour vous dire que…",
       "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
       "canonical": "https://vasilias-studio.github.io/work-monreleve.html",
+      "auto": true
+    },
+    "work-akk-oho.html": {
+      "title": "Akk-Oho — Vasilías",
+      "ogTitle": "Akk-Oho — Vasilías",
+      "desc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
+      "ogDesc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
+      "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "canonical": "https://vasilias-studio.github.io/work-akk-oho.html",
       "auto": true
     }
   },
@@ -938,6 +978,26 @@
       "path": "assets/hub-uploads/1794169296247-1-v4q7-Plan-de-travail-1-copie-80.jpg",
       "bytes": 125297,
       "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
+      "bytes": 125272,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "bytes": 249718,
+      "used": "index.html, work.html, work-akk-oho.html, SEO work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794170042574-3-7f4t-Plan-de-travail-3.jpg",
+      "bytes": 294944,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
+      "bytes": 596800,
+      "used": "work-akk-oho.html"
     }
   ]
 }
