@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-08T20:54:49.645Z"
+    "updatedAt": "2026-11-08T21:07:09.010Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -156,7 +156,7 @@
       ],
       "formats": [
         "Posts carrés",
-        "Stories / Reels",
+        "Stories",
         "Bannières LinkedIn",
         "Visuels de campagne"
       ],
@@ -690,7 +690,7 @@
     {
       "path": "assets/print-visuals.jpg",
       "bytes": 117348,
-      "used": "index.html, work.html, print.html"
+      "used": "print.html"
     },
     {
       "path": "assets/social-1.jpg",
@@ -710,7 +710,7 @@
     {
       "path": "assets/social-visuals.jpg",
       "bytes": 174840,
-      "used": "index.html, work.html, social.html"
+      "used": "social.html"
     },
     {
       "path": "assets/statue.png",
