@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-09T00:11:04.142Z"
+    "updatedAt": "2026-11-11T02:24:11.745Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -169,7 +169,7 @@
       "category": "Print",
       "desc": "Cartes de visite, affiches, brochures et papeterie d'exception prêts pour l'impression.",
       "overview": "Cartes de visite, affiches, brochures et papeterie d'exception — des supports imprimés alliant noblesse du papier et précision de mise en page.",
-      "cover": "assets/print-visuals.jpg",
+      "cover": "assets/hub-uploads/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
       "page": "print.html",
       "gallery": [
         "assets/print-1.jpg",
@@ -1067,6 +1067,11 @@
       "path": "assets/hub-uploads/1794183053570-1-s620-Plan-de-travail-5.jpg",
       "bytes": 419065,
       "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
+      "bytes": 419065,
+      "used": "print.html"
     }
   ]
 }
