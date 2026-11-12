@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-12T23:09:19.943Z"
+    "updatedAt": "2026-11-12T23:31:01.915Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -242,7 +242,12 @@
       "role": "",
       "tagline": "Plateforme web académique",
       "overview": "MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la gestion et le suivi de leur parcours académique.\n\nL'application permet de consulter ses notes, suivre ses moyennes, accéder à son emploi du temps et retrouver d'anciens sujets d'examens depuis un espace personnel. Elle propose également un système d'inscription et de connexion afin d'offrir une expérience adaptée à chaque étudiant.",
-      "gallery": [],
+      "gallery": [
+        "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
+        "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
+        "assets/hub-uploads/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
+        "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
+      ],
       "covers": [
         "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
         "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
@@ -1101,6 +1106,11 @@
       "path": "assets/hub-uploads/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg",
       "bytes": 3363058,
       "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
+      "bytes": 150608,
+      "used": "work-monreleve.html"
     }
   ]
 }
