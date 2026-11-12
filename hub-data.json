@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-12T23:31:01.915Z"
+    "updatedAt": "2026-11-12T23:40:25.835Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -249,10 +249,9 @@
         "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
       ],
       "covers": [
-        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-        "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
-        "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
-        "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
+        "assets/hub-uploads/1794526815870-2-8l1l-111.jpg",
+        "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
+        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
       ],
       "page": "work-monreleve.html",
       "sections": [
@@ -1110,6 +1109,16 @@
     {
       "path": "assets/hub-uploads/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
       "bytes": 150608,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794526815870-2-8l1l-111.jpg",
+      "bytes": 966316,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
+      "bytes": 68832,
       "used": "work-monreleve.html"
     }
   ]
