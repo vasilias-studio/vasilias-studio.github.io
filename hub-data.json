@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-12T23:40:25.835Z"
+    "updatedAt": "2026-11-12T23:49:22.429Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -251,6 +251,7 @@
       "covers": [
         "assets/hub-uploads/1794526815870-2-8l1l-111.jpg",
         "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
+        "assets/hub-uploads/1794527351634-4-g472-333-80.jpg",
         "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
       ],
       "page": "work-monreleve.html",
@@ -1119,6 +1120,11 @@
     {
       "path": "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
       "bytes": 68832,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794527351634-4-g472-333-80.jpg",
+      "bytes": 77223,
       "used": "work-monreleve.html"
     }
   ]
