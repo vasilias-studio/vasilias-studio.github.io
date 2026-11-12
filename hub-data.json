@@ -4,7 +4,7 @@
     "url": "https://vasilias-studio.github.io/",
     "version": "4.0",
     "generated": "2026-11-07",
-    "updatedAt": "2026-11-12T22:32:32.617Z"
+    "updatedAt": "2026-11-12T23:09:19.943Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -210,7 +210,8 @@
       "tagline": "Valoriser l'élevage local par l'identité visuelle",
       "overview": "Akk-Oho est un projet fictif d'élevage d'akoho gasy, réalisé dans le cadre d'une simulation de gestion d'entreprise. L'objectif était de donner à cette activité agricole locale une image professionnelle, authentique et facilement reconnaissable.",
       "gallery": [
-        "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg"
+        "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
+        "assets/hub-uploads/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg"
       ],
       "page": "work-akk-oho.html",
       "sections": [
@@ -1094,6 +1095,11 @@
     {
       "path": "assets/hub-uploads/1794522728966-3-bjq5-Plan-de-travail-2-80.jpg",
       "bytes": 63547,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets/hub-uploads/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg",
+      "bytes": 3363058,
       "used": "work-akk-oho.html"
     }
   ]
