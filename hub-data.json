@@ -4,7 +4,7 @@
     "url": "https:\/\/vasilias-studio.github.io\/",
     "version": "4.0",
     "generated": "2026-11-13",
-    "updatedAt": "2026-11-13T20:45:45.406Z"
+    "updatedAt": "2026-11-13T20:45:54.400Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -800,17 +800,17 @@
     {
       "path": "assets\/hub-uploads\/1794602744071-1-0a6c-11.png",
       "bytes": 1325151,
-      "used": "Ajouté via Hub Android"
+      "used": "social.html"
     },
     {
       "path": "assets\/hub-uploads\/1794602744134-2-28f2-22.png",
       "bytes": 1733781,
-      "used": "Ajouté via Hub Android"
+      "used": "social.html"
     },
     {
       "path": "assets\/hub-uploads\/1794602744159-3-a06a-1-magasin.png",
       "bytes": 1825262,
-      "used": "Ajouté via Hub Android"
+      "used": "social.html"
     }
   ],
   "skills": [
@@ -898,11 +898,11 @@
         "assets\/social-visuals.jpg"
       ],
       "gallery": [
-        "assets\/social-1.jpg",
-        "assets\/social-2.jpg",
-        "assets\/social-3.jpg",
-        "assets\/social-visuals.jpg"
+        "assets\/hub-uploads\/1794602744071-1-0a6c-11.png",
+        "assets\/hub-uploads\/1794602744134-2-28f2-22.png",
+        "assets\/hub-uploads\/1794602744159-3-a06a-1-magasin.png"
       ],
+      "formatsTitle": "Formats proposés",
       "formats": [
         "Posts carrés",
         "Stories",
