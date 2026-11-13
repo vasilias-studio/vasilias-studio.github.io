@@ -1,10 +1,10 @@
 {
   "meta": {
     "site": "Vasilías Studio",
-    "url": "https://vasilias-studio.github.io/",
+    "url": "https:\/\/vasilias-studio.github.io\/",
     "version": "4.0",
-    "generated": "2026-11-07",
-    "updatedAt": "2026-11-12T23:49:22.429Z"
+    "generated": "2026-11-13",
+    "updatedAt": "2026-11-13T06:04:53.691Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -81,327 +81,6 @@
       "foot": "Maquettes & mockups de présentation"
     }
   ],
-  "about": {
-    "heading": "Designer graphique & digital autodidacte, fondateur de Vasilías Studio",
-    "lead": "Je suis designer graphique et digital autodidacte avec deux années de pratique, et fondateur de Vasilías Studio. Mon parcours dans le design s'est construit à travers l'apprentissage personnel, l'expérimentation et la réalisation de projets créatifs. Cette démarche m'a permis de développer une approche polyvalente du design et une curiosité constante pour les nouvelles possibilités visuelles et numériques.",
-    "paragraphs": [
-      "Je porte un intérêt particulier au branding et à la création d'identités visuelles. Pour moi, une identité de marque ne se limite pas à un logo : elle repose sur un ensemble cohérent de choix graphiques qui permettent à une entreprise d'exprimer sa personnalité, de communiquer clairement et de se distinguer.",
-      "À travers Vasilías Studio, je propose un accompagnement créatif dans la conception d'univers visuels et de supports de communication. Je travaille également sur des domaines complémentaires comme le design digital, l'UI/UX, le packaging et la création 3D. Mon objectif est de concevoir des solutions visuelles réfléchies, fonctionnelles et adaptées aux besoins de chaque projet.",
-      "En tant que designer autodidacte, je considère l'apprentissage et l'expérimentation comme des éléments essentiels de mon évolution. Chaque projet est une occasion d'affiner ma démarche, d'explorer de nouvelles idées et de développer mes compétences."
-    ],
-    "portrait": "assets/about-portrait-v2.png",
-    "caption": "Vasilías",
-    "workProcess": {
-      "title": "Comment je travaille",
-      "intro": "De la première idée au résultat final, chaque étape est pensée pour donner du sens à votre projet.",
-      "steps": [
-        {
-          "title": "Comprendre",
-          "hook": "Chaque projet commence par une réflexion.",
-          "points": [
-            "Échange autour de votre projet et de vos objectifs.",
-            "Analyse de votre secteur et de votre audience.",
-            "Identification des besoins et définition d’une direction créative."
-          ],
-          "goal": "Comprendre avant de concevoir."
-        },
-        {
-          "title": "Explorer",
-          "hook": "Donner forme aux idées.",
-          "points": [
-            "Recherche d’inspirations et de références visuelles.",
-            "Exploration des compositions, couleurs et typographies.",
-            "Création de concepts et de propositions graphiques.",
-            "Présentation de la direction artistique retenue."
-          ],
-          "goal": "Construire une identité visuelle cohérente et distinctive."
-        },
-        {
-          "title": "Concrétiser",
-          "hook": "Transformer le concept en réalité.",
-          "points": [
-            "Ajustements et perfectionnement des créations.",
-            "Vérification de la cohérence graphique.",
-            "Préparation des fichiers pour l’impression et les supports numériques.",
-            "Livraison des fichiers finaux et des éléments nécessaires."
-          ],
-          "goal": "Vous remettre un résultat professionnel, prêt à être utilisé."
-        }
-      ],
-      "quote": "Un bon design ne se limite pas à être esthétique. Il doit avoir du sens, communiquer clairement et fonctionner sur tous les supports."
-    }
-  },
-  "contact": {
-    "heading": "Échangeons sur votre projet",
-    "intro": "Pour toute demande d'information, de devis ou de collaboration créative, envoyez un message direct ou utilisez le formulaire.",
-    "email": "ericotlauranto34@gmail.com",
-    "positioning": "Graphic & Digital Designer — Freelance",
-    "availability": "Disponible pour projets"
-  },
-  "supports": [
-    {
-      "id": "social",
-      "title": "Réseaux Sociaux",
-      "tag": "SOCIAL",
-      "category": "Social",
-      "desc": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes.",
-      "overview": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes — une communication visuelle cohérente avec l'identité de marque.",
-      "cover": "assets/social-visuals.jpg",
-      "page": "social.html",
-      "gallery": [
-        "assets/social-1.jpg",
-        "assets/social-2.jpg",
-        "assets/social-3.jpg",
-        "assets/social-visuals.jpg"
-      ],
-      "formats": [
-        "Posts carrés",
-        "Stories",
-        "Bannières LinkedIn",
-        "Visuels de campagne"
-      ],
-      "showOnHome": true
-    },
-    {
-      "id": "print",
-      "title": "Imprimés",
-      "tag": "PRINT",
-      "category": "Print",
-      "desc": "Cartes de visite, affiches, brochures et papeterie d'exception prêts pour l'impression.",
-      "overview": "Cartes de visite, affiches, brochures et papeterie d'exception — des supports imprimés alliant noblesse du papier et précision de mise en page.",
-      "cover": "assets/hub-uploads/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
-      "page": "print.html",
-      "gallery": [
-        "assets/print-1.jpg",
-        "assets/print-2.jpg",
-        "assets/print-visuals.jpg"
-      ],
-      "formats": [
-        "Cartes de visite",
-        "Affiches",
-        "Brochures & catalogues",
-        "Papeterie & menus"
-      ],
-      "showOnHome": true
-    }
-  ],
-  "projects": [
-    {
-      "slug": "akk-oho",
-      "title": "Akk-Oho",
-      "status": "published",
-      "year": 2026,
-      "nature": "Projet personnel",
-      "client": "Akk-Oho",
-      "category": [
-        "Identité visuelle",
-        "Packaging"
-      ],
-      "covers": [
-        "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
-        "assets/hub-uploads/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
-        "assets/hub-uploads/1794522728966-3-bjq5-Plan-de-travail-2-80.jpg",
-        "assets/hub-uploads/1794522616741-2-0h1w-Plan-de-travail-1-80.jpg",
-        "assets/hub-uploads/1794518894726-1-4ghz-Sans-titre-1.jpg",
-        "assets/hub-uploads/1794170042574-3-7f4t-Plan-de-travail-3.jpg"
-      ],
-      "cover": "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
-      "role": "",
-      "tagline": "Valoriser l'élevage local par l'identité visuelle",
-      "overview": "Akk-Oho est un projet fictif d'élevage d'akoho gasy, réalisé dans le cadre d'une simulation de gestion d'entreprise. L'objectif était de donner à cette activité agricole locale une image professionnelle, authentique et facilement reconnaissable.",
-      "gallery": [
-        "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
-        "assets/hub-uploads/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg"
-      ],
-      "page": "work-akk-oho.html",
-      "sections": [
-        {
-          "title": "",
-          "text": "Le travail s'est articulé autour de la création d'une identité visuelle complète, pensée pour inspirer confiance et valoriser l'ancrage malgache de la marque. Le vert évoque le terroir et la nature, tandis que le beige crème apporte chaleur et authenticité. Le logo, volontairement simple et distinctif, a été conçu pour rester identifiable sur différents supports et formats."
-        },
-        {
-          "title": "",
-          "text": "Le projet comprend également le développement des supports de communication et des éléments de packaging, afin d'assurer une cohérence visuelle entre la marque, ses produits et son environnement professionnel."
-        }
-      ]
-    },
-    {
-      "slug": "monreleve",
-      "title": "Monrelevé",
-      "status": "published",
-      "year": 2026,
-      "nature": "Collaboration",
-      "client": "Monrelevé",
-      "category": [
-        "Branding",
-        "Identité visuelle",
-        "Réseaux sociaux",
-        "UI/UX"
-      ],
-      "cover": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "role": "",
-      "tagline": "Plateforme web académique",
-      "overview": "MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la gestion et le suivi de leur parcours académique.\n\nL'application permet de consulter ses notes, suivre ses moyennes, accéder à son emploi du temps et retrouver d'anciens sujets d'examens depuis un espace personnel. Elle propose également un système d'inscription et de connexion afin d'offrir une expérience adaptée à chaque étudiant.",
-      "gallery": [
-        "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
-        "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
-        "assets/hub-uploads/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
-        "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
-      ],
-      "covers": [
-        "assets/hub-uploads/1794526815870-2-8l1l-111.jpg",
-        "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
-        "assets/hub-uploads/1794527351634-4-g472-333-80.jpg",
-        "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
-      ],
-      "page": "work-monreleve.html",
-      "sections": [
-        {
-          "title": "",
-          "text": "L'objectif est de rendre les informations académiques plus accessibles grâce à une expérience numérique centralisée, intuitive et agréable à utiliser.\n\nÀ travers ce projet, le travail porte sur la création d'une identité visuelle cohérente et la conception d'une interface UI/UX moderne, avec une attention particulière accordée à la lisibilité, à l'organisation des informations et à la simplicité de navigation."
-        }
-      ]
-    },
-    {
-      "id": "nebulo",
-      "title": "Nébulo",
-      "slug": "work-nebulo",
-      "status": "published",
-      "nature": "Concept fictif",
-      "year": "Juillet 2025",
-      "category": [
-        "Branding",
-        "Identity"
-      ],
-      "client": "",
-      "role": "Identité Visuelle · Direction Artistique",
-      "tagline": "Système d'identité contemporain et dynamique pour Nébulo.",
-      "overview": "Nébulo est un projet d'identité visuelle qui explore la rencontre entre géométrie, mouvement et expression numérique. L'objectif était de construire un univers graphique contemporain, capable de transmettre une image à la fois dynamique, audacieuse et élégante.",
-      "page": "work-nebulo.html",
-      "cover": "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
-      "gallery": [],
-      "covers": [
-        "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
-        "assets/hub-uploads/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
-        "assets/hub-uploads/1794170307985-6-0cmv-Plan-de-travail-1-copie-80.jpg",
-        "assets/hub-uploads/1794183053570-1-s620-Plan-de-travail-5.jpg",
-        "assets/hub-uploads/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
-        "assets/hub-uploads/1794106632598-2-8uqu-Plan-de-travail-2.jpg"
-      ],
-      "sections": [
-        {
-          "title": "",
-          "text": "L'identité repose sur une construction géométrique rigoureuse, une typographie expressive et un langage visuel modulaire. Le bleu profond, associé à des contrastes lumineux et à des tons sobres, donne naissance à un univers distinctif, pensé pour évoluer aussi bien sur les supports numériques que sur les supports imprimés."
-        }
-      ]
-    },
-    {
-      "id": "orquid-spices",
-      "title": "ORQUID SPICES",
-      "slug": "work-orquid-spices",
-      "status": "published",
-      "nature": "Client",
-      "year": "Mai 2026",
-      "category": [
-        "Branding",
-        "Packaging"
-      ],
-      "client": "Orquid Spices",
-      "role": "Branding · Packaging Design · Direction Artistique",
-      "tagline": "Identité globale et packaging premium pour épices d'exception.",
-      "overview": "Le projet ORQUID SPICES m'a été confié dans sa globalité. Il s'agissait de construire de zéro l'identité visuelle d'une maison d'épices fines contemporaines fondée à Madagascar, avec un positionnement ancré dans l'univers de la parfumerie de niche et de l'édition haut de gamme. Le défi était de créer quelque chose qui ne ressemble à aucun packaging alimentaire existant, avec un système visuel où le silence, la précision et la matière font tout le travail.",
-      "page": "work-orquid-spices.html",
-      "cover": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
-      "gallery": [],
-      "covers": [
-        "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
-        "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
-        "assets/hub-uploads/1794085740820-3-1dlv-03.jpg",
-        "assets/hub-uploads/1794085760976-4-yglc-04.jpg",
-        "assets/hub-uploads/1794085760979-5-l6ur-05.jpg",
-        "assets/projects/orquid-spices/6.jpg",
-        "assets/hub-uploads/1794085760982-6-0vxf-06.jpg",
-        "assets/hub-uploads/1794085760983-7-pkkt-07.jpg",
-        "assets/hub-uploads/1794085791384-8-ar6f-08.jpg",
-        "assets/hub-uploads/1794085791387-9-dy2f-09.jpg",
-        "assets/hub-uploads/1794085791389-10-ibsw-10.jpg",
-        "assets/hub-uploads/1794085791391-11-xhch-12.jpg"
-      ],
-      "sections": [
-        {
-          "title": "Logotype & Symbole",
-          "text": "Le logo adopte un parti pris éditorial fort avec le nom seul, Orquid en Jost Regular et SPICES en capitales très espacées, séparés d'un filet fin. Aucun symbole en façade, juste le nom, typographié avec la rigueur d'une maison qui n'a pas besoin de s'expliquer. Le symbole OS, lui, vit en parallèle avec une fusion continue du O et du S qui évoque à la fois la gousse de vanille enroulée et le mouvement discret du serpent, totem de la marque."
-        },
-        {
-          "title": "Palette & Charte Graphique",
-          "text": "La palette est extraite directement des matières premières avec un vert abyssal profond « #454508 » comme couleur dominante, un crème vanille « #F2EBD9 » en secondaire et un or mat « #D9BD70 » utilisé avec parcimonie sur les finitions et les dorures à chaud. La charte graphique couvre l'ensemble du système avec les typographies Jost et Cormorant Garamond, le motif OS répété, les illustrations botaniques au trait, le sceau circulaire ainsi que les règles d'application sur packaging et digital. Tout a été conçu pour être à la fois premium et industrialisable, parce que le luxe ne vaut rien s'il ne peut pas exister réellement."
-        }
-      ]
-    },
-    {
-      "id": "pellicano",
-      "title": "PELLICANO",
-      "slug": "work-pellicano",
-      "status": "incomplete",
-      "nature": "À confirmer",
-      "year": "",
-      "category": [
-        "Branding",
-        "Packaging"
-      ],
-      "client": "",
-      "role": "",
-      "tagline": "Identité méditerranéenne — en attente de contenus.",
-      "overview": "",
-      "page": "work-pellicano.html",
-      "cover": "",
-      "gallery": [],
-      "covers": [],
-      "sections": []
-    },
-    {
-      "id": "dolce",
-      "title": "Dolce",
-      "slug": "work-dolce",
-      "status": "incomplete",
-      "nature": "À confirmer",
-      "year": "",
-      "category": [
-        "Branding",
-        "Packaging"
-      ],
-      "client": "",
-      "role": "",
-      "tagline": "Glace artisanale — en attente de contenus.",
-      "overview": "",
-      "page": "work-dolce.html",
-      "cover": "",
-      "gallery": [],
-      "covers": [],
-      "sections": []
-    },
-    {
-      "id": "les-trois-etoiles",
-      "title": "Les Trois Étoiles",
-      "slug": "work-les-trois-etoiles",
-      "status": "incomplete",
-      "nature": "À confirmer",
-      "year": "",
-      "category": [
-        "Identity",
-        "Print"
-      ],
-      "client": "",
-      "role": "",
-      "tagline": "Art de la table — en attente de contenus.",
-      "overview": "",
-      "page": "work-les-trois-etoiles.html",
-      "cover": "",
-      "gallery": [],
-      "covers": [],
-      "sections": []
-    }
-  ],
   "pages": [
     {
       "file": "index.html",
@@ -459,12 +138,666 @@
       "inMenu": false
     }
   ],
+  "projects": [
+    {
+      "sections": [
+        {
+          "title": "",
+          "text": "Le travail s'est articulé autour de la création d'une identité visuelle complète, pensée pour inspirer confiance et valoriser l'ancrage malgache de la marque. Le vert évoque le terroir et la nature, tandis que le beige crème apporte chaleur et authenticité. Le logo, volontairement simple et distinctif, a été conçu pour rester identifiable sur différents supports et formats."
+        },
+        {
+          "title": "",
+          "text": "Le projet comprend également le développement des supports de communication et des éléments de packaging, afin d'assurer une cohérence visuelle entre la marque, ses produits et son environnement professionnel."
+        }
+      ],
+      "slug": "akk-oho",
+      "title": "Akk-Oho",
+      "status": "published",
+      "year": 2026,
+      "nature": "Projet personnel",
+      "client": "Akk-Oho",
+      "category": [
+        "Identité visuelle",
+        "Packaging"
+      ],
+      "covers": [
+        "assets\/hub-uploads\/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+        "assets\/hub-uploads\/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
+        "assets\/hub-uploads\/1794522728966-3-bjq5-Plan-de-travail-2-80.jpg",
+        "assets\/hub-uploads\/1794522616741-2-0h1w-Plan-de-travail-1-80.jpg",
+        "assets\/hub-uploads\/1794518894726-1-4ghz-Sans-titre-1.jpg",
+        "assets\/hub-uploads\/1794170042574-3-7f4t-Plan-de-travail-3.jpg"
+      ],
+      "cover": "assets\/hub-uploads\/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "role": "",
+      "tagline": "Valoriser l'élevage local par l'identité visuelle",
+      "overview": "Akk-Oho est un projet fictif d'élevage d'akoho gasy, réalisé dans le cadre d'une simulation de gestion d'entreprise. L'objectif était de donner à cette activité agricole locale une image professionnelle, authentique et facilement reconnaissable.",
+      "gallery": [
+        "assets\/hub-uploads\/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
+        "assets\/hub-uploads\/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg"
+      ],
+      "page": "work-akk-oho.html"
+    },
+    {
+      "sections": [
+        {
+          "title": "",
+          "text": "L'objectif est de rendre les informations académiques plus accessibles grâce à une expérience numérique centralisée, intuitive et agréable à utiliser.\n\nÀ travers ce projet, le travail porte sur la création d'une identité visuelle cohérente et la conception d'une interface UI\/UX moderne, avec une attention particulière accordée à la lisibilité, à l'organisation des informations et à la simplicité de navigation."
+        }
+      ],
+      "slug": "monreleve",
+      "title": "Monrelevé",
+      "status": "published",
+      "year": 2026,
+      "nature": "Collaboration",
+      "client": "Monrelevé",
+      "category": [
+        "Branding",
+        "Identité visuelle",
+        "Réseaux sociaux",
+        "UI\/UX"
+      ],
+      "covers": [
+        "assets\/hub-uploads\/1794526815870-2-8l1l-111.jpg",
+        "assets\/hub-uploads\/1794526815872-3-by3m-222.jpg",
+        "assets\/hub-uploads\/1794527351634-4-g472-333-80.jpg",
+        "assets\/hub-uploads\/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg"
+      ],
+      "cover": "assets\/hub-uploads\/1794526815870-2-8l1l-111.jpg",
+      "role": "",
+      "tagline": "Plateforme web académique",
+      "overview": "MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la gestion et le suivi de leur parcours académique.\n\nL'application permet de consulter ses notes, suivre ses moyennes, accéder à son emploi du temps et retrouver d'anciens sujets d'examens depuis un espace personnel. Elle propose également un système d'inscription et de connexion afin d'offrir une expérience adaptée à chaque étudiant.",
+      "gallery": [
+        "assets\/hub-uploads\/1794043739933-1-09y5-Plan-de-travail-4.jpg",
+        "assets\/hub-uploads\/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
+        "assets\/hub-uploads\/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
+        "assets\/hub-uploads\/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg"
+      ],
+      "page": "work-monreleve.html"
+    },
+    {
+      "id": "nebulo",
+      "sections": [
+        {
+          "title": "",
+          "text": "L'identité repose sur une construction géométrique rigoureuse, une typographie expressive et un langage visuel modulaire. Le bleu profond, associé à des contrastes lumineux et à des tons sobres, donne naissance à un univers distinctif, pensé pour évoluer aussi bien sur les supports numériques que sur les supports imprimés."
+        }
+      ],
+      "slug": "work-nebulo",
+      "title": "Nébulo",
+      "status": "published",
+      "year": "Juillet 2025",
+      "nature": "Concept fictif",
+      "client": "",
+      "category": [
+        "Branding",
+        "Identity"
+      ],
+      "covers": [
+        "assets\/hub-uploads\/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
+        "assets\/hub-uploads\/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
+        "assets\/hub-uploads\/1794170307985-6-0cmv-Plan-de-travail-1-copie-80.jpg",
+        "assets\/hub-uploads\/1794183053570-1-s620-Plan-de-travail-5.jpg",
+        "assets\/hub-uploads\/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
+        "assets\/hub-uploads\/1794106632598-2-8uqu-Plan-de-travail-2.jpg"
+      ],
+      "cover": "assets\/hub-uploads\/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
+      "role": "Identité Visuelle · Direction Artistique",
+      "tagline": "Système d'identité contemporain et dynamique pour Nébulo.",
+      "overview": "Nébulo est un projet d'identité visuelle qui explore la rencontre entre géométrie, mouvement et expression numérique. L'objectif était de construire un univers graphique contemporain, capable de transmettre une image à la fois dynamique, audacieuse et élégante.",
+      "gallery": [],
+      "page": "work-nebulo.html"
+    },
+    {
+      "id": "orquid-spices",
+      "sections": [
+        {
+          "title": "Logotype & Symbole",
+          "text": "Le logo adopte un parti pris éditorial fort avec le nom seul, Orquid en Jost Regular et SPICES en capitales très espacées, séparés d'un filet fin. Aucun symbole en façade, juste le nom, typographié avec la rigueur d'une maison qui n'a pas besoin de s'expliquer. Le symbole OS, lui, vit en parallèle avec une fusion continue du O et du S qui évoque à la fois la gousse de vanille enroulée et le mouvement discret du serpent, totem de la marque."
+        },
+        {
+          "title": "Palette & Charte Graphique",
+          "text": "La palette est extraite directement des matières premières avec un vert abyssal profond « #454508 » comme couleur dominante, un crème vanille « #F2EBD9 » en secondaire et un or mat « #D9BD70 » utilisé avec parcimonie sur les finitions et les dorures à chaud. La charte graphique couvre l'ensemble du système avec les typographies Jost et Cormorant Garamond, le motif OS répété, les illustrations botaniques au trait, le sceau circulaire ainsi que les règles d'application sur packaging et digital. Tout a été conçu pour être à la fois premium et industrialisable, parce que le luxe ne vaut rien s'il ne peut pas exister réellement."
+        }
+      ],
+      "slug": "work-orquid-spices",
+      "title": "ORQUID SPICES",
+      "status": "published",
+      "year": "Mai 2026",
+      "nature": "Client",
+      "client": "Orquid Spices",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "covers": [
+        "assets\/hub-uploads\/1794085740815-1-ye9j-01.jpg",
+        "assets\/hub-uploads\/1794085740818-2-mzof-02.jpg",
+        "assets\/hub-uploads\/1794085740820-3-1dlv-03.jpg",
+        "assets\/hub-uploads\/1794085760976-4-yglc-04.jpg",
+        "assets\/hub-uploads\/1794085760979-5-l6ur-05.jpg",
+        "assets\/projects\/orquid-spices\/6.jpg",
+        "assets\/hub-uploads\/1794085760982-6-0vxf-06.jpg",
+        "assets\/hub-uploads\/1794085760983-7-pkkt-07.jpg",
+        "assets\/hub-uploads\/1794085791384-8-ar6f-08.jpg",
+        "assets\/hub-uploads\/1794085791387-9-dy2f-09.jpg",
+        "assets\/hub-uploads\/1794085791389-10-ibsw-10.jpg",
+        "assets\/hub-uploads\/1794085791391-11-xhch-12.jpg"
+      ],
+      "cover": "assets\/hub-uploads\/1794085740815-1-ye9j-01.jpg",
+      "role": "Branding · Packaging Design · Direction Artistique",
+      "tagline": "Identité globale et packaging premium pour épices d'exception.",
+      "overview": "Le projet ORQUID SPICES m'a été confié dans sa globalité. Il s'agissait de construire de zéro l'identité visuelle d'une maison d'épices fines contemporaines fondée à Madagascar, avec un positionnement ancré dans l'univers de la parfumerie de niche et de l'édition haut de gamme. Le défi était de créer quelque chose qui ne ressemble à aucun packaging alimentaire existant, avec un système visuel où le silence, la précision et la matière font tout le travail.",
+      "gallery": [],
+      "page": "work-orquid-spices.html"
+    },
+    {
+      "id": "pellicano",
+      "sections": [],
+      "slug": "work-pellicano",
+      "title": "PELLICANO",
+      "status": "incomplete",
+      "year": "",
+      "nature": "À confirmer",
+      "client": "",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "covers": [],
+      "cover": "none",
+      "role": "",
+      "tagline": "Identité méditerranéenne — en attente de contenus.",
+      "overview": "",
+      "gallery": [],
+      "page": "work-pellicano.html"
+    },
+    {
+      "id": "dolce",
+      "sections": [],
+      "slug": "work-dolce",
+      "title": "Dolce",
+      "status": "incomplete",
+      "year": "",
+      "nature": "À confirmer",
+      "client": "",
+      "category": [
+        "Branding",
+        "Packaging"
+      ],
+      "covers": [],
+      "cover": "none",
+      "role": "",
+      "tagline": "Glace artisanale — en attente de contenus.",
+      "overview": "",
+      "gallery": [],
+      "page": "work-dolce.html"
+    },
+    {
+      "id": "les-trois-etoiles",
+      "sections": [],
+      "slug": "work-les-trois-etoiles",
+      "title": "Les Trois Étoiles",
+      "status": "incomplete",
+      "year": "",
+      "nature": "À confirmer",
+      "client": "",
+      "category": [
+        "Identity",
+        "Print"
+      ],
+      "covers": [],
+      "cover": "none",
+      "role": "",
+      "tagline": "Art de la table — en attente de contenus.",
+      "overview": "",
+      "gallery": [],
+      "page": "work-les-trois-etoiles.html"
+    }
+  ],
+  "media": [
+    {
+      "path": "assets\/about-portrait-v2.png",
+      "bytes": 890774,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/logo-vasilias.svg",
+      "bytes": 1690,
+      "used": "index.html, work.html, about.html, services.html, contact.html, print.html, social.html, work-nebulo.html, work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/moi-portrait.jpg",
+      "bytes": 208631,
+      "used": ""
+    },
+    {
+      "path": "assets\/moi-portrait.png",
+      "bytes": 1980973,
+      "used": "index.html"
+    },
+    {
+      "path": "assets\/moi-portrait.webp",
+      "bytes": 213644,
+      "used": "index.html"
+    },
+    {
+      "path": "assets\/pin-blue.png",
+      "bytes": 126102,
+      "used": ""
+    },
+    {
+      "path": "assets\/print-1.jpg",
+      "bytes": 154745,
+      "used": "print.html"
+    },
+    {
+      "path": "assets\/print-2.jpg",
+      "bytes": 225377,
+      "used": "print.html"
+    },
+    {
+      "path": "assets\/print-visuals.jpg",
+      "bytes": 117348,
+      "used": "print.html"
+    },
+    {
+      "path": "assets\/social-1.jpg",
+      "bytes": 155874,
+      "used": "social.html"
+    },
+    {
+      "path": "assets\/social-2.jpg",
+      "bytes": 118938,
+      "used": "social.html"
+    },
+    {
+      "path": "assets\/social-3.jpg",
+      "bytes": 101363,
+      "used": "social.html"
+    },
+    {
+      "path": "assets\/social-visuals.jpg",
+      "bytes": 174840,
+      "used": "social.html"
+    },
+    {
+      "path": "assets\/statue.png",
+      "bytes": 807273,
+      "used": "index.html"
+    },
+    {
+      "path": "assets\/statue.webp",
+      "bytes": 59608,
+      "used": "index.html"
+    },
+    {
+      "path": "assets\/icons\/adobeillustrator.svg",
+      "bytes": 625,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/icons\/adobeindesign.svg",
+      "bytes": 1326,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/icons\/adobephotoshop.svg",
+      "bytes": 2433,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/icons\/blender.svg",
+      "bytes": 1309,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/icons\/canva.svg",
+      "bytes": 4231,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/icons\/figma.svg",
+      "bytes": 1108,
+      "used": "about.html"
+    },
+    {
+      "path": "assets\/placeholders\/portrait-placeholder.svg",
+      "bytes": 637,
+      "used": ""
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-1.jpg",
+      "bytes": 326402,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-2.jpg",
+      "bytes": 592971,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-3.jpg",
+      "bytes": 966182,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-4.jpg",
+      "bytes": 671179,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-5.jpg",
+      "bytes": 787200,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/asset-6.jpg",
+      "bytes": 230108,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/cover.jpg",
+      "bytes": 398688,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/nebulo\/hero.jpg",
+      "bytes": 102867,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/1.jpg",
+      "bytes": 823127,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/2.jpg",
+      "bytes": 343746,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/3.jpg",
+      "bytes": 773480,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/4.jpg",
+      "bytes": 1367099,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/5.jpg",
+      "bytes": 2032148,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/6.jpg",
+      "bytes": 1858981,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/projects\/orquid-spices\/Cover.jpg",
+      "bytes": 593651,
+      "used": "index.html, work.html, work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1793955464264-OSIA-drinkosia-Instagram-photos-and-videos.jpeg",
+      "bytes": 158804,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794012362937-318z-og-iage.png",
+      "bytes": 320223,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
+      "bytes": 777681,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794020321689-ycr9-Plan-de-travail-2.jpg",
+      "bytes": 225462,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794020342426-mqul-og-iage.png",
+      "bytes": 320223,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794073410597-8f00--propos.jpg",
+      "bytes": 153323,
+      "used": "SEO about.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794074121623-cyfv-Work.jpg",
+      "bytes": 163323,
+      "used": "SEO work.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794074183547-uolt-Orquid.jpg",
+      "bytes": 438249,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794043739933-1-09y5-Plan-de-travail-4.jpg",
+      "bytes": 39938,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
+      "bytes": 225462,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
+      "bytes": 316739,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085740815-1-ye9j-01.jpg",
+      "bytes": 633402,
+      "used": "index.html, work.html, work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085740818-2-mzof-02.jpg",
+      "bytes": 68623,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085740820-3-1dlv-03.jpg",
+      "bytes": 121804,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085760976-4-yglc-04.jpg",
+      "bytes": 475929,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085760979-5-l6ur-05.jpg",
+      "bytes": 410272,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085760982-6-0vxf-06.jpg",
+      "bytes": 229559,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085760983-7-pkkt-07.jpg",
+      "bytes": 229295,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085791384-8-ar6f-08.jpg",
+      "bytes": 985673,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085791387-9-dy2f-09.jpg",
+      "bytes": 319284,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085791389-10-ibsw-10.jpg",
+      "bytes": 337287,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085791391-11-xhch-12.jpg",
+      "bytes": 551504,
+      "used": "work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
+      "bytes": 326402,
+      "used": "index.html, work.html, work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794086547914-14-crgv-Contact.jpg",
+      "bytes": 160415,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794086547916-15-i02k-Service.jpg",
+      "bytes": 154352,
+      "used": "Ajouté via Hub"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794066494480-1-n82n-Orquid.jpg",
+      "bytes": 176147,
+      "used": "SEO work-orquid-spices.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794066539514-2-vte0-Contact.jpg",
+      "bytes": 160415,
+      "used": "SEO contact.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794066558447-3-qp71-Service.jpg",
+      "bytes": 154352,
+      "used": "SEO services.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794066582617-4-q58u-Accueil.jpg",
+      "bytes": 83984,
+      "used": "SEO index.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
+      "bytes": 88954,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794106632598-2-8uqu-Plan-de-travail-2.jpg",
+      "bytes": 117477,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
+      "bytes": 628279,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
+      "bytes": 108388,
+      "used": "index.html, work.html, work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794169296247-1-v4q7-Plan-de-travail-1-copie-80.jpg",
+      "bytes": 125297,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
+      "bytes": 125272,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
+      "bytes": 249718,
+      "used": "index.html, work.html, work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170042574-3-7f4t-Plan-de-travail-3.jpg",
+      "bytes": 294944,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
+      "bytes": 596800,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170171338-5-nkc6-Akkoho.jpg",
+      "bytes": 51164,
+      "used": "SEO work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794170307985-6-0cmv-Plan-de-travail-1-copie-80.jpg",
+      "bytes": 125297,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794183053570-1-s620-Plan-de-travail-5.jpg",
+      "bytes": 419065,
+      "used": "work-nebulo.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
+      "bytes": 419065,
+      "used": "print.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794518894726-1-4ghz-Sans-titre-1.jpg",
+      "bytes": 411424,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794522616741-2-0h1w-Plan-de-travail-1-80.jpg",
+      "bytes": 101579,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794522728966-3-bjq5-Plan-de-travail-2-80.jpg",
+      "bytes": 63547,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg",
+      "bytes": 3363058,
+      "used": "work-akk-oho.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
+      "bytes": 150608,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794526815870-2-8l1l-111.jpg",
+      "bytes": 966316,
+      "used": "index.html, work.html, work-monreleve.html, SEO work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794526815872-3-by3m-222.jpg",
+      "bytes": 68832,
+      "used": "work-monreleve.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794527351634-4-g472-333-80.jpg",
+      "bytes": 77223,
+      "used": "work-monreleve.html"
+    }
+  ],
   "skills": [
     "Branding & identité visuelle",
     "Design graphique",
     "Direction artistique",
     "Packaging",
-    "Design digital & UI/UX",
+    "Design digital & UI\/UX",
     "Création 3D (Blender)"
   ],
   "tools": [
@@ -475,24 +808,264 @@
     "Blender",
     "Canva"
   ],
+  "about": {
+    "portrait": "assets\/about-portrait-v2.png",
+    "caption": "Vasilías",
+    "heading": "Designer graphique & digital autodidacte, fondateur de Vasilías Studio",
+    "lead": "Je suis designer graphique et digital autodidacte avec deux années de pratique, et fondateur de Vasilías Studio. Mon parcours dans le design s'est construit à travers l'apprentissage personnel, l'expérimentation et la réalisation de projets créatifs. Cette démarche m'a permis de développer une approche polyvalente du design et une curiosité constante pour les nouvelles possibilités visuelles et numériques.",
+    "paragraphs": [
+      "Je porte un intérêt particulier au branding et à la création d'identités visuelles. Pour moi, une identité de marque ne se limite pas à un logo : elle repose sur un ensemble cohérent de choix graphiques qui permettent à une entreprise d'exprimer sa personnalité, de communiquer clairement et de se distinguer.",
+      "À travers Vasilías Studio, je propose un accompagnement créatif dans la conception d'univers visuels et de supports de communication. Je travaille également sur des domaines complémentaires comme le design digital, l'UI\/UX, le packaging et la création 3D. Mon objectif est de concevoir des solutions visuelles réfléchies, fonctionnelles et adaptées aux besoins de chaque projet.",
+      "En tant que designer autodidacte, je considère l'apprentissage et l'expérimentation comme des éléments essentiels de mon évolution. Chaque projet est une occasion d'affiner ma démarche, d'explorer de nouvelles idées et de développer mes compétences."
+    ],
+    "workProcess": {
+      "title": "Comment je travaille",
+      "intro": "De la première idée au résultat final, chaque étape est pensée pour donner du sens à votre projet.",
+      "quote": "Un bon design ne se limite pas à être esthétique. Il doit avoir du sens, communiquer clairement et fonctionner sur tous les supports.",
+      "steps": [
+        {
+          "title": "Comprendre",
+          "hook": "Chaque projet commence par une réflexion.",
+          "points": [
+            "Échange autour de votre projet et de vos objectifs.",
+            "Analyse de votre secteur et de votre audience.",
+            "Identification des besoins et définition d’une direction créative."
+          ],
+          "goal": "Comprendre avant de concevoir."
+        },
+        {
+          "title": "Explorer",
+          "hook": "Donner forme aux idées.",
+          "points": [
+            "Recherche d’inspirations et de références visuelles.",
+            "Exploration des compositions, couleurs et typographies.",
+            "Création de concepts et de propositions graphiques.",
+            "Présentation de la direction artistique retenue."
+          ],
+          "goal": "Construire une identité visuelle cohérente et distinctive."
+        },
+        {
+          "title": "Concrétiser",
+          "hook": "Transformer le concept en réalité.",
+          "points": [
+            "Ajustements et perfectionnement des créations.",
+            "Vérification de la cohérence graphique.",
+            "Préparation des fichiers pour l’impression et les supports numériques.",
+            "Livraison des fichiers finaux et des éléments nécessaires."
+          ],
+          "goal": "Vous remettre un résultat professionnel, prêt à être utilisé."
+        }
+      ]
+    }
+  },
+  "contact": {
+    "email": "ericotlauranto34@gmail.com",
+    "positioning": "Graphic & Digital Designer — Freelance",
+    "availability": "Disponible pour projets",
+    "heading": "Échangeons sur votre projet",
+    "intro": "Pour toute demande d'information, de devis ou de collaboration créative, envoyez un message direct ou utilisez le formulaire."
+  },
+  "supports": [
+    {
+      "id": "social",
+      "gallery": [
+        "assets\/social-1.jpg",
+        "assets\/social-2.jpg",
+        "assets\/social-3.jpg",
+        "assets\/social-visuals.jpg"
+      ],
+      "formats": [
+        "Posts carrés",
+        "Stories",
+        "Bannières LinkedIn",
+        "Visuels de campagne"
+      ],
+      "page": "social.html",
+      "title": "Réseaux Sociaux",
+      "desc": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes.",
+      "overview": "Publications, stories et formats adaptés pour Instagram, LinkedIn et autres plateformes — une communication visuelle cohérente avec l'identité de marque.",
+      "cover": "assets\/social-visuals.jpg",
+      "category": "Social",
+      "tag": "SOCIAL",
+      "showOnHome": true
+    },
+    {
+      "id": "print",
+      "gallery": [
+        "assets\/print-1.jpg",
+        "assets\/print-2.jpg",
+        "assets\/print-visuals.jpg"
+      ],
+      "formats": [
+        "Cartes de visite",
+        "Affiches",
+        "Brochures & catalogues",
+        "Papeterie & menus"
+      ],
+      "page": "print.html",
+      "title": "Imprimés",
+      "desc": "Cartes de visite, affiches, brochures et papeterie d'exception prêts pour l'impression.",
+      "overview": "Cartes de visite, affiches, brochures et papeterie d'exception — des supports imprimés alliant noblesse du papier et précision de mise en page.",
+      "cover": "assets\/hub-uploads\/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
+      "category": "Print",
+      "tag": "PRINT",
+      "showOnHome": true
+    }
+  ],
   "profiles": [
     {
       "name": "Behance",
-      "url": "https://www.behance.net/ericot1"
+      "url": "https:\/\/www.behance.net\/ericot1"
     },
     {
       "name": "Instagram",
-      "url": "https://www.instagram.com/ericot.vasilias/"
+      "url": "https:\/\/www.instagram.com\/ericot.vasilias\/"
     },
     {
       "name": "LinkedIn",
-      "url": "https://www.linkedin.com/in/ericot-lauranto-5807a8360"
+      "url": "https:\/\/www.linkedin.com\/in\/ericot-lauranto-5807a8360"
     },
     {
       "name": "Facebook",
-      "url": "https://www.facebook.com/profile.php?id=100071948245188"
+      "url": "https:\/\/www.facebook.com\/profile.php?id=100071948245188"
     }
   ],
+  "seo": {
+    "index.html": {
+      "title": "Vasilías — Graphic & Digital Designer",
+      "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
+      "img": "assets\/hub-uploads\/1794066582617-4-q58u-Accueil.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/",
+      "updated": "2026-11-08T04:04:37.865Z"
+    },
+    "work.html": {
+      "title": "Projets — Vasilías",
+      "ogTitle": "Projets — Vasilías",
+      "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
+      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design.",
+      "img": "assets\/hub-uploads\/1794074121623-cyfv-Work.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/work.html",
+      "updated": "2026-11-07T09:27:17.517Z"
+    },
+    "about.html": {
+      "title": "À Propos — Vasilías",
+      "ogTitle": "À Propos — Vasilías",
+      "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
+      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle.",
+      "img": "assets\/hub-uploads\/1794073410597-8f00--propos.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/about.html",
+      "updated": "2026-11-07T09:24:49.715Z"
+    },
+    "services.html": {
+      "title": "Services & Expertises — Vasilías",
+      "ogTitle": "Services & Expertises — Vasilías",
+      "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
+      "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías.",
+      "img": "assets\/hub-uploads\/1794066558447-3-qp71-Service.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/services.html",
+      "updated": "2026-11-07T15:49:19.956Z"
+    },
+    "contact.html": {
+      "title": "Contact — Vasilías",
+      "ogTitle": "Contact — Vasilías",
+      "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
+      "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging.",
+      "img": "assets\/hub-uploads\/1794066539514-2-vte0-Contact.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/contact.html",
+      "updated": "2026-11-07T15:49:01.510Z"
+    },
+    "print.html": {
+      "title": "Imprimés — Vasilías",
+      "ogTitle": "Imprimés — Vasilías",
+      "desc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
+      "ogDesc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
+      "img": "https:\/\/vasilias-studio.github.io\/assets\/og\/og-image-v2.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/print.html"
+    },
+    "social.html": {
+      "title": "Réseaux Sociaux — Vasilías",
+      "ogTitle": "Réseaux Sociaux — Vasilías",
+      "desc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
+      "ogDesc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
+      "img": "https:\/\/vasilias-studio.github.io\/assets\/og\/og-image-v2.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/social.html"
+    },
+    "work-nebulo.html": {
+      "title": "Nébulo — Vasilías",
+      "ogTitle": "Nébulo — Vasilías",
+      "desc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
+      "ogDesc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
+      "img": "assets\/hub-uploads\/1794064568851-1-6pwe-N-bulo.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/work-nebulo.html",
+      "updated": "2026-11-07T15:16:42.530Z"
+    },
+    "work-orquid-spices.html": {
+      "title": "ORQUID SPICES — Vasilías",
+      "ogTitle": "ORQUID SPICES — Vasilías",
+      "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
+      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
+      "img": "assets\/hub-uploads\/1794066494480-1-n82n-Orquid.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/work-orquid-spices.html",
+      "updated": "2026-11-07T15:48:16.538Z"
+    },
+    "work-monreleve.html": {
+      "title": "Monrelevé — Vasilías",
+      "ogTitle": "Monrelevé — Vasilías",
+      "desc": "Étude de cas Monrelevé par Vasilías — Plateforme web académique. MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la…",
+      "ogDesc": "Étude de cas Monrelevé par Vasilías — Plateforme web académique. MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la…",
+      "img": "https:\/\/vasilias-studio.github.io\/assets\/hub-uploads\/1794526815870-2-8l1l-111.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/work-monreleve.html",
+      "auto": true
+    },
+    "work-akk-oho.html": {
+      "title": "Akk-Oho — Vasilías",
+      "ogTitle": "Akk-Oho — Vasilías",
+      "desc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
+      "ogDesc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
+      "img": "assets\/hub-uploads\/1794170171338-5-nkc6-Akkoho.jpg",
+      "canonical": "https:\/\/vasilias-studio.github.io\/work-akk-oho.html",
+      "updated": "2026-11-08T20:36:15.323Z"
+    }
+  },
+  "alts": {
+    "statue.png": "Buste sculpté en pierre, emblème de Vasilías Studio",
+    "moi-portrait.png": "Portrait du fondateur de Vasilías Studio",
+    "projects\/nebulo\/cover.jpg": "Visuel d'identité Nébulo, silhouette bleue néon",
+    "projects\/orquid-spices\/Cover.jpg": "Packaging ORQUID SPICES, marbre sombre",
+    "print-visuals.jpg": "Supports imprimés Vasilías",
+    "social-visuals.jpg": "Visuels pour réseaux sociaux Vasilías",
+    "about-portrait-v2.png": "Portrait de Vasilías",
+    "print-1.jpg": "Cartes de visite imprimées",
+    "print-2.jpg": "Affiche et brochure imprimées",
+    "social-1.jpg": "Publication carrée réseaux sociaux",
+    "social-2.jpg": "Format story réseaux sociaux",
+    "social-3.jpg": "Bannière LinkedIn",
+    "projects\/nebulo\/hero.jpg": "Bannière principale du projet Nébulo",
+    "projects\/nebulo\/asset-1.jpg": "Déclinaison Nébulo",
+    "projects\/nebulo\/asset-4.jpg": "Construction géométrique Nébulo",
+    "projects\/nebulo\/asset-5.jpg": "Déclinaison Nébulo",
+    "projects\/nebulo\/asset-3.jpg": "Application mobile Nébulo",
+    "projects\/nebulo\/asset-2.jpg": "Cartes de visite Nébulo",
+    "projects\/nebulo\/asset-6.jpg": "Déclinaison visuelle Nébulo",
+    "projects\/orquid-spices\/6.jpg": "Présentation ORQUID SPICES",
+    "projects\/orquid-spices\/1.jpg": "Visuel packaging ORQUID SPICES",
+    "projects\/orquid-spices\/5.jpg": "Série de coffrets ORQUID SPICES",
+    "projects\/orquid-spices\/2.jpg": "Flacon ORQUID SPICES",
+    "projects\/orquid-spices\/3.jpg": "Visuel packaging ORQUID SPICES portrait",
+    "projects\/orquid-spices\/4.jpg": "Détail packaging ORQUID SPICES",
+    "moi-portrait.jpg": "Portrait du fondateur de Vasilías Studio",
+    "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
+    "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
+    "logo-vasilias.svg": "Logo Vasilías Studio",
+    "pin-blue.png": "Épingle décorative bleue",
+    "placeholders\/portrait-placeholder.svg": "Emplacement portrait",
+    "icons\/adobeillustrator.svg": "Icône Adobe Illustrator",
+    "icons\/adobeindesign.svg": "Icône Adobe InDesign",
+    "icons\/adobephotoshop.svg": "Icône Adobe Photoshop",
+    "icons\/blender.svg": "Icône Blender",
+    "icons\/canva.svg": "Icône Canva",
+    "icons\/figma.svg": "Icône Figma"
+  },
   "watch": [
     "index.html",
     "work.html",
@@ -508,142 +1081,6 @@
     "robots.txt",
     "sitemap.xml"
   ],
-  "seo": {
-    "index.html": {
-      "title": "Vasilías — Graphic & Digital Designer",
-      "desc": "Portfolio de Vasilías, designer graphique freelance basé à Toamasina, Madagascar. Identité visuelle, branding, packaging design et design digital.",
-      "img": "assets/hub-uploads/1794066582617-4-q58u-Accueil.jpg",
-      "canonical": "https://vasilias-studio.github.io/",
-      "updated": "2026-11-08T04:04:37.865Z"
-    },
-    "work.html": {
-      "title": "Projets — Vasilías",
-      "desc": "Index des réalisations de Vasilías, Graphic & Digital Designer.",
-      "img": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
-      "canonical": "https://vasilias-studio.github.io/work.html",
-      "updated": "2026-11-07T09:27:17.517Z",
-      "ogTitle": "Projets — Vasilías",
-      "ogDesc": "Index des réalisations de Vasilías : identités visuelles, branding et packaging design."
-    },
-    "about.html": {
-      "title": "À Propos — Vasilías",
-      "desc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, fondateur de Vasilías Studio, spécialisé en branding et identité visuelle.",
-      "img": "assets/hub-uploads/1794073410597-8f00--propos.jpg",
-      "canonical": "https://vasilias-studio.github.io/about.html",
-      "updated": "2026-11-07T09:24:49.715Z",
-      "ogTitle": "À Propos — Vasilías",
-      "ogDesc": "Vasilías, designer graphique & digital freelance autodidacte basé à Toamasina, Madagascar — deux ans de pratique, spécialisé en branding et identité visuelle."
-    },
-    "services.html": {
-      "title": "Services & Expertises — Vasilías",
-      "desc": "Découvrez les prestations et services en identité visuelle, branding, packaging et design digital proposés par Vasilías.",
-      "img": "assets/hub-uploads/1794066558447-3-qp71-Service.jpg",
-      "canonical": "https://vasilias-studio.github.io/services.html",
-      "updated": "2026-11-07T15:49:19.956Z",
-      "ogTitle": "Services & Expertises — Vasilías",
-      "ogDesc": "Identité visuelle, branding, packaging design et design digital : les prestations proposées par Vasilías."
-    },
-    "contact.html": {
-      "title": "Contact — Vasilías",
-      "desc": "Contactez Vasilías, Graphic & Digital Designer, pour toute demande d'information, de devis ou de collaboration créative.",
-      "img": "assets/hub-uploads/1794066539514-2-vte0-Contact.jpg",
-      "canonical": "https://vasilias-studio.github.io/contact.html",
-      "updated": "2026-11-07T15:49:01.510Z",
-      "ogTitle": "Contact — Vasilías",
-      "ogDesc": "Contactez Vasilías, designer graphique freelance à Toamasina, Madagascar, pour votre projet d'identité visuelle, de branding ou de packaging."
-    },
-    "print.html": {
-      "title": "Imprimés — Vasilías",
-      "ogTitle": "Imprimés — Vasilías",
-      "desc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
-      "ogDesc": "Supports imprimés par Vasilías : cartes de visite, affiches, brochures et papeterie d'exception.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
-      "canonical": "https://vasilias-studio.github.io/print.html"
-    },
-    "social.html": {
-      "title": "Réseaux Sociaux — Vasilías",
-      "ogTitle": "Réseaux Sociaux — Vasilías",
-      "desc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
-      "ogDesc": "Visuels pour réseaux sociaux par Vasilías : publications, stories et formats adaptés.",
-      "img": "https://vasilias-studio.github.io/assets/og/og-image-v2.jpg",
-      "canonical": "https://vasilias-studio.github.io/social.html"
-    },
-    "work-nebulo.html": {
-      "title": "Nébulo — Vasilías",
-      "ogTitle": "Nébulo — Vasilías",
-      "desc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
-      "ogDesc": "Nébulo explore la synthèse entre géométrie rigoureuse et mouvement fluide. Étude de cas par Vasilías.",
-      "img": "assets/hub-uploads/1794064568851-1-6pwe-N-bulo.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-nebulo.html",
-      "updated": "2026-11-07T15:16:42.530Z"
-    },
-    "work-orquid-spices.html": {
-      "title": "ORQUID SPICES — Vasilías",
-      "ogTitle": "ORQUID SPICES — Vasilías",
-      "desc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar — branding, packaging et direction artistique par Vasilías.",
-      "ogDesc": "ORQUID SPICES : identité visuelle complète d'une maison d'épices fines fondée à Madagascar. Étude de cas par Vasilías.",
-      "img": "assets/hub-uploads/1794066494480-1-n82n-Orquid.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-orquid-spices.html",
-      "updated": "2026-11-07T15:48:16.538Z"
-    },
-    "work-monreleve.html": {
-      "title": "Monrelevé — Vasilías",
-      "ogTitle": "Monrelevé — Vasilías",
-      "desc": "Étude de cas Monrelevé par Vasilías — Plateforme web académique. MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la…",
-      "ogDesc": "Étude de cas Monrelevé par Vasilías — Plateforme web académique. MonRelevé est un projet de plateforme web dédiée aux étudiants, conçu pour faciliter la…",
-      "img": "https://vasilias-studio.github.io/assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-monreleve.html",
-      "auto": true
-    },
-    "work-akk-oho.html": {
-      "title": "Akk-Oho — Vasilías",
-      "ogTitle": "Akk-Oho — Vasilías",
-      "desc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
-      "ogDesc": "Étude de cas Akk-Oho par Vasilías Studio : Identité visuelle, Packaging.",
-      "img": "assets/hub-uploads/1794170171338-5-nkc6-Akkoho.jpg",
-      "canonical": "https://vasilias-studio.github.io/work-akk-oho.html",
-      "updated": "2026-11-08T20:36:15.323Z"
-    }
-  },
-  "alts": {
-    "statue.png": "Buste sculpté en pierre, emblème de Vasilías Studio",
-    "moi-portrait.png": "Portrait du fondateur de Vasilías Studio",
-    "projects/nebulo/cover.jpg": "Visuel d'identité Nébulo, silhouette bleue néon",
-    "projects/orquid-spices/Cover.jpg": "Packaging ORQUID SPICES, marbre sombre",
-    "print-visuals.jpg": "Supports imprimés Vasilías",
-    "social-visuals.jpg": "Visuels pour réseaux sociaux Vasilías",
-    "about-portrait-v2.png": "Portrait de Vasilías",
-    "print-1.jpg": "Cartes de visite imprimées",
-    "print-2.jpg": "Affiche et brochure imprimées",
-    "social-1.jpg": "Publication carrée réseaux sociaux",
-    "social-2.jpg": "Format story réseaux sociaux",
-    "social-3.jpg": "Bannière LinkedIn",
-    "projects/nebulo/hero.jpg": "Bannière principale du projet Nébulo",
-    "projects/nebulo/asset-1.jpg": "Déclinaison Nébulo",
-    "projects/nebulo/asset-4.jpg": "Construction géométrique Nébulo",
-    "projects/nebulo/asset-5.jpg": "Déclinaison Nébulo",
-    "projects/nebulo/asset-3.jpg": "Application mobile Nébulo",
-    "projects/nebulo/asset-2.jpg": "Cartes de visite Nébulo",
-    "projects/nebulo/asset-6.jpg": "Déclinaison visuelle Nébulo",
-    "projects/orquid-spices/6.jpg": "Présentation ORQUID SPICES",
-    "projects/orquid-spices/1.jpg": "Visuel packaging ORQUID SPICES",
-    "projects/orquid-spices/5.jpg": "Série de coffrets ORQUID SPICES",
-    "projects/orquid-spices/2.jpg": "Flacon ORQUID SPICES",
-    "projects/orquid-spices/3.jpg": "Visuel packaging ORQUID SPICES portrait",
-    "projects/orquid-spices/4.jpg": "Détail packaging ORQUID SPICES",
-    "moi-portrait.jpg": "Portrait du fondateur de Vasilías Studio",
-    "moi-portrait.webp": "Portrait du fondateur de Vasilías Studio",
-    "statue.webp": "Buste sculpté en pierre, emblème de Vasilías Studio",
-    "logo-vasilias.svg": "Logo Vasilías Studio",
-    "pin-blue.png": "Épingle décorative bleue",
-    "placeholders/portrait-placeholder.svg": "Emplacement portrait",
-    "icons/adobeillustrator.svg": "Icône Adobe Illustrator",
-    "icons/adobeindesign.svg": "Icône Adobe InDesign",
-    "icons/adobephotoshop.svg": "Icône Adobe Photoshop",
-    "icons/blender.svg": "Icône Blender",
-    "icons/canva.svg": "Icône Canva",
-    "icons/figma.svg": "Icône Figma"
-  },
   "checklist": [
     {
       "label": "Texte relu (orthographe, années, noms)",
@@ -651,7 +1088,7 @@
       "required": true
     },
     {
-      "label": "Type client / concept confirmé",
+      "label": "Type client \/ concept confirmé",
       "done": true,
       "required": true
     },
@@ -689,443 +1126,6 @@
       "label": "Déploiement terminé et page publique contrôlée",
       "done": true,
       "required": false
-    }
-  ],
-  "media": [
-    {
-      "path": "assets/about-portrait-v2.png",
-      "bytes": 890774,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/logo-vasilias.svg",
-      "bytes": 1690,
-      "used": "index.html, work.html, about.html, services.html, contact.html, print.html, social.html, work-nebulo.html, work-orquid-spices.html"
-    },
-    {
-      "path": "assets/moi-portrait.jpg",
-      "bytes": 208631,
-      "used": ""
-    },
-    {
-      "path": "assets/moi-portrait.png",
-      "bytes": 1980973,
-      "used": "index.html"
-    },
-    {
-      "path": "assets/moi-portrait.webp",
-      "bytes": 213644,
-      "used": "index.html"
-    },
-    {
-      "path": "assets/pin-blue.png",
-      "bytes": 126102,
-      "used": ""
-    },
-    {
-      "path": "assets/print-1.jpg",
-      "bytes": 154745,
-      "used": "print.html"
-    },
-    {
-      "path": "assets/print-2.jpg",
-      "bytes": 225377,
-      "used": "print.html"
-    },
-    {
-      "path": "assets/print-visuals.jpg",
-      "bytes": 117348,
-      "used": "print.html"
-    },
-    {
-      "path": "assets/social-1.jpg",
-      "bytes": 155874,
-      "used": "social.html"
-    },
-    {
-      "path": "assets/social-2.jpg",
-      "bytes": 118938,
-      "used": "social.html"
-    },
-    {
-      "path": "assets/social-3.jpg",
-      "bytes": 101363,
-      "used": "social.html"
-    },
-    {
-      "path": "assets/social-visuals.jpg",
-      "bytes": 174840,
-      "used": "social.html"
-    },
-    {
-      "path": "assets/statue.png",
-      "bytes": 807273,
-      "used": "index.html"
-    },
-    {
-      "path": "assets/statue.webp",
-      "bytes": 59608,
-      "used": "index.html"
-    },
-    {
-      "path": "assets/icons/adobeillustrator.svg",
-      "bytes": 625,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/icons/adobeindesign.svg",
-      "bytes": 1326,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/icons/adobephotoshop.svg",
-      "bytes": 2433,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/icons/blender.svg",
-      "bytes": 1309,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/icons/canva.svg",
-      "bytes": 4231,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/icons/figma.svg",
-      "bytes": 1108,
-      "used": "about.html"
-    },
-    {
-      "path": "assets/placeholders/portrait-placeholder.svg",
-      "bytes": 637,
-      "used": ""
-    },
-    {
-      "path": "assets/projects/nebulo/asset-1.jpg",
-      "bytes": 326402,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/asset-2.jpg",
-      "bytes": 592971,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/asset-3.jpg",
-      "bytes": 966182,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/asset-4.jpg",
-      "bytes": 671179,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/asset-5.jpg",
-      "bytes": 787200,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/asset-6.jpg",
-      "bytes": 230108,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/cover.jpg",
-      "bytes": 398688,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/nebulo/hero.jpg",
-      "bytes": 102867,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/1.jpg",
-      "bytes": 823127,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/2.jpg",
-      "bytes": 343746,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/3.jpg",
-      "bytes": 773480,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/4.jpg",
-      "bytes": 1367099,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/5.jpg",
-      "bytes": 2032148,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/6.jpg",
-      "bytes": 1858981,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/projects/orquid-spices/Cover.jpg",
-      "bytes": 593651,
-      "used": "index.html, work.html, work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1793955464264-OSIA-drinkosia-Instagram-photos-and-videos.jpeg",
-      "bytes": 158804,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794012362937-318z-og-iage.png",
-      "bytes": 320223,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794019483017-ios-app-icon-mockup-iphone-16-pro-mockups-v1-front-vew.jpg",
-      "bytes": 777681,
-      "used": "index.html, work.html, work-monreleve.html, SEO work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794020321689-ycr9-Plan-de-travail-2.jpg",
-      "bytes": 225462,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794020342426-mqul-og-iage.png",
-      "bytes": 320223,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794073410597-8f00--propos.jpg",
-      "bytes": 153323,
-      "used": "SEO about.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794074121623-cyfv-Work.jpg",
-      "bytes": 163323,
-      "used": "SEO work.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794074183547-uolt-Orquid.jpg",
-      "bytes": 438249,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794043739933-1-09y5-Plan-de-travail-4.jpg",
-      "bytes": 39938,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794043740025-2-ey4o-Plan-de-travail-2.jpg",
-      "bytes": 225462,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
-      "bytes": 316739,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085740815-1-ye9j-01.jpg",
-      "bytes": 633402,
-      "used": "index.html, work.html, work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085740818-2-mzof-02.jpg",
-      "bytes": 68623,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085740820-3-1dlv-03.jpg",
-      "bytes": 121804,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085760976-4-yglc-04.jpg",
-      "bytes": 475929,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085760979-5-l6ur-05.jpg",
-      "bytes": 410272,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085760982-6-0vxf-06.jpg",
-      "bytes": 229559,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085760983-7-pkkt-07.jpg",
-      "bytes": 229295,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085791384-8-ar6f-08.jpg",
-      "bytes": 985673,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085791387-9-dy2f-09.jpg",
-      "bytes": 319284,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085791389-10-ibsw-10.jpg",
-      "bytes": 337287,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085791391-11-xhch-12.jpg",
-      "bytes": 551504,
-      "used": "work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794085842828-12-my3s-Fichier-3-2x-100.jpg",
-      "bytes": 326402,
-      "used": "index.html, work.html, work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794086547914-14-crgv-Contact.jpg",
-      "bytes": 160415,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794086547916-15-i02k-Service.jpg",
-      "bytes": 154352,
-      "used": "Ajouté via Hub"
-    },
-    {
-      "path": "assets/hub-uploads/1794066494480-1-n82n-Orquid.jpg",
-      "bytes": 176147,
-      "used": "SEO work-orquid-spices.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794066539514-2-vte0-Contact.jpg",
-      "bytes": 160415,
-      "used": "SEO contact.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794066558447-3-qp71-Service.jpg",
-      "bytes": 154352,
-      "used": "SEO services.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794066582617-4-q58u-Accueil.jpg",
-      "bytes": 83984,
-      "used": "SEO index.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794106632595-1-iqkj-Plan-de-travail-1-80.jpg",
-      "bytes": 88954,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794106632598-2-8uqu-Plan-de-travail-2.jpg",
-      "bytes": 117477,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
-      "bytes": 628279,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
-      "bytes": 108388,
-      "used": "index.html, work.html, work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794169296247-1-v4q7-Plan-de-travail-1-copie-80.jpg",
-      "bytes": 125297,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170042567-1-s9qm-Plan-de-travail-1-copie-3-80.jpg",
-      "bytes": 125272,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170042571-2-zx8r-Plan-de-travail-2.jpg",
-      "bytes": 249718,
-      "used": "index.html, work.html, work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170042574-3-7f4t-Plan-de-travail-3.jpg",
-      "bytes": 294944,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170072584-4-lptv-a_Enlevez_le_logo_sur_.jpg",
-      "bytes": 596800,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170171338-5-nkc6-Akkoho.jpg",
-      "bytes": 51164,
-      "used": "SEO work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794170307985-6-0cmv-Plan-de-travail-1-copie-80.jpg",
-      "bytes": 125297,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794183053570-1-s620-Plan-de-travail-5.jpg",
-      "bytes": 419065,
-      "used": "work-nebulo.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794363843453-1-6aeh-Plan-de-travail-5.jpg",
-      "bytes": 419065,
-      "used": "print.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794518894726-1-4ghz-Sans-titre-1.jpg",
-      "bytes": 411424,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794522616741-2-0h1w-Plan-de-travail-1-80.jpg",
-      "bytes": 101579,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794522728966-3-bjq5-Plan-de-travail-2-80.jpg",
-      "bytes": 63547,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794524954014-4-wagb-Delivery-Paper-Bag-Mockup.jpg",
-      "bytes": 3363058,
-      "used": "work-akk-oho.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
-      "bytes": 150608,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794526815870-2-8l1l-111.jpg",
-      "bytes": 966316,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794526815872-3-by3m-222.jpg",
-      "bytes": 68832,
-      "used": "work-monreleve.html"
-    },
-    {
-      "path": "assets/hub-uploads/1794527351634-4-g472-333-80.jpg",
-      "bytes": 77223,
-      "used": "work-monreleve.html"
     }
   ]
 }
