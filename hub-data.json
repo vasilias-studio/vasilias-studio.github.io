@@ -4,7 +4,7 @@
     "url": "https:\/\/vasilias-studio.github.io\/",
     "version": "4.0",
     "generated": "2026-11-14",
-    "updatedAt": "2026-11-14T08:53:29.473Z"
+    "updatedAt": "2026-11-14T08:54:48.614Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -475,7 +475,7 @@
     {
       "path": "assets\/projects\/nebulo\/asset-2.jpg",
       "bytes": 592971,
-      "used": "work-nebulo.html"
+      "used": "print.html"
     },
     {
       "path": "assets\/projects\/nebulo\/asset-3.jpg",
@@ -510,7 +510,7 @@
     {
       "path": "assets\/projects\/orquid-spices\/1.jpg",
       "bytes": 823127,
-      "used": "work-orquid-spices.html"
+      "used": "print.html"
     },
     {
       "path": "assets\/projects\/orquid-spices\/2.jpg",
@@ -525,7 +525,7 @@
     {
       "path": "assets\/projects\/orquid-spices\/4.jpg",
       "bytes": 1367099,
-      "used": "work-orquid-spices.html"
+      "used": "print.html"
     },
     {
       "path": "assets\/projects\/orquid-spices\/5.jpg",
@@ -640,7 +640,7 @@
     {
       "path": "assets\/hub-uploads\/1794085791387-9-dy2f-09.jpg",
       "bytes": 319284,
-      "used": "work-orquid-spices.html"
+      "used": "work-orquid-spices.html, print.html"
     },
     {
       "path": "assets\/hub-uploads\/1794085791389-10-ibsw-10.jpg",
@@ -700,7 +700,7 @@
     {
       "path": "assets\/hub-uploads\/1794106632600-3-o2c7-Plan-de-travail-3.jpg",
       "bytes": 628279,
-      "used": "work-nebulo.html"
+      "used": "work-nebulo.html, print.html"
     },
     {
       "path": "assets\/hub-uploads\/1794115025814-1-mdqa-Plan-de-travail-1-copie-2-80.jpg",
@@ -927,15 +927,19 @@
         "assets\/hub-uploads\/1794363843453-1-6aeh-Plan-de-travail-5.jpg"
       ],
       "gallery": [
-        "assets\/print-1.jpg",
-        "assets\/print-2.jpg",
-        "assets\/print-visuals.jpg"
+        "assets\/projects\/nebulo\/asset-2.jpg",
+        "assets\/projects\/orquid-spices\/1.jpg",
+        "assets\/projects\/orquid-spices\/4.jpg",
+        "assets\/hub-uploads\/1794085791387-9-dy2f-09.jpg",
+        "assets\/hub-uploads\/1794106632600-3-o2c7-Plan-de-travail-3.jpg"
       ],
+      "formatsTitle": "Types de supports",
       "formats": [
         "Cartes de visite",
         "Affiches",
         "Brochures & catalogues",
-        "Papeterie & menus"
+        "Papeterie & menus",
+        "Roll UP"
       ],
       "category": "Print",
       "tag": "PRINT",
