@@ -4,7 +4,7 @@
     "url": "https:\/\/vasilias-studio.github.io\/",
     "version": "4.0",
     "generated": "2026-11-14",
-    "updatedAt": "2026-11-14T09:50:14.019Z"
+    "updatedAt": "2026-11-14T16:05:00.236Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -816,6 +816,11 @@
       "path": "assets\/hub-uploads\/1794647506572-1-d8a1-Pr-s-de-9-foyers-sur-10-poss-dent-au-moins-un-smartphone.-1-.png",
       "bytes": 1910334,
       "used": "social.html"
+    },
+    {
+      "path": "assets\/hub-uploads\/1794672298951-1-9658-IMG_20261114_190252.png",
+      "bytes": 2030458,
+      "used": "Ajouté via Hub Android"
     }
   ],
   "skills": [
