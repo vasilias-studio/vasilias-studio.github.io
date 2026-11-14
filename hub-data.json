@@ -3,8 +3,8 @@
     "site": "Vasilías Studio",
     "url": "https:\/\/vasilias-studio.github.io\/",
     "version": "4.0",
-    "generated": "2026-11-13",
-    "updatedAt": "2026-11-13T20:45:54.400Z"
+    "generated": "2026-11-14",
+    "updatedAt": "2026-11-14T08:53:29.473Z"
   },
   "pitch": {
     "tagline": "Je conçois des identités visuelles et des expériences graphiques qui aident les marques à exprimer leur personnalité et à construire une image cohérente.",
@@ -595,7 +595,7 @@
     {
       "path": "assets\/hub-uploads\/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
       "bytes": 316739,
-      "used": "work-monreleve.html"
+      "used": "work-monreleve.html, social.html"
     },
     {
       "path": "assets\/hub-uploads\/1794085740815-1-ye9j-01.jpg",
@@ -645,7 +645,7 @@
     {
       "path": "assets\/hub-uploads\/1794085791389-10-ibsw-10.jpg",
       "bytes": 337287,
-      "used": "work-orquid-spices.html"
+      "used": "work-orquid-spices.html, social.html"
     },
     {
       "path": "assets\/hub-uploads\/1794085791391-11-xhch-12.jpg",
@@ -775,7 +775,7 @@
     {
       "path": "assets\/hub-uploads\/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
       "bytes": 150608,
-      "used": "work-monreleve.html"
+      "used": "work-monreleve.html, social.html"
     },
     {
       "path": "assets\/hub-uploads\/1794526815870-2-8l1l-111.jpg",
@@ -900,7 +900,10 @@
       "gallery": [
         "assets\/hub-uploads\/1794602744071-1-0a6c-11.png",
         "assets\/hub-uploads\/1794602744134-2-28f2-22.png",
-        "assets\/hub-uploads\/1794602744159-3-a06a-1-magasin.png"
+        "assets\/hub-uploads\/1794602744159-3-a06a-1-magasin.png",
+        "assets\/hub-uploads\/1794526256199-1-3j5s-Plan-de-travail-3.jpg",
+        "assets\/hub-uploads\/1794043740065-3-z5ds-Plan-de-travail-1-1-.jpg",
+        "assets\/hub-uploads\/1794085791389-10-ibsw-10.jpg"
       ],
       "formatsTitle": "Formats proposés",
       "formats": [
