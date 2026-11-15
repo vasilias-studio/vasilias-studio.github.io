@@ -535,7 +535,7 @@
       '(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){' +
       'return html2pdf().set({margin:[12,12,12,12],filename:"Devis-' + esc(d.number) + '.pdf",image:{type:"jpeg",quality:0.98},' +
       'html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},' +
-      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).save();' +
+      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).toPdf().get("pdf").then(function(pdf){var A=window.Android||(window.opener&&window.opener.Android);var nm="Devis-' + esc(d.number) + '.pdf";if(A&&A.saveBase64){var u=pdf.output("datauristring");A.saveBase64(nm,"application/pdf",u.substring(u.indexOf(",")+1));}else{pdf.save(nm);}});' +
       '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script></head><body>' +
       '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
