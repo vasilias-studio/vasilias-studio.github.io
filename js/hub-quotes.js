@@ -341,11 +341,14 @@
       '<label class="qt-f"><span>Remarques</span><textarea class="qt-in" data-f="notes" maxlength="2000">' + esc(q.notes) + '</textarea></label>' +
       '<label class="qt-f"><span>Conditions de règlement</span><textarea class="qt-in" data-f="conditions" maxlength="2000" placeholder="Ex. : acompte à la commande, solde à la livraison…">' + esc(q.conditions) + '</textarea></label></div></div>' +
       '</form>' +
+      '<div class="card" id="qtPay"></div>' +
       '<div class="card"><h2>Historique</h2><ul class="qt-hist">' +
       (q.history || []).slice().reverse().map(function (e) { return '<li>' + esc(fdate(e.at)) + ' — ' + esc(e.event) + '</li>'; }).join('') + '</ul></div>';
     $('#view').innerHTML = h;
     st.work = { rate: q.taxRate || 0, discount: q.discount || 0, lines: lines };
     paintTotals(q);
+    paintPayments(q);
+    bindPayments(q);
 
     $('#qtBack').addEventListener('click', function () {
       if (!st.dirty) { st.open = null; render(); return; }
@@ -439,6 +442,7 @@
     warn.textContent = t.unpricedCount ? t.unpricedCount + ' ligne(s) sans prix : le total ne les inclut pas encore.' : '';
     var until = new Date(g.issuedAt ? g.issuedAt + 'T12:00:00' : q.issuedAt);
     if (!isNaN(until.getTime())) { until.setDate(until.getDate() + g.validityDays); $('#qtUntil').textContent = fdate(until.toISOString()); }
+    paintPaySummary(q);
   }
 
   function save(q) {
@@ -491,19 +495,8 @@
     w.document.close();
   }
 
-  function docHtml(d) {
-    var me = issuer();
-    var docBase = baseOf(d.lines);
-    var rows = d.lines.map(function (l) {
-      var amount = lineAmount(l, docBase), todo = amount === null;
-      var unitCell = isPct(l) ? esc(String(l.percent).replace('.', ',')) + ' % des prestations' : (todo ? '<em>À définir</em>' : esc(ar(l.unitPrice)));
-      return '<tr><td><strong>' + esc(l.label) + '</strong>' + (l.description ? '<div class="d">' + esc(l.description) + '</div>' : '') + '</td>' +
-        '<td class="r">' + esc(l.quantity) + ' ' + esc(l.unit) + '</td>' +
-        '<td class="r">' + unitCell + '</td>' +
-        '<td class="r">' + (todo ? '<em>—</em>' : esc(ar(amount))) + '</td></tr>';
-    }).join('');
-    var t = d.totals, c = d.client;
-    var css = '@page{size:A4;margin:16mm}*{box-sizing:border-box}' +
+  function docCss() {
+    return '@page{size:A4;margin:16mm}*{box-sizing:border-box}' +
       'body{margin:0;color:#161513;font:13px/1.55 "Josefin Sans","Helvetica Neue",Helvetica,Arial,sans-serif;background:#fff}' +
       '.bar{position:sticky;top:0;background:#161513;color:#fff;padding:.6rem 1rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;font-size:13px}' +
       '.bar button{background:#BF814B;color:#fff;border:0;padding:.5rem 1rem;font:inherit;font-weight:600;cursor:pointer}' +
@@ -526,17 +519,36 @@
       '.sign{margin-top:34px;display:flex;gap:24px}.sign div{flex:1;border:1px solid #E6E1D9;height:90px;padding:8px;font-size:11px;color:#6A665C}' +
       '.foot{margin-top:34px;border-top:1px solid #E6E1D9;padding-top:10px;color:#6A665C;font-size:11px;white-space:pre-line}' +
       '@media print{.bar,.warn{display:none}.page{padding:0}}';
-    return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Devis ' + esc(d.number) + ' — Vasilías Studio</title>' +
-      '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
-      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
-      '<script>function dlPdf(){var b=document.getElementById("dl"),el=document.querySelector(".page");' +
+  }
+
+  function pdfScript(fn) {
+    return '<script>function dlPdf(){var b=document.getElementById("dl"),el=document.querySelector(".page");' +
       'if(!window.html2pdf){window.print();return;}' +
       'var t=b.textContent;b.disabled=true;b.textContent="Génération du PDF…";' +
       '(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){' +
-      'return html2pdf().set({margin:[12,12,12,12],filename:"Devis-' + esc(d.number) + '.pdf",image:{type:"jpeg",quality:0.98},' +
+      'return html2pdf().set({margin:[12,12,12,12],filename:"' + esc(fn) + '",image:{type:"jpeg",quality:0.98},' +
       'html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},' +
-      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).toPdf().get("pdf").then(function(pdf){var A=window.Android||(window.opener&&window.opener.Android);var nm="Devis-' + esc(d.number) + '.pdf";if(A&&A.saveBase64){var u=pdf.output("datauristring");A.saveBase64(nm,"application/pdf",u.substring(u.indexOf(",")+1));}else{pdf.save(nm);}});' +
-      '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script></head><body>' +
+      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).toPdf().get("pdf").then(function(pdf){var A=window.Android||(window.opener&&window.opener.Android);var nm="' + esc(fn) + '";if(A&&A.saveBase64){var u=pdf.output("datauristring");A.saveBase64(nm,"application/pdf",u.substring(u.indexOf(",")+1));}else{pdf.save(nm);}});' +
+      '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script>';
+  }
+
+  function docHtml(d) {
+    var me = issuer();
+    var docBase = baseOf(d.lines);
+    var rows = d.lines.map(function (l) {
+      var amount = lineAmount(l, docBase), todo = amount === null;
+      var unitCell = isPct(l) ? esc(String(l.percent).replace('.', ',')) + ' % des prestations' : (todo ? '<em>À définir</em>' : esc(ar(l.unitPrice)));
+      return '<tr><td><strong>' + esc(l.label) + '</strong>' + (l.description ? '<div class="d">' + esc(l.description) + '</div>' : '') + '</td>' +
+        '<td class="r">' + esc(l.quantity) + ' ' + esc(l.unit) + '</td>' +
+        '<td class="r">' + unitCell + '</td>' +
+        '<td class="r">' + (todo ? '<em>—</em>' : esc(ar(amount))) + '</td></tr>';
+    }).join('');
+    var t = d.totals, c = d.client;
+    var css = docCss();
+    return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Devis ' + esc(d.number) + ' — Vasilías Studio</title>' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
+      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+      pdfScript('Devis-' + d.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
       '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) + (me.email ? '<br>' + esc(me.email) : '') + '</div></div>' +
@@ -551,6 +563,146 @@
       (d.notes ? '<div class="sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
       (d.conditions ? '<div class="sec"><div class="l">CONDITIONS DE RÈGLEMENT</div>' + esc(d.conditions).replace(/\n/g, '<br>') + '</div>' : '') +
       '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div><div>Vasilías Studio</div></div>' +
+      (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
+  }
+
+
+  /* ---------- paiements et reçus ---------- */
+  var PAY_LS = 'hub2_quote_payments';
+  var PAY_METHODS = ['Espèces', 'MVola', 'Orange Money', 'Airtel Money', 'Virement bancaire', 'Chèque', 'Autre'];
+  function readPays() { try { return JSON.parse(localStorage.getItem(PAY_LS) || '{}') || {}; } catch (e) { return {}; } }
+  function writePays(o) { localStorage.setItem(PAY_LS, JSON.stringify(o)); }
+  function paysOf(number) { var a = readPays()[number]; return Array.isArray(a) ? a.slice().sort(function (x, y) { return (x.seq || 0) - (y.seq || 0); }) : []; }
+  function sumPays(list) { return list.reduce(function (n, p) { return n + (Number(p.amount) || 0); }, 0); }
+  function receiptNo(quoteNumber, seq) { return 'REC-' + String(quoteNumber).replace(/^DEV-?/i, '') + '-' + String(seq).padStart(2, '0'); }
+  function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function currentTotal(q) {
+    var g = gather(q);
+    return totalsOf(g.lines.filter(function (l) { return l.label; }), g.discount, g.taxRate).total || 0;
+  }
+
+  function paintPaySummary(q) {
+    var box = document.getElementById('qtPaySum');
+    if (!box) return;
+    var total = currentTotal(q), paid = sumPays(paysOf(q.number)), rest = Math.max(0, total - paid);
+    box.innerHTML = '<div><span>Total du devis</span><strong>' + esc(ar(total)) + '</strong></div>' +
+      '<div><span>Déjà encaissé</span><strong>' + esc(ar(paid)) + '</strong></div>' +
+      '<div class="big"><span>' + (total > 0 && rest === 0 ? 'Soldé' : 'Reste à payer') + '</span><strong>' + esc(ar(rest)) + '</strong></div>';
+    var amt = box.parentNode.querySelector('[data-p="amount"]');
+    if (amt) amt.placeholder = rest > 0 ? String(Math.round(rest)) : '';
+  }
+
+  function paintPayments(q) {
+    var host = document.getElementById('qtPay');
+    if (!host) return;
+    var list = paysOf(q.number);
+    var rows = list.length ? list.map(function (p) {
+      return '<div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.6rem 0;border-bottom:1px solid var(--line)">' +
+        '<div style="flex:1;min-width:180px"><strong>' + esc(p.no) + '</strong> · ' + esc(ar(p.amount)) +
+        '<br><small class="mut">' + esc(fdate(new Date(p.date + 'T12:00:00').toISOString())) + ' · ' + esc(p.method) + (p.ref ? ' · réf. ' + esc(p.ref) : '') + '</small></div>' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-prc="' + esc(p.id) + '">' + ic('description') + ' Reçu / PDF</button>' +
+        '<button type="button" class="btn btn-danger btn-sm" data-pdel="' + esc(p.id) + '">Supprimer</button></div>';
+    }).join('') : '<p class="help" style="margin:.4rem 0">Aucun paiement enregistré pour ce devis.</p>';
+    host.innerHTML = '<h2>Paiements et reçus</h2>' +
+      '<p class="help">Enregistrez chaque paiement reçu pour générer son reçu en PDF. Les paiements restent dans ce navigateur, comme la clé d’accès : ils ne vont ni dans le Google Sheet ni dans le dépôt public.</p>' +
+      '<div class="qt-tot" id="qtPaySum"></div>' + rows +
+      '<h3 style="margin:1.1rem 0 .3rem;font-size:.95rem">Nouveau paiement</h3>' +
+      '<div class="qt-g2"><label class="qt-f"><span>Date du paiement</span><input class="qt-in" type="date" data-p="date" value="' + todayIso() + '"></label>' +
+      '<label class="qt-f"><span>Montant reçu (Ar)</span><input class="qt-in" type="number" min="1" step="1" inputmode="numeric" data-p="amount"></label></div>' +
+      '<div class="qt-g2"><label class="qt-f"><span>Mode de paiement</span><select class="qt-in" data-p="method">' + PAY_METHODS.map(function (m) { return '<option>' + esc(m) + '</option>'; }).join('') + '</select></label>' +
+      '<label class="qt-f"><span>Référence (n° de transaction, de chèque…)</span><input class="qt-in" type="text" maxlength="80" data-p="ref"></label></div>' +
+      '<label class="qt-f"><span>Note (facultatif)</span><input class="qt-in" type="text" maxlength="200" data-p="note" placeholder="Ex. : acompte de 50 % à la commande"></label>' +
+      '<div class="qt-actions"><button type="button" class="btn btn-ghost btn-sm" data-pfill="1">Solder le reste</button>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-padd="1">' + ic('check') + ' Enregistrer et créer le reçu</button></div>';
+    paintPaySummary(q);
+  }
+
+  function bindPayments(q) {
+    var host = document.getElementById('qtPay');
+    if (!host) return;
+    function pv(n) { var e = host.querySelector('[data-p="' + n + '"]'); return e ? e.value : ''; }
+    host.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('button') : null;
+      if (!t) return;
+      if (t.getAttribute('data-pfill')) {
+        var rest = Math.max(0, currentTotal(q) - sumPays(paysOf(q.number)));
+        var a = host.querySelector('[data-p="amount"]'); if (a) a.value = rest > 0 ? Math.round(rest) : '';
+        return;
+      }
+      if (t.getAttribute('data-prc')) {
+        var pay = paysOf(q.number).filter(function (p) { return p.id === t.getAttribute('data-prc'); })[0];
+        if (pay) openReceipt(q, pay);
+        return;
+      }
+      if (t.getAttribute('data-pdel')) {
+        var id = t.getAttribute('data-pdel');
+        confirmModal('Supprimer ce paiement ?', 'Le paiement et son numéro de reçu seront retirés de ce navigateur.', function () {
+          var all = readPays(); all[q.number] = (all[q.number] || []).filter(function (p) { return p.id !== id; });
+          if (!all[q.number].length) delete all[q.number];
+          writePays(all); paintPayments(q); toast('Paiement supprimé.', 'ok');
+        });
+        return;
+      }
+      if (t.getAttribute('data-padd')) {
+        var amount = Math.round(num(pv('amount'))), date = pv('date');
+        if (!(amount > 0)) { toast('Saisissez le montant reçu.', 'warn'); return; }
+        if (!date || isNaN(new Date(date + 'T12:00:00').getTime())) { toast('Choisissez la date du paiement.', 'warn'); return; }
+        var total = currentTotal(q), rest2 = total - sumPays(paysOf(q.number));
+        if (total > 0 && amount > rest2) { toast('Ce montant dépasse le reste à payer (' + ar(Math.max(0, rest2)) + ').', 'warn'); return; }
+        var all2 = readPays(), list = all2[q.number] || [];
+        var seq = list.reduce(function (m, p) { return Math.max(m, p.seq || 0); }, 0) + 1;
+        var rec = { id: 'p' + Date.now().toString(36), seq: seq, no: receiptNo(q.number, seq), date: date, amount: amount, method: pv('method'), ref: pv('ref').trim(), note: pv('note').trim(), at: new Date().toISOString(), total: total };
+        list.push(rec); all2[q.number] = list; writePays(all2);
+        paintPayments(q); toast('Paiement enregistré, reçu ' + rec.no + ' créé.', 'ok');
+        openReceipt(q, rec);
+      }
+    });
+  }
+
+  function openReceipt(q, pay) {
+    var g = gather(q);
+    var total = currentTotal(q) || Number(pay.total) || 0;
+    var upTo = paysOf(q.number).filter(function (p) { return (p.seq || 0) <= (pay.seq || 0); });
+    var paidAfter = sumPays(upTo), paidBefore = paidAfter - pay.amount;
+    var kind = total > 0 && paidAfter >= total ? (paidBefore > 0 ? 'Solde' : 'Paiement intégral') : (paidBefore > 0 ? 'Paiement partiel' : 'Acompte');
+    var w = window.open('', '_blank');
+    if (!w) { toast('Le navigateur a bloqué la fenêtre : autorisez les pop-ups pour ce site.', 'warn'); return; }
+    w.document.open();
+    w.document.write(receiptHtml({
+      number: pay.no, quote: q.number, issued: new Date(pay.date + 'T12:00:00').toISOString(), client: g.client,
+      amount: pay.amount, method: pay.method, ref: pay.ref, note: pay.note, kind: kind,
+      total: total, paidAfter: paidAfter, remaining: Math.max(0, total - paidAfter)
+    }));
+    w.document.close();
+  }
+
+  function receiptHtml(r) {
+    var me = issuer(), c = r.client || {};
+    var css = docCss() +
+      '.amt{margin:0 0 22px;padding:16px 18px;background:#F7F6F4;border-left:3px solid #BF814B;display:flex;justify-content:space-between;align-items:center;gap:1rem}' +
+      '.amt .v{font-size:26px;font-weight:700;white-space:nowrap}' +
+      '.tag{display:inline-block;padding:2px 10px;border:1px solid #BF814B;color:#BF814B;font-size:10px;letter-spacing:.14em;font-weight:700;text-transform:uppercase}' +
+      '.kv td:first-child{width:38%;color:#6A665C}.paid{color:#0E6B45;font-weight:700}';
+    var rows = [['Règlement', esc(r.kind) + ' sur le devis N° ' + esc(r.quote)], ['Date du paiement', esc(fdate(r.issued))], ['Mode de paiement', esc(r.method)]];
+    if (r.ref) rows.push(['Référence', esc(r.ref)]);
+    if (r.note) rows.push(['Note', esc(r.note)]);
+    var kv = rows.map(function (x) { return '<tr><td>' + x[0] + '</td><td><strong>' + x[1] + '</strong></td></tr>'; }).join('');
+    return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu ' + esc(r.number) + ' — Vasilías Studio</title>' +
+      '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
+      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+      pdfScript('Recu-' + r.number + '.pdf') + '</head><body>' +
+      '<div class="bar"><span>Aperçu du reçu ' + esc(r.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le reçu (PDF)</button></div>' +
+      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) + (me.email ? '<br>' + esc(me.email) : '') + '</div></div>' +
+      '<div><h1>REÇU</h1><div class="ref">N° ' + esc(r.number) + '<br>Émis le ' + esc(fdate(r.issued)) + '<br>Devis N° ' + esc(r.quote) + '</div></div></div>' +
+      '<div class="rule"></div>' +
+      '<div class="to"><div class="l">REÇU DE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
+      '<div class="amt"><div><div class="tag">' + esc(r.kind) + '</div><div style="margin-top:6px;color:#6A665C;font-size:12px">Somme reçue avec nos remerciements</div></div><div class="v">' + esc(ar(r.amount)) + '</div></div>' +
+      '<table class="kv"><tbody>' + kv + '</tbody></table>' +
+      '<div class="tot"><div><span>Total du devis</span><span>' + esc(ar(r.total)) + '</span></div>' +
+      '<div><span>Total payé à ce jour</span><span>' + esc(ar(r.paidAfter)) + '</span></div>' +
+      '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
+      '<div class="sec"><div class="l">MENTION</div>Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.</div>' +
+      '<div class="sign"><div>Vasilías Studio — cachet et signature</div><div>Reçu par le client — nom et signature</div></div>' +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
   }
 
