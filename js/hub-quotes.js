@@ -515,6 +515,10 @@
   var SIG_DEFAULT_LS = 'hub2_quote_signature_default';
   var SIG_MAP_LS = 'hub2_quote_signature_map';
   function signatureUrl() { try { return new URL(SIG_FILE, location.href).href; } catch (e) { return SIG_FILE; } }
+  var SIG_NAME = 'SOLO Ericot Lauranto';
+  /** Nom imprimé sous la signature (surchargeable dans Paramètres → Devis). */
+  function signatureName() { var v = localStorage.getItem('hub2_quote_sign_name'); return v && v.trim() ? v.trim() : SIG_NAME; }
+  function signatureNameHtml() { return '<span class="sig-name">' + esc(signatureName()) + '</span>'; }
   function signatureImg() { return '<img class="sig-img" src="' + signatureUrl() + '" alt="Signature Vasilías Studio">'; }
   function signatureDefault() { var v = localStorage.getItem(SIG_DEFAULT_LS); return v === null ? true : v === '1'; }
   function signatureMap() { try { return JSON.parse(localStorage.getItem(SIG_MAP_LS) || '{}') || {}; } catch (e) { return {}; } }
@@ -555,7 +559,8 @@
       '.sec{margin-top:26px;font-size:12px}.sec .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:4px}' +
       '.sign{margin-top:34px;display:flex;gap:24px}.sign div{flex:1;border:1px solid #E6E1D9;height:96px;padding:8px;font-size:11px;color:#6A665C}' +
       '.sign .sig-me{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center}' +
-      '.sign .sig-img{max-height:60px;max-width:100%;display:block;margin:0 auto 4px}' +
+      '.sign .sig-img{max-height:60px;max-width:100%;display:block;margin:0 auto 2px}' +
+      '.sign .sig-name{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#161513;font-weight:600}' +
       '.foot{margin-top:34px;border-top:1px solid #E6E1D9;padding-top:10px;color:#6A665C;font-size:11px;white-space:pre-line}' +
       '@media print{.bar,.warn{display:none}.page{padding:0}}';
   }
@@ -602,7 +607,7 @@
       (d.notes ? '<div class="sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
       (d.conditions ? '<div class="sec"><div class="l">CONDITIONS DE RÈGLEMENT</div>' + esc(d.conditions).replace(/\n/g, '<br>') + '</div>' : '') +
       '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div>' +
-      '<div class="sig-me">' + (d.signature ? signatureImg() : '') + 'Vasilías Studio</div></div>' +
+      '<div class="sig-me">' + (d.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div></div>' +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
   }
 
@@ -745,7 +750,7 @@
       '<div><span>Total payé à ce jour</span><span>' + esc(ar(r.paidAfter)) + '</span></div>' +
       '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
       '<div class="sec"><div class="l">MENTION</div>Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.</div>' +
-      '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() : '') + 'Vasilías Studio</div><div>Reçu par le client — nom et signature</div></div>' +
+      '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div><div>Reçu par le client — nom et signature</div></div>' +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
   }
 
@@ -765,6 +770,9 @@
       '<label class="qt-f" style="margin-top:1.2rem"><span>Mentions affichées en bas des devis (téléphone, NIF, STAT, coordonnées bancaires…)</span>' +
       '<textarea class="qt-in" id="qsIssuer" maxlength="1000" placeholder="Une information par ligne">' + esc(localStorage.getItem(ISSUER_LS) || '') + '</textarea></label>' +
       '<button class="btn btn-ghost btn-sm" id="qsIssuerSave">Enregistrer les mentions</button>' +
+      '<label class="qt-f" style="margin-top:1.2rem"><span>Nom affiché sous la signature</span>' +
+      '<input class="qt-in" type="text" id="qsSignName" maxlength="60" value="' + esc(signatureName()) + '" placeholder="SOLO Ericot Lauranto"></label>' +
+      '<button class="btn btn-ghost btn-sm" id="qsSignNameSave">Enregistrer le nom</button>' +
       '<label class="qt-chk" style="margin-top:1.2rem"><input type="checkbox" id="qsSign"' + (signatureDefault() ? ' checked' : '') + '>' +
       '<span>Ajouter ma signature (<code>assets/signature.svg</code>) sur les devis et les reçus</span></label>' +
       '<p class="help">Réglage par défaut, appliqué aussi aux devis validés (« Accepté »). Chaque devis garde son propre réglage, modifiable dans sa fiche.</p>' +
@@ -781,6 +789,11 @@
     var rm = $('#qsRemove');
     if (rm) rm.addEventListener('click', function () { localStorage.removeItem(KEY_LS); st.quotes = null; refreshBadge(); window.quotesSettingsMount(); toast('Clé oubliée sur cet appareil.'); });
     $('#qsIssuerSave').addEventListener('click', function () { localStorage.setItem(ISSUER_LS, $('#qsIssuer').value); toast('Mentions enregistrées.', 'ok'); });
+    $('#qsSignNameSave').addEventListener('click', function () {
+      var v = $('#qsSignName').value.trim();
+      if (v) localStorage.setItem('hub2_quote_sign_name', v); else localStorage.removeItem('hub2_quote_sign_name');
+      toast('Nom sous la signature enregistré.', 'ok');
+    });
     var signDefault = $('#qsSign');
     if (signDefault) signDefault.addEventListener('change', function () {
       localStorage.setItem(SIG_DEFAULT_LS, signDefault.checked ? '1' : '0');
