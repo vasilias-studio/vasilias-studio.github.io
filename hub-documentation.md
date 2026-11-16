@@ -38,7 +38,9 @@ Un token présent dans le fragment d’URL (`#gh=...`) est transféré dans le s
 - Chaque demande envoyée depuis le formulaire du site crée un devis en brouillon, lu en direct depuis le Google Sheet privé (rien n’est écrit dans le dépôt public).
 - Liste filtrable (statut, recherche), pastille « à chiffrer » dans le menu, édition des lignes, remise, TVA, statut, validité, remarques, conditions.
 - « Aperçu / PDF » ouvre un devis prêt à imprimer (Imprimer → Enregistrer en PDF). « E-mail au client » et « WhatsApp » préparent le message.
-- Configuration : Paramètres → Devis (clé d’accès + mentions légales du pied de page). Installation complète : `backend/apps-script/README.md`.
+- **Paiements et reçus** : dans la fiche d’un devis, la carte « Paiements et reçus » enregistre chaque règlement (date, montant, mode, référence, note), affiche le total payé et le reste à payer, et génère le reçu A4 numéroté (`REC-…`). Les paiements restent dans le navigateur (localStorage) : rien n’est écrit dans le Google Sheet ni dans le dépôt.
+- **Signature** : `assets/signature.svg` (monochrome) s’ajoute au bloc de signature des devis et des reçus. Case à cocher « Ajouter ma signature sur ce devis » dans la fiche, case équivalente dans le formulaire de paiement (« Ajouter ma signature sur le reçu »), et réglage par défaut dans Paramètres → Devis. Priorité : choix du devis → devis validé (statut « Accepté », signé automatiquement) → réglage global.
+- Configuration : Paramètres → Devis (clé d’accès + mentions légales du pied de page + signature par défaut). Installation complète : `backend/apps-script/README.md`.
 - Le module est dans `js/hub-quotes.js` ; la clé est conservée uniquement dans ce navigateur.
 
 ## Architecture de synchronisation

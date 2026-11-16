@@ -128,7 +128,11 @@
       '.qt-tot input{width:110px;text-align:right}' +
       '.qt-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-dot);border-radius:2px;padding:.6rem .8rem;font-size:.85rem;margin:.8rem 0}' +
       '.qt-hist{font-size:.8125rem;color:var(--sub);margin:.4rem 0 0;padding-left:1.1rem;line-height:1.7}' +
-      '@media(max-width:600px){.qt-row{flex-direction:column}.qt-side{align-items:flex-start}}';
+      '@media(max-width:600px){.qt-row{flex-direction:column}.qt-side{align-items:flex-start}}' +
+      '.qt-chk{display:flex;align-items:flex-start;gap:.55rem;margin:.75rem 0 0;padding:.55rem .7rem;border:1px solid var(--line);border-radius:2px;background:var(--bg);font-size:.875rem;line-height:1.4;cursor:pointer}' +
+      '.qt-chk:hover{border-color:var(--bronze)}' +
+      '.qt-chk input{width:18px;height:18px;margin:.05rem 0 0;flex:none;accent-color:var(--bronze)}' +
+      '.qt-sign-on{color:var(--bronze-text);font-weight:600}';
     document.head.appendChild(s);
   }
 
@@ -336,7 +340,9 @@
       '<div class="grid2"><div class="card"><h2>Suivi</h2>' +
       '<label class="qt-f"><span>Statut</span><select class="qt-in" data-f="status">' + st.statuses.map(function (s) { return '<option' + (s === q.status ? ' selected' : '') + '>' + esc(s) + '</option>'; }).join('') + '</select></label>' +
       '<div class="qt-g2">' + field('Date d’émission', 'issuedAt', dayOf(q.issuedAt), 'date') + field('Validité (jours)', 'validityDays', q.validityDays, 'number', 'min="1" max="365" step="1"') + '</div>' +
-      '<p class="help">Valable jusqu’au <strong id="qtUntil"></strong>.</p></div>' +
+      '<p class="help">Valable jusqu’au <strong id="qtUntil"></strong>.</p>' +
+      '<label class="qt-chk"><input type="checkbox" id="qtSign"' + (signatureEnabled(q.number, q.status) ? ' checked' : '') + '>' +
+      '<span>Ajouter ma signature sur ce devis' + (q.status === 'Accepté' ? ' <span class="qt-sign-on">(devis validé : signé automatiquement)</span>' : '') + '</span></label></div>' +
       '<div class="card"><h2>Mentions sur le devis</h2>' +
       '<label class="qt-f"><span>Remarques</span><textarea class="qt-in" data-f="notes" maxlength="2000">' + esc(q.notes) + '</textarea></label>' +
       '<label class="qt-f"><span>Conditions de règlement</span><textarea class="qt-in" data-f="conditions" maxlength="2000" placeholder="Ex. : acompte à la commande, solde à la livraison…">' + esc(q.conditions) + '</textarea></label></div></div>' +
@@ -355,7 +361,15 @@
       confirmModal('Quitter sans enregistrer ?', 'Les modifications de ce devis seront perdues.', function () { st.open = null; st.dirty = false; render(); });
     });
     $('#qtSave').addEventListener('click', function () { save(q); });
-    $('#qtPreview').addEventListener('click', function () { preview(q); });
+    $('#qtPreview').addEventListener('click', function () {
+      var sb = document.getElementById('qtSign');
+      preview(q, sb ? !!sb.checked : undefined);
+    });
+    var signBox = document.getElementById('qtSign');
+    if (signBox) signBox.addEventListener('change', function () {
+      setSignature(q.number, signBox.checked);
+      toast(signBox.checked ? 'Signature ajoutée sur ce devis.' : 'Signature retirée de ce devis.', 'ok');
+    });
     $('#qtAdd').addEventListener('click', function () {
       var g = gather(q); g.lines.push({ label: '', description: '', quantity: 1, unit: 'forfait', unitPrice: null, percent: null });
       st.work.lines = g.lines; repaintLines(q);
@@ -480,7 +494,7 @@
     return { email: d.email || '', positioning: d.positioning || 'Graphic & Digital Designer', legal: localStorage.getItem(ISSUER_LS) || '' };
   }
 
-  function preview(q) {
+  function preview(q, withSignature) {
     var g = gather(q);
     var lines = g.lines.filter(function (l) { return l.label; });
     var issued = g.issuedAt ? new Date(g.issuedAt + 'T12:00:00') : new Date(q.issuedAt);
@@ -490,9 +504,32 @@
     w.document.open();
     w.document.write(docHtml({
       number: q.number, issued: issued.toISOString(), until: until.toISOString(), client: g.client, lines: lines,
-      totals: totalsOf(lines, g.discount, g.taxRate), notes: g.notes, conditions: g.conditions
+      totals: totalsOf(lines, g.discount, g.taxRate), notes: g.notes, conditions: g.conditions,
+      signature: signatureEnabled(q.number, g.status, withSignature)
     }));
     w.document.close();
+  }
+
+  /* ---------- signature manuscrite ---------- */
+  var SIG_FILE = 'assets/signature.svg';
+  var SIG_DEFAULT_LS = 'hub2_quote_signature_default';
+  var SIG_MAP_LS = 'hub2_quote_signature_map';
+  function signatureUrl() { try { return new URL(SIG_FILE, location.href).href; } catch (e) { return SIG_FILE; } }
+  function signatureImg() { return '<img class="sig-img" src="' + signatureUrl() + '" alt="Signature Vasilías Studio">'; }
+  function signatureDefault() { var v = localStorage.getItem(SIG_DEFAULT_LS); return v === null ? true : v === '1'; }
+  function signatureMap() { try { return JSON.parse(localStorage.getItem(SIG_MAP_LS) || '{}') || {}; } catch (e) { return {}; } }
+  /** Choix explicite du devis → devis validé (Accepté) → réglage global. */
+  function signatureEnabled(number, status, override) {
+    if (override === true || override === false) return override;
+    var m = signatureMap();
+    if (number && Object.prototype.hasOwnProperty.call(m, number)) return !!m[number];
+    if (status === 'Accepté') return true;
+    return signatureDefault();
+  }
+  function setSignature(number, on) {
+    if (!number) return;
+    var m = signatureMap(); m[number] = on ? 1 : 0;
+    try { localStorage.setItem(SIG_MAP_LS, JSON.stringify(m)); } catch (e) { /* quota : préférence non conservée */ }
   }
 
   function docCss() {
@@ -516,7 +553,9 @@
       '.tot{margin:18px 0 0 auto;width:300px}.tot div{display:flex;justify-content:space-between;padding:4px 0}' +
       '.tot .big{border-top:2px solid #161513;margin-top:6px;padding-top:8px;font-size:16px;font-weight:700}' +
       '.sec{margin-top:26px;font-size:12px}.sec .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:4px}' +
-      '.sign{margin-top:34px;display:flex;gap:24px}.sign div{flex:1;border:1px solid #E6E1D9;height:90px;padding:8px;font-size:11px;color:#6A665C}' +
+      '.sign{margin-top:34px;display:flex;gap:24px}.sign div{flex:1;border:1px solid #E6E1D9;height:96px;padding:8px;font-size:11px;color:#6A665C}' +
+      '.sign .sig-me{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center}' +
+      '.sign .sig-img{max-height:60px;max-width:100%;display:block;margin:0 auto 4px}' +
       '.foot{margin-top:34px;border-top:1px solid #E6E1D9;padding-top:10px;color:#6A665C;font-size:11px;white-space:pre-line}' +
       '@media print{.bar,.warn{display:none}.page{padding:0}}';
   }
@@ -562,7 +601,8 @@
       '<div class="big"><span>Total</span><span>' + esc(ar(t.total)) + '</span></div></div>' +
       (d.notes ? '<div class="sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
       (d.conditions ? '<div class="sec"><div class="l">CONDITIONS DE RÈGLEMENT</div>' + esc(d.conditions).replace(/\n/g, '<br>') + '</div>' : '') +
-      '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div><div>Vasilías Studio</div></div>' +
+      '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div>' +
+      '<div class="sig-me">' + (d.signature ? signatureImg() : '') + 'Vasilías Studio</div></div>' +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
   }
 
@@ -612,6 +652,7 @@
       '<div class="qt-g2"><label class="qt-f"><span>Mode de paiement</span><select class="qt-in" data-p="method">' + PAY_METHODS.map(function (m) { return '<option>' + esc(m) + '</option>'; }).join('') + '</select></label>' +
       '<label class="qt-f"><span>Référence (n° de transaction, de chèque…)</span><input class="qt-in" type="text" maxlength="80" data-p="ref"></label></div>' +
       '<label class="qt-f"><span>Note (facultatif)</span><input class="qt-in" type="text" maxlength="200" data-p="note" placeholder="Ex. : acompte de 50 % à la commande"></label>' +
+      '<label class="qt-chk"><input type="checkbox" data-p="sign"' + (signatureEnabled(q.number, q.status) ? ' checked' : '') + '><span>Ajouter ma signature sur le reçu</span></label>' +
       '<div class="qt-actions"><button type="button" class="btn btn-ghost btn-sm" data-pfill="1">Solder le reste</button>' +
       '<button type="button" class="btn btn-primary btn-sm" data-padd="1">' + ic('check') + ' Enregistrer et créer le reçu</button></div>';
     paintPaySummary(q);
@@ -651,7 +692,8 @@
         if (total > 0 && amount > rest2) { toast('Ce montant dépasse le reste à payer (' + ar(Math.max(0, rest2)) + ').', 'warn'); return; }
         var all2 = readPays(), list = all2[q.number] || [];
         var seq = list.reduce(function (m, p) { return Math.max(m, p.seq || 0); }, 0) + 1;
-        var rec = { id: 'p' + Date.now().toString(36), seq: seq, no: receiptNo(q.number, seq), date: date, amount: amount, method: pv('method'), ref: pv('ref').trim(), note: pv('note').trim(), at: new Date().toISOString(), total: total };
+        var signEl = host.querySelector('[data-p="sign"]');
+        var rec = { id: 'p' + Date.now().toString(36), seq: seq, no: receiptNo(q.number, seq), date: date, amount: amount, method: pv('method'), ref: pv('ref').trim(), note: pv('note').trim(), signature: signEl ? !!signEl.checked : signatureEnabled(q.number, q.status), at: new Date().toISOString(), total: total };
         list.push(rec); all2[q.number] = list; writePays(all2);
         paintPayments(q); toast('Paiement enregistré, reçu ' + rec.no + ' créé.', 'ok');
         openReceipt(q, rec);
@@ -671,6 +713,7 @@
     w.document.write(receiptHtml({
       number: pay.no, quote: q.number, issued: new Date(pay.date + 'T12:00:00').toISOString(), client: g.client,
       amount: pay.amount, method: pay.method, ref: pay.ref, note: pay.note, kind: kind,
+      signature: pay.signature === undefined ? signatureEnabled(q.number, q.status) : !!pay.signature,
       total: total, paidAfter: paidAfter, remaining: Math.max(0, total - paidAfter)
     }));
     w.document.close();
@@ -702,7 +745,7 @@
       '<div><span>Total payé à ce jour</span><span>' + esc(ar(r.paidAfter)) + '</span></div>' +
       '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
       '<div class="sec"><div class="l">MENTION</div>Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.</div>' +
-      '<div class="sign"><div>Vasilías Studio — cachet et signature</div><div>Reçu par le client — nom et signature</div></div>' +
+      '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() : '') + 'Vasilías Studio</div><div>Reçu par le client — nom et signature</div></div>' +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') + '</div></body></html>';
   }
 
@@ -722,6 +765,9 @@
       '<label class="qt-f" style="margin-top:1.2rem"><span>Mentions affichées en bas des devis (téléphone, NIF, STAT, coordonnées bancaires…)</span>' +
       '<textarea class="qt-in" id="qsIssuer" maxlength="1000" placeholder="Une information par ligne">' + esc(localStorage.getItem(ISSUER_LS) || '') + '</textarea></label>' +
       '<button class="btn btn-ghost btn-sm" id="qsIssuerSave">Enregistrer les mentions</button>' +
+      '<label class="qt-chk" style="margin-top:1.2rem"><input type="checkbox" id="qsSign"' + (signatureDefault() ? ' checked' : '') + '>' +
+      '<span>Ajouter ma signature (<code>assets/signature.svg</code>) sur les devis et les reçus</span></label>' +
+      '<p class="help">Réglage par défaut, appliqué aussi aux devis validés (« Accepté »). Chaque devis garde son propre réglage, modifiable dans sa fiche.</p>' +
       '<p class="help">Clé et mentions restent dans ce navigateur, jamais dans le dépôt public.</p></div>';
     $('#qsSave').addEventListener('click', function () {
       var k = $('#qsKey').value.trim();
@@ -735,5 +781,10 @@
     var rm = $('#qsRemove');
     if (rm) rm.addEventListener('click', function () { localStorage.removeItem(KEY_LS); st.quotes = null; refreshBadge(); window.quotesSettingsMount(); toast('Clé oubliée sur cet appareil.'); });
     $('#qsIssuerSave').addEventListener('click', function () { localStorage.setItem(ISSUER_LS, $('#qsIssuer').value); toast('Mentions enregistrées.', 'ok'); });
+    var signDefault = $('#qsSign');
+    if (signDefault) signDefault.addEventListener('change', function () {
+      localStorage.setItem(SIG_DEFAULT_LS, signDefault.checked ? '1' : '0');
+      toast(signDefault.checked ? 'Signature activée par défaut.' : 'Signature désactivée par défaut.', 'ok');
+    });
   };
 })();
