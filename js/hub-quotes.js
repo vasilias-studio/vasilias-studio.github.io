@@ -619,7 +619,11 @@
   function writePays(o) { localStorage.setItem(PAY_LS, JSON.stringify(o)); }
   function paysOf(number) { var a = readPays()[number]; return Array.isArray(a) ? a.slice().sort(function (x, y) { return (x.seq || 0) - (y.seq || 0); }) : []; }
   function sumPays(list) { return list.reduce(function (n, p) { return n + (Number(p.amount) || 0); }, 0); }
-  function receiptNo(quoteNumber, seq) { return 'REC-' + String(quoteNumber).replace(/^DEV-?/i, '') + '-' + String(seq).padStart(2, '0'); }
+  function receiptNo(quoteNumber, seq) {
+    // « DV-2026-004 » ou « DEV-2026-004 » → « REC-2026-004-01 » (préfixe de devis retiré, casse ignorée)
+    var base = String(quoteNumber).replace(/^\s*(DEVIS|DEV|DV)[-_ ]?/i, '').replace(/\s+/g, '');
+    return 'REC-' + base + '-' + String(seq).padStart(2, '0');
+  }
   function todayIso() { var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
   function currentTotal(q) {
     var g = gather(q);
@@ -648,8 +652,11 @@
         '<button type="button" class="btn btn-ghost btn-sm" data-prc="' + esc(p.id) + '">' + ic('description') + ' Reçu / PDF</button>' +
         '<button type="button" class="btn btn-danger btn-sm" data-pdel="' + esc(p.id) + '">Supprimer</button></div>';
     }).join('') : '<p class="help" style="margin:.4rem 0">Aucun paiement enregistré pour ce devis.</p>';
+    var nextSeq = list.reduce(function (m, p) { return Math.max(m, p.seq || 0); }, 0) + 1;
     host.innerHTML = '<h2>Paiements et reçus</h2>' +
       '<p class="help">Enregistrez chaque paiement reçu pour générer son reçu en PDF. Les paiements restent dans ce navigateur, comme la clé d’accès : ils ne vont ni dans le Google Sheet ni dans le dépôt public.</p>' +
+      '<p class="help"><strong>' + list.length + ' reçu(s) émis' + (list.length ? '' : '') + '.</strong> Le prochain portera le n° <strong>' + esc(receiptNo(q.number, nextSeq)) + '</strong>' +
+      (list.length ? ' — un acompte de 50 %, puis le solde, puis tout autre versement, produisent chacun leur propre reçu.' : ' — par exemple un acompte de 50 %, puis un second reçu pour le solde.') + '</p>' +
       '<div class="qt-tot" id="qtPaySum"></div>' + rows +
       '<h3 style="margin:1.1rem 0 .3rem;font-size:.95rem">Nouveau paiement</h3>' +
       '<div class="qt-g2"><label class="qt-f"><span>Date du paiement</span><input class="qt-in" type="date" data-p="date" value="' + todayIso() + '"></label>' +
@@ -658,7 +665,8 @@
       '<label class="qt-f"><span>Référence (n° de transaction, de chèque…)</span><input class="qt-in" type="text" maxlength="80" data-p="ref"></label></div>' +
       '<label class="qt-f"><span>Note (facultatif)</span><input class="qt-in" type="text" maxlength="200" data-p="note" placeholder="Ex. : acompte de 50 % à la commande"></label>' +
       '<label class="qt-chk"><input type="checkbox" data-p="sign"' + (signatureEnabled(q.number, q.status) ? ' checked' : '') + '><span>Ajouter ma signature sur le reçu</span></label>' +
-      '<div class="qt-actions"><button type="button" class="btn btn-ghost btn-sm" data-pfill="1">Solder le reste</button>' +
+      '<div class="qt-actions"><button type="button" class="btn btn-ghost btn-sm" data-phalf="1" title="Remplit la moitié du reste à payer">50 % du reste</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-pfill="1" data-fill="rest">Solder le reste</button>' +
       '<button type="button" class="btn btn-primary btn-sm" data-padd="1">' + ic('check') + ' Enregistrer et créer le reçu</button></div>';
     paintPaySummary(q);
   }
@@ -673,6 +681,12 @@
       if (t.getAttribute('data-pfill')) {
         var rest = Math.max(0, currentTotal(q) - sumPays(paysOf(q.number)));
         var a = host.querySelector('[data-p="amount"]'); if (a) a.value = rest > 0 ? Math.round(rest) : '';
+        return;
+      }
+      if (t.getAttribute('data-phalf')) {
+        var restH = Math.max(0, currentTotal(q) - sumPays(paysOf(q.number)));
+        var half = Math.round(restH / 2);
+        var ah = host.querySelector('[data-p="amount"]'); if (ah) ah.value = half > 0 ? half : '';
         return;
       }
       if (t.getAttribute('data-prc')) {
@@ -712,12 +726,13 @@
     var upTo = paysOf(q.number).filter(function (p) { return (p.seq || 0) <= (pay.seq || 0); });
     var paidAfter = sumPays(upTo), paidBefore = paidAfter - pay.amount;
     var kind = total > 0 && paidAfter >= total ? (paidBefore > 0 ? 'Solde' : 'Paiement intégral') : (paidBefore > 0 ? 'Paiement partiel' : 'Acompte');
+    var part = (pay.seq || 1) + (paysOf(q.number).length > 1 ? ' / ' + paysOf(q.number).length : '');
     var w = window.open('', '_blank');
     if (!w) { toast('Le navigateur a bloqué la fenêtre : autorisez les pop-ups pour ce site.', 'warn'); return; }
     w.document.open();
     w.document.write(receiptHtml({
       number: pay.no, quote: q.number, issued: new Date(pay.date + 'T12:00:00').toISOString(), client: g.client,
-      amount: pay.amount, method: pay.method, ref: pay.ref, note: pay.note, kind: kind,
+      amount: pay.amount, method: pay.method, ref: pay.ref, note: pay.note, kind: kind, part: part,
       signature: pay.signature === undefined ? signatureEnabled(q.number, q.status) : !!pay.signature,
       total: total, paidAfter: paidAfter, remaining: Math.max(0, total - paidAfter)
     }));
@@ -731,7 +746,7 @@
       '.amt .v{font-size:26px;font-weight:700;white-space:nowrap}' +
       '.tag{display:inline-block;padding:2px 10px;border:1px solid #BF814B;color:#BF814B;font-size:10px;letter-spacing:.14em;font-weight:700;text-transform:uppercase}' +
       '.kv td:first-child{width:38%;color:#6A665C}.paid{color:#0E6B45;font-weight:700}';
-    var rows = [['Règlement', esc(r.kind) + ' sur le devis N° ' + esc(r.quote)], ['Date du paiement', esc(fdate(r.issued))], ['Mode de paiement', esc(r.method)]];
+    var rows = [['Règlement', esc(r.kind) + ' sur le devis N° ' + esc(r.quote) + (r.part ? ' (reçu ' + esc(r.part) + ')' : '')], ['Date du paiement', esc(fdate(r.issued))], ['Mode de paiement', esc(r.method)]];
     if (r.ref) rows.push(['Référence', esc(r.ref)]);
     if (r.note) rows.push(['Note', esc(r.note)]);
     var kv = rows.map(function (x) { return '<tr><td>' + x[0] + '</td><td><strong>' + x[1] + '</strong></td></tr>'; }).join('');
