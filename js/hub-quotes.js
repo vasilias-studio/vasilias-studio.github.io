@@ -678,7 +678,7 @@
       '.page{margin:0 auto;padding:14px 0}' +
       /* Une feuille = une page A4 exacte : coordonnées de l'émetteur en haut, contenu au milieu,
          bandeau de pied (coordonnées de paiement + conditions / mention) en bas de la dernière page. */
-      '.sheet{width:210mm;height:297mm;padding:12mm;box-sizing:border-box;background:#fff;display:flex;flex-direction:column;' +
+      '.sheet{width:210mm;height:297mm;padding:20mm;box-sizing:border-box;background:#fff;display:flex;flex-direction:column;' +
         'margin:0 auto 16px;box-shadow:0 1px 3px rgba(22,21,19,.16);overflow:hidden}' +
       '.sheet:last-of-type{margin-bottom:0}' +
       '.sheet-body{flex:0 0 auto}' +
@@ -784,130 +784,125 @@
    * Sans JavaScript, tout reste sur une seule page : aucun contenu n'est perdu.
    */
   function paginator(kind, contTop) {
-    var GAP = 13;
     var page = document.getElementById('pgPage');
     if (!page) return;
     var first = page.querySelector('.sheet');
     if (!first) return;
-    var padTop = parseFloat(getComputedStyle(first).paddingTop) || 0;
-    var padBottom = parseFloat(getComputedStyle(first).paddingBottom) || 0;
-    var inner = first.offsetWidth - 2 * padTop;
-    var sheetH = first.offsetHeight;
 
-    /* mesure hors écran : copie de la feuille à la même largeur utile (jamais réinsérée) */
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'position:absolute;left:-10000px;top:0;width:' + inner + 'px;visibility:hidden;';
-    var ms = first.cloneNode(true);
-    ms.style.height = 'auto'; ms.style.boxShadow = 'none'; ms.style.margin = '0';
-    wrap.appendChild(ms);
-    document.body.appendChild(wrap);
+    var cs = getComputedStyle(first);
+    var padTop = parseFloat(cs.paddingTop) || 0;
+    var padBottom = parseFloat(cs.paddingBottom) || 0;
+    var firstBlock = first.querySelector('.tblock');
+    var head = firstBlock ? firstBlock.querySelector('thead') : null;
+    var realRows = firstBlock ? Array.prototype.slice.call(firstBlock.querySelectorAll('tbody tr')) : [];
 
-    var mTable = ms.querySelector('table.ct-table');
-    var mRows = mTable ? Array.prototype.slice.call(mTable.querySelectorAll('tbody tr')) : [];
-    var rowH = mRows.map(function (tr) { return tr.offsetHeight; });
-    var headH = mTable && mTable.querySelector('thead') ? mTable.querySelector('thead').offsetHeight : 0;
-    var meas = function (sel) { var e = ms.querySelector(sel); return e ? e.offsetHeight : 0; };
-    var totH = meas('.twrap'), signH = meas('.sign'), notesH = meas('.sec'), tailH = meas('.sheet-tail');
-    var toBox = ms.querySelector('.to');
-    var sheetRect = ms.getBoundingClientRect();
-    var cTop = toBox ? (toBox.getBoundingClientRect().bottom - sheetRect.top) + GAP : padTop;
-
-    var hm = document.createElement('div');
-    hm.style.cssText = 'position:absolute;left:-10000px;top:0;width:' + inner + 'px;visibility:hidden;';
-    hm.innerHTML = contTop;
-    document.body.appendChild(hm);
-    var contH = hm.offsetHeight + GAP;
-
-    /* place réservée en bas de la dernière page : total + remarques + signature + bandeau */
-    var pinned = totH + notesH + signH + tailH + GAP;
-
-    /* --- répartition des lignes ---
-       Les pages se remplissent au maximum ; le pied (total + signature + bandeau) est réservé sur la
-       dernière page, avec au moins une ligne de prestations au-dessus. */
-    var pageTopAt = function (n) { return n === 0 ? cTop : padTop + contH; };
-    var pages = [[]], used = [0];
-    for (var r = 0; r < rowH.length; r++) {
-      var i = pages.length - 1;
-      if (pages[i].length && used[i] + rowH[r] > sheetH - padBottom - pageTopAt(i)) {
-        pages.push([]); used.push(0); i = pages.length - 1;
-      }
-      pages[i].push(r);
-      used[i] += rowH[r];
-    }
-    /* le pied doit tenir sous la dernière ligne : au besoin, la fin passe sur une nouvelle page */
-    for (var guard = 0; guard < 500; guard++) {
-      var j = pages.length - 1;
-      var free = sheetH - padBottom - pageTopAt(j) - used[j];
-      if (free >= pinned) break;
-      if (pages[j].length > 1) {
-        var moved = pages[j].pop();
-        used[j] -= rowH[moved];
-        pages.push([moved]); used.push(rowH[moved]);
-      } else if (pages.length === 1) {
-        break;                       /* une seule page : le pied suit la ligne, rien n'est perdu */
-      } else {
-        /* page à une seule ligne : on la fusionne avec la précédente */
-        var lastIdx = pages[j][0];
-        pages.pop(); used.pop();
-        pages[pages.length - 1].push(lastIdx);
-        used[used.length - 1] += rowH[lastIdx];
-        break;
-      }
-    }
-
-    /* la dernière page ne doit pas rester avec une seule ligne : on rééquilibre avec la précédente */
-    for (var g2 = 0; g2 < 500; g2++) {
-      var L = pages.length - 1, P = L - 1;
-      if (L < 1 || pages[L].length >= 3 || pages[P].length <= 1) break;
-      var cand = pages[P][pages[P].length - 1];
-      if (sheetH - padBottom - pageTopAt(L) - used[L] - rowH[cand] < pinned) break;
-      pages[P].pop(); used[P] -= rowH[cand];
-      pages[L].unshift(cand); used[L] += rowH[cand];
-    }
-
-    /* --- reconstruction de la table, une copie par page, en-tête répété --- */
-    if (mTable) {
-      var block = first.querySelector('.tblock');
-      var head = mTable.querySelector('thead');
-      var realRows = Array.prototype.slice.call(block.querySelectorAll('tbody tr'));
-      pages.forEach(function (idxs, idx) {
-        var t = document.createElement('table');
-        t.className = 'ct-table';
-        if (head) t.appendChild(head.cloneNode(true));
-        var tb = document.createElement('tbody');
-        idxs.forEach(function (i) { tb.appendChild(realRows[i].cloneNode(true)); });
-        t.appendChild(tb);
-        var box = document.createElement('div');
-        box.className = 'sheet-body tblock';
-        box.appendChild(t);
-        if (idx === 0) { first.insertBefore(box, block); }
-        else {
-          var sh = document.createElement('section');
-          sh.className = 'sheet';
-          var hb = document.createElement('div');
-          hb.className = 'sheet-body cont-h';
-          hb.innerHTML = contTop;
-          sh.appendChild(hb);
-          sh.appendChild(box);
-          page.appendChild(sh);
-        }
-      });
-      block.parentNode.removeChild(block);
-    }
-
-    /* --- total + remarques + signature + bandeau épinglés en bas de la dernière page --- */
-    var sheets = page.querySelectorAll('.sheet');
-    var last = sheets[sheets.length - 1];
-    var blocks = [['.twrap', 'sheet-body twrap'], ['.sec', 'sheet-body sec'], ['.sign', 'sheet-body sign'], ['.sheet-tail', 'sheet-tail pin']];
-    blocks.forEach(function (b) {
-      var el = first.querySelector(b[0]);
+    /* le pied (total, remarques, signature, bandeau) est retiré du flux, puis replacé à la fin */
+    var bag = [];
+    ['.twrap', '.sec', '.sign', '.sheet-tail'].forEach(function (sel) {
+      var el = first.querySelector(sel);
       if (!el) return;
-      el.className = b[1];
-      if (last !== first) last.appendChild(el);
+      el.parentNode.removeChild(el);
+      bag.push({ el: el, cls: sel === '.sheet-tail' ? 'sheet-tail pin' : 'sheet-body ' + sel.slice(1) });
     });
 
-    wrap.parentNode.removeChild(wrap);
-    hm.parentNode.removeChild(hm);
+    var TB = 'tblock', SPARE = '.twrap,.sec,.sign,.sheet-tail';
+    var rect = function (el) { return el.getBoundingClientRect(); };
+    var limit = function (sh) { return rect(sh).bottom - padBottom; };
+    var contentBottom = function (sh) {
+      var m = rect(sh).top + padTop;
+      Array.prototype.forEach.call(sh.children, function (k) {
+        var r = rect(k);
+        m = Math.max(m, r.bottom + (parseFloat(getComputedStyle(k).marginBottom) || 0));
+      });
+      return m;
+    };
+    var overflows = function (sh) { return contentBottom(sh) > limit(sh) + 1; };
+    var rowsOf = function (sh) { return Array.prototype.slice.call(sh.querySelectorAll('tbody tr')); };
+    var makePage = function () {
+      var sh = document.createElement('section');
+      sh.className = 'sheet';
+      var hb = document.createElement('div');
+      hb.className = 'sheet-body cont-h';
+      hb.innerHTML = contTop;
+      sh.appendChild(hb);
+      page.appendChild(sh);
+      return sh;
+    };
+    var ensureBody = function (sh) {
+      var tb = sh.querySelector('tbody');
+      if (tb) return tb;
+      var t = document.createElement('table');
+      t.className = 'ct-table';
+      if (head) t.appendChild(head.cloneNode(true));
+      var body = document.createElement('tbody');
+      t.appendChild(body);
+      var box = document.createElement('div');
+      box.className = 'sheet-body ' + TB;
+      box.appendChild(t);
+      var anchor = sh.querySelector(SPARE);
+      sh.insertBefore(box, anchor || null);
+      return body;
+    };
+    var pushRowForward = function (sh) {
+      var rs = rowsOf(sh);
+      if (rs.length < 2) return false;
+      var S = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
+      var next = S[S.indexOf(sh) + 1] || makePage();
+      ensureBody(next).insertBefore(rs[rs.length - 1], ensureBody(next).firstChild);
+      return true;
+    };
+
+    /* --- phase 1 : répartir les lignes, page par page, en mesurant le rendu réel --- */
+    for (var guard = 0; guard < 400 && realRows.length; guard++) {
+      var S = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
+      var moved = false;
+      for (var i = 0; i < S.length; i++) {
+        if (overflows(S[i]) && pushRowForward(S[i])) { moved = true; break; }
+      }
+      if (!moved) break;
+    }
+
+    /* --- phase 2 : le pied va sur la dernière page ; on lui libère la place nécessaire ---
+       La mesure se fait dans la page réelle (largeur A4), sinon les conditions paraissent plus courtes
+       qu'elles ne le sont et le bandeau déborde dans la marge basse. */
+    var place = function (sh, hidden) {
+      bag.forEach(function (b) {
+        b.el.className = b.cls;
+        b.el.style.visibility = hidden ? 'hidden' : '';   /* toujours réinitialisé, sinon le pied reste invisible */
+        sh.appendChild(b.el);
+      });
+    };
+    var unplace = function () {
+      bag.forEach(function (b) { b.el.style.visibility = ''; if (b.el.parentNode) b.el.parentNode.removeChild(b.el); });
+    };
+
+    for (var guard2 = 0; guard2 < 200; guard2++) {
+      var S2 = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
+      var L = S2[S2.length - 1];
+      place(L, true);
+      var fits = !overflows(L);
+      unplace();
+      if (fits) break;
+      var rs = rowsOf(L);
+      if (rs.length >= 2) {
+        /* la ligne en trop passe sur une nouvelle page, qui recevra le pied */
+        var np = makePage();
+        ensureBody(np).appendChild(rs[rs.length - 1]);
+        continue;
+      }
+      /* cas extrême : le pied seul dépasse la page → il occupe sa propre page (rien n'est rogné) */
+      makePage();
+      break;
+    }
+    var sheetsEnd = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
+    var last = sheetsEnd[sheetsEnd.length - 1];
+    place(last, false);
+
+    /* --- nettoyage : aucune page intermédiaire vide --- */
+    var all = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
+    all.forEach(function (sh, idx) {
+      if (idx > 0 && sh !== last && !rowsOf(sh).length) sh.parentNode.removeChild(sh);
+    });
   }
 
   function paginationScript(kind) {
