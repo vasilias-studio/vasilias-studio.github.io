@@ -818,7 +818,23 @@
       '.sheet-body{flex:0 0 auto}' +
       '.sheet-tail{flex:0 0 auto}' +
       '.sheet-tail.pin{margin-top:auto}' +
-      '.sheet-body.twrap{padding-top:18px}.sheet-body.twrap .tot{margin-top:0}' +
+      '.sheet-body.twrap{padding-top:var(--pg-gap,18px)}.sheet-body.twrap .tot{margin-top:0}' +
+      '.sheet-body.sign{margin-top:var(--pg-gap,0)}' +
+      '.pg-tight .me{font-size:calc(11px * var(--pg-fs,1))}' +
+      '.pg-tight td{padding:calc(10px * var(--pg-fs,1)) 6px}' +
+      '.pg-tight .d{font-size:calc(12px * var(--pg-fs,1))}' +
+      '.pg-tight .payco .v,.pg-tight .amt .v{font-size:calc(12px * var(--pg-fs,1))}' +
+      '.pg-tight .payco-terms ul.terms,.pg-tight .payco-terms .terms-text{font-size:calc(9.8px * var(--pg-fs,1))}' +
+      '.pg-tight .sign,.pg-tight .sign div{height:calc(96px * var(--pg-fs,1))}' +
+      '.pg-tight .sign .sig-img{height:calc(54px * var(--pg-fs,1))}' +
+      '.pg-tight .amt{padding:calc(14px * var(--pg-fs,1)) 16px}' +
+      '.pg-tight .kv td{padding:calc(8px * var(--pg-fs,1)) 10px}' +
+      '.pg-tight .tot div{padding:calc(3px * var(--pg-fs,1)) 0}' +
+      '.pg-tight .thanks{padding:calc(8px * var(--pg-fs,1)) 12px;font-size:calc(11.5px * var(--pg-fs,1))}' +
+      '.pg-tight .payco,.pg-tight .payco-terms{margin-top:calc(20px * var(--pg-fs,1));padding-top:calc(9px * var(--pg-fs,1))}' +
+      '.pg-tight .payco .v,.pg-tight .payco-terms ul.terms{line-height:1.35}' +
+      '.pg-tight .foot{margin-top:calc(20px * var(--pg-fs,1));font-size:calc(11px * var(--pg-fs,1))}' +
+      '.pg-tight .to{margin-bottom:calc(26px * var(--pg-fs,1))}' +
       '.cont h1{font-size:19px;letter-spacing:.14em;color:#6A665C}' +
       '.cont .rule{margin:12px 0 16px}' +
       '.cont .top .me{font-size:11px}' +
@@ -989,8 +1005,11 @@
       return true;
     };
 
+    /* Un reçu tient toujours sur une seule page : on ne répartit pas, on ajuste l'échelle. */
+    var single = kind !== 'devis';
+
     /* --- phase 1 : répartir les lignes, page par page, en mesurant le rendu réel --- */
-    for (var guard = 0; guard < 400 && realRows.length; guard++) {
+    for (var guard = 0; guard < 400 && !single && realRows.length; guard++) {
       var S = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
       var moved = false;
       for (var i = 0; i < S.length; i++) {
@@ -1013,7 +1032,7 @@
       bag.forEach(function (b) { b.el.style.visibility = ''; if (b.el.parentNode) b.el.parentNode.removeChild(b.el); });
     };
 
-    for (var guard2 = 0; guard2 < 200; guard2++) {
+    for (var guard2 = 0; guard2 < 200 && !single; guard2++) {
       var S2 = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
       var L = S2[S2.length - 1];
       place(L, true);
@@ -1034,6 +1053,45 @@
     var sheetsEnd = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
     var last = sheetsEnd[sheetsEnd.length - 1];
     place(last, false);
+
+    /* --- reçu : une seule page, quitte à resserrer légèrement la mise en forme ---
+       Paliers successifs : interlignes et marges d'abord, puis taille de police.
+       Rien n'est jamais rogné ni renvoyé sur une seconde page. */
+    if (single) {
+      var steps = [
+        { gap: 10, mt: [22, 16, 12], fs: 1 },
+        { gap: 8, mt: [18, 12, 9], fs: 1 },
+        { gap: 6, mt: [14, 9, 7], fs: 0.95 },
+        { gap: 4, mt: [10, 7, 5], fs: 0.9 },
+        { gap: 2, mt: [6, 4, 3], fs: 0.85 },
+        { gap: 0, mt: [3, 2, 2], fs: 0.8 },
+        { gap: 0, mt: [2, 2, 2], fs: 0.75 },
+        { gap: 0, mt: [2, 1, 1], fs: 0.7 }
+      ];
+      for (var st = 0; st < steps.length; st++) {
+        var cfg = steps[st];
+        last.style.setProperty('--pg-gap', cfg.gap + 'px');
+        var tot = last.querySelector('.twrap');
+        if (tot) { tot.style.paddingTop = cfg.mt[0] + 'px'; }
+        var sgn = last.querySelector('.sign');
+        if (sgn) { sgn.style.marginTop = cfg.mt[1] + 'px'; }
+        var tl = last.querySelector('.sheet-tail');
+        if (tl) {
+          tl.style.setProperty('--pg-tail-mt', cfg.mt[2] + 'px');
+          var pc = tl.querySelector('.payco');
+          var pt = tl.querySelector('.payco-terms');
+          if (pc) pc.style.marginTop = cfg.mt[2] + 'px';
+          if (pt) pt.style.marginTop = cfg.mt[2] + 'px';
+          var th = tl.querySelector('.thanks');
+          if (th) th.style.marginTop = Math.max(4, cfg.mt[2]) + 'px';
+        }
+        if (cfg.fs !== 1) {
+          last.classList.add('pg-tight');
+          last.style.setProperty('--pg-fs', cfg.fs);
+        }
+        if (!overflows(last)) break;
+      }
+    }
 
     /* --- nettoyage : aucune page intermédiaire vide --- */
     var all = Array.prototype.slice.call(page.querySelectorAll('.sheet'));
