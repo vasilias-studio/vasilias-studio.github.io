@@ -835,7 +835,10 @@
       'table{width:100%;border-collapse:collapse}' +
       'th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6A665C;text-align:left;border-bottom:1px solid #161513;padding:8px 6px}' +
       'td{padding:10px 6px;border-bottom:1px solid #E6E1D9;vertical-align:top}.r{text-align:right;white-space:nowrap}th.r{text-align:right}' +
-      '.d{color:#6A665C;font-size:12px;margin-top:2px}' +
+      '.d{color:#6A665C;font-size:12px;margin-top:2px;white-space:pre-line}' +
+      '.d.bul{display:block;margin-top:4px}' +
+      '.d.bul span{display:block;padding-left:11px;text-indent:-11px;line-height:1.5;margin-bottom:1px}' +
+      '.d.bul span::before{content:"•";color:#BF814B;display:inline-block;width:11px;text-indent:0}' +
       '.tot{margin:18px 0 0 auto;width:300px}.tot div{display:flex;justify-content:space-between;padding:4px 0}' +
       '.tot .big{border-top:2px solid #161513;margin-top:6px;padding-top:8px;font-size:16px;font-weight:700}' +
       '.sec{margin-top:26px;font-size:12px}.sec .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:4px}' +
@@ -1046,13 +1049,37 @@
       'if(document.readyState==="complete"){go();}else{window.addEventListener("load",go);}})();<\/script>';
   }
 
+  /**
+   * Description d'une ligne. Les puces « • » (une par ligne) sont rendues comme une vraie liste :
+   * un élément par ligne, avec un retrait régulier pour les lignes qui se replient.
+   * Un texte libre garde ses sauts de ligne (white-space:pre-line).
+   */
+  function descriptionHtml(text) {
+    var raw = String(text || '').replace(/\r/g, '');
+    if (!raw.trim()) return '';
+    var parts = raw.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l; });
+    /* texte déjà mis à plat par un ancien enregistrement (« • a • b • c ») : une puce par ligne,
+       détecté AVANT de considérer que la ligne unique est une liste d'un seul élément */
+    if (parts.length === 1 && (raw.match(/[•·‣▪]/g) || []).length >= 2) {
+      parts = raw.split(/\s*[•·‣▪]\s*/).map(function (l) { return l.trim(); }).filter(function (l) { return l; })
+        .map(function (l) { return '• ' + l; });
+    }
+    var isList = parts.filter(function (l) { return /^[•·‣▪\-–—]\s+/.test(l); }).length >= Math.ceil(parts.length * 0.6);
+    if (isList) {
+      return '<div class="d bul">' + parts.map(function (l) {
+        return '<span>' + esc(l.replace(/^[•·‣▪\-–—]\s+/, '')) + '</span>';
+      }).join('') + '</div>';
+    }
+    return '<div class="d">' + esc(raw) + '</div>';
+  }
+
   function docHtml(d) {
     var me = issuer();
     var docBase = baseOf(d.lines);
     var rows = d.lines.map(function (l) {
       var amount = lineAmount(l, docBase), todo = amount === null;
       var unitCell = isPct(l) ? esc(String(l.percent).replace('.', ',')) + ' % des prestations' : (todo ? '<em>À définir</em>' : esc(ar(l.unitPrice)));
-      return '<tr><td><strong>' + esc(l.label) + '</strong>' + (l.description ? '<div class="d">' + esc(l.description) + '</div>' : '') + '</td>' +
+      return '<tr><td><strong>' + esc(l.label) + '</strong>' + (l.description ? descriptionHtml(l.description) : '') + '</td>' +
         '<td class="r">' + esc(l.quantity) + ' ' + esc(l.unit) + '</td>' +
         '<td class="r">' + unitCell + '</td>' +
         '<td class="r">' + (todo ? '<em>—</em>' : esc(ar(amount))) + '</td></tr>';
