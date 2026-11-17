@@ -679,7 +679,7 @@
       '.top{display:flex;justify-content:space-between;gap:2rem;align-items:flex-start}' +
       '.brand{color:#BF814B;font-weight:700;letter-spacing:.28em;font-size:12px}' +
       '.me{color:#6A665C;font-size:12px;margin-top:.4rem}' +
-      '.me-phone{color:#161513;letter-spacing:.02em}' +
+      '.me-phone{color:inherit;letter-spacing:.02em}' +
       '.me-site{color:#BF814B}' +
       'h1{font-weight:300;font-size:34px;letter-spacing:.12em;margin:0;text-align:right}' +
       '.ref{text-align:right;color:#6A665C;font-size:12px;margin-top:.4rem}' +
