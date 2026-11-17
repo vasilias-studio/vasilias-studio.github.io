@@ -210,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (form) {
     var packLabels = {
       'logo-brandboard': 'Pack Logo + Brandboard',
-      'prinkipas': 'Pack Prínkipas',
-      'vasilias': 'Pack Vasilías'
+      'prinkipas': 'Pack Prínkipas + mini charte',
+      'vasilias': 'Pack Vasilías + charte complet'
     };
     var requestedPack = new URLSearchParams(window.location.search).get('pack');
     var requestedPackLabel = packLabels[requestedPack];

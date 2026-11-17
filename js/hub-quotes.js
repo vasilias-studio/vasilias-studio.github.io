@@ -249,7 +249,17 @@
     v.innerHTML = h;
 
     $all('.stat[data-f]', v).forEach(function (b) { b.addEventListener('click', function () { st.filter = b.getAttribute('data-f'); renderList(); fillIcons($('#view')); }); });
-    $all('.qt-row', v).forEach(function (b) { b.addEventListener('click', function () { st.open = b.getAttribute('data-n'); st.dirty = false; render(); window.scrollTo(0, 0); }); });
+    $all('.qt-row', v).forEach(function (b) {
+      b.addEventListener('click', function () {
+        st.open = b.getAttribute('data-n'); st.dirty = false;
+        var q = findQuote(st.open);
+        if (q && fillPackDescriptions(q)) {
+          st.dirty = true;
+          toast('Contenu et prix du pack complétés : enregistrez le devis pour conserver.', 'warn');
+        }
+        render(); window.scrollTo(0, 0);
+      });
+    });
     $('#qtRefresh').addEventListener('click', function () { load(true); toast('Actualisation…'); });
     var search = $('#qtSearch');
     search.addEventListener('input', function () {
@@ -283,18 +293,44 @@
     return '<label class="qt-f"><span>' + esc(label) + '</span><input class="qt-in" data-f="' + name + '" type="' + (type || 'text') + '" value="' + esc(value) + '" ' + (extra || '') + '></label>';
   }
 
+  /**
+   * Complète la description des lignes correspondant à un pack lorsqu'elle est vide
+   * (devis importés ou créés avant l'ajout du contenu des packs). Ne touche jamais à un texte saisi.
+   */
+  function fillPackDescriptions(q) {
+    var changed = false;
+    (q.lines || []).forEach(function (l) {
+      if (!l) return;
+      var pack = packOf(l.label);
+      if (!pack) return;
+      if (!String(l.description || '').trim()) {
+        var d = packDescription(l.label);
+        if (d) { l.description = d; changed = true; }
+      }
+      /* le script déployé ne connaît pas encore les nouveaux libellés : le prix du pack est repris ici */
+      if ((l.unitPrice === null || l.unitPrice === undefined) && !l.percent) {
+        l.unitPrice = pack.price;
+        l.unit = pack.unit;
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
   function lineHtml(l, i, base) {
     var amount = lineAmount(l, base || 0);
     var todo = amount === null;
     var total = todo ? 'À définir' : ar(amount) + (isPct(l) ? ' (' + String(l.percent).replace('.', ',') + ' % du total des prestations)' : '');
     return '<div class="qt-line' + (todo ? ' todo' : '') + '" data-i="' + i + '">' +
       '<label class="qt-f" style="margin:0"><span>Désignation</span><input class="qt-in" data-l="label" type="text" maxlength="200" value="' + esc(l.label) + '"></label>' +
-      '<label class="qt-f" style="margin:0"><span>Description</span><input class="qt-in" data-l="description" type="text" maxlength="600" value="' + esc(l.description) + '"></label>' +
+      '<label class="qt-f" style="margin:0"><span>Description' + (packOf(l.label) ? ' — contenu du pack' : '') + '</span>' +
+      '<textarea class="qt-in" data-l="description" rows="' + (packOf(l.label) ? Math.min(9, (l.description || '').split('\n').length + 1) : 1) + '" maxlength="600" style="min-height:' + (packOf(l.label) ? 96 : 42) + 'px;resize:vertical">' + esc(l.description) + '</textarea></label>' +
       '<div class="qt-n">' +
       '<label class="qt-f" style="margin:0"><span>Qté</span><input class="qt-in" data-l="quantity" type="number" min="0.01" step="any" inputmode="decimal" value="' + esc(l.quantity) + '"></label>' +
       '<label class="qt-f" style="margin:0"><span>Unité</span><input class="qt-in" data-l="unit" type="text" maxlength="20" value="' + esc(l.unit) + '"></label>' +
       '<label class="qt-f" style="margin:0"><span>Prix (Ar ou %)</span><input class="qt-in" data-l="unitPrice" type="text" inputmode="decimal" autocomplete="off" placeholder="À chiffrer ou 20%" value="' + esc(priceCell(l)) + '"></label>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-del="' + i + '" aria-label="Supprimer la ligne ' + (i + 1) + '">' + ic('close') + '</button></div>' +
+      (packOf(l.label) ? '<div class="qt-actions" style="margin-top:.35rem"><button type="button" class="btn btn-ghost btn-sm" data-packdesc="' + i + '">' + ic('add') + ' Insérer le contenu du pack</button></div>' : '') +
       '<div class="qt-sub" data-lt="' + i + '">Total ligne : ' + esc(total) + '</div></div>';
   }
 
@@ -374,6 +410,50 @@
     paintPayments(q);
     bindPayments(q);
 
+    /* Choisir un pack dans la désignation remplit sa description (si elle est vide). */
+    $('#qtForm').addEventListener('change', function (e) {
+      var input = e.target;
+      if (!input || input.getAttribute('data-l') !== 'label') return;
+      var row = input.closest ? input.closest('.qt-line') : null;
+      if (!row) return;
+      var ta = row.querySelector('[data-l="description"]');
+      if (!ta) return;
+      var d = packDescription(input.value);
+      if (!d) return;
+      var priceInput = row.querySelector('[data-l="unitPrice"]');
+      var pack = packOf(input.value);
+      if (pack && priceInput && !priceInput.value.trim()) {
+        priceInput.value = String(pack.price);
+        var unitInput = row.querySelector('[data-l="unit"]');
+        if (unitInput && !unitInput.value.trim()) unitInput.value = pack.unit;
+        st.dirty = true;
+        var cq = findQuote(st.open);
+        if (cq) paintTotals(cq);      /* le total suit le prix inséré */
+      }
+      if (!ta.value.trim()) {
+        ta.value = d;
+        st.dirty = true;
+        toast('Contenu et prix du pack ajoutés.', 'ok');
+      } else if (ta.value.trim() !== d && confirm('Remplacer la description actuelle par le contenu de « ' + input.value + ' » ?')) {
+        ta.value = d;
+        st.dirty = true;
+      }
+    });
+    /* Bouton d'insertion manuelle, ligne par ligne. */
+    $('#qtForm').addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-packdesc]') : null;
+      if (!b) return;
+      var row = b.closest('.qt-line');
+      var lab = row.querySelector('[data-l="label"]').value;
+      var ta = row.querySelector('[data-l="description"]');
+      var d = packDescription(lab);
+      if (!d) { toast('Cette désignation ne correspond à aucun pack.', 'warn'); return; }
+      if (ta.value.trim() && !confirm('Remplacer la description actuelle par le contenu de « ' + lab + ' » ?')) return;
+      ta.value = d;
+      st.dirty = true;
+      toast('Contenu du pack inséré.', 'ok');
+    });
+
     $('#qtBack').addEventListener('click', function () {
       if (!st.dirty) { st.open = null; render(); return; }
       confirmModal('Quitter sans enregistrer ?', 'Les modifications de ce devis seront perdues.', function () { st.open = null; st.dirty = false; render(); });
@@ -437,6 +517,60 @@
   }
 
   /** Lit le formulaire et retourne l’état courant du devis (non enregistré). */
+  /* Contenu des packs : inséré automatiquement dans la description d'une ligne de devis.
+     Repris à l'identique de la grille tarifaire (backend/apps-script/Quotes.gs). */
+  var PACK_CONTENTS_DEFAULT = [
+    { key: 'pack logo + brandboard', title: 'Pack Logo + Brandboard', price: 200000, unit: 'pack', items: [
+      'Création du logo final',
+      'Palette de couleurs',
+      'Sélection des typographies',
+      'Brandboard récapitulatif',
+      '1 template pour les réseaux sociaux',
+      '1 proposition',
+      '2 retouche inclus',
+      'Fichier livré : PNG, PDF, JPG',
+      'Fichier source exclu'
+    ] },
+    { key: 'pack prínkipas + mini charte', title: 'Pack Prínkipas + mini charte', price: 450000, unit: 'pack', items: [
+      'Logo et déclinaisons (icône, versions noir et blanc, etc.)',
+      'Palette de couleurs complète',
+      'Typographies pour les titres et les textes',
+      'Mini-charte graphique au format PDF',
+      '3 templates pour les réseaux sociaux',
+      '2 proposition',
+      '5 retouche inclus',
+      'Fichier livré : PNG, PDF, JPG, SVG',
+      'Fichier source inclus'
+    ] },
+    { key: 'pack vasilías + charte complet', title: 'Pack Vasilías + charte complet', price: 800000, unit: 'pack', items: [
+      'Création d’une identité visuelle complète',
+      'Charte graphique plus détaillée',
+      'Supports de communication supplémentaires : carte de visite, couverture, bannière, etc.',
+      '2 proposition',
+      '10 retouche inclus',
+      'Fichier livré : PNG, PDF, JPG, SVG',
+      'Fichier source inclus'
+    ] }
+  ];
+  /** Retrouve un pack à partir de la désignation d'une ligne (« pack vasilias », « PACK VASILÍAS + CHARTE COMPLET »…). */
+  function packOf(label) {
+    var k = String(label || '').toLowerCase().replace(/\s+/g, ' ').trim();
+    for (var i = 0; i < PACK_CONTENTS_DEFAULT.length; i++) {
+      var p = PACK_CONTENTS_DEFAULT[i];
+      if (k === p.key || k.indexOf(p.key) === 0) return p;
+      /* anciens libellés encore présents dans les devis existants */
+      if (p.key === 'pack prínkipas + mini charte' && k === 'pack prínkipas') return p;
+      if (p.key === 'pack vasilías + charte complet' && k === 'pack vasilías') return p;
+    }
+    return null;
+  }
+  /** Description d'une ligne à partir du contenu du pack, ou '' si ce n'est pas un pack. */
+  function packDescription(label) {
+    var p = packOf(label);
+    if (!p) return '';
+    return p.items.map(function (t) { return '• ' + t; }).join('\n');
+  }
+
   function gather(q) {
     var f = $('#qtForm');
     function val(n) { var e = f.querySelector('[data-f="' + n + '"]'); return e ? e.value : ''; }

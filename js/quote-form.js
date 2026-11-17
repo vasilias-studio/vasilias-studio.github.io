@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', function () {
     pptx: ['application/vnd.openxmlformats-officedocument.presentationml.presentation']
   };
   var categoryLabels = {
-    identity: 'Identité visuelle', graphic: 'Design graphique', packaging: 'Packaging',
+    identity: 'Identité visuelle', graphic: 'Design Imprimer', packaging: 'Packaging',
     social: 'Réseaux sociaux', other: 'Autres prestations'
   };
   var optionsByCategory = {
-    identity: ['Pack Logo + Brandboard', 'Pack Prínkipas', 'Pack Vasilías', 'Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète'],
+    identity: ['Pack Logo + Brandboard', 'Pack Prínkipas + mini charte', 'Pack Vasilías + charte complet', 'Logo principal', 'Déclinaisons du logo', 'Icône de marque', 'Palette de couleurs', 'Sélection typographique', 'Brandboard', 'Mini-charte graphique', 'Charte graphique complète'],
     graphic: ['Affiche publicitaire', 'Flyer', 'Brochure', 'Carte de visite', 'Catalogue', 'Supports imprimés'],
     packaging: ['Design de boîte', 'Design d’étiquette', 'Design de bouteille ou contenant', 'Déclinaisons de packaging', 'Mockups de présentation'],
     social: ['Templates de publications', 'Templates de stories', 'Couverture Facebook', 'Couverture et bannière', 'Visuels publicitaires', 'Templates promotionnels', 'Identité visuelle pour les réseaux sociaux'],
