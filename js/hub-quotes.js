@@ -608,13 +608,24 @@
     return clean;
   }
   /** Bloc deux colonnes imprimé en bas des devis et des reçus. */
-  function payBlockHtml() {
+  /** Bandeau de bas de page : 1) coordonnées de paiement · 2) nom · 3) conditions de règlement. */
+  function footerBlockHtml(conditionsText) {
     var c = payCo();
-    var cells = PAYCO_FIELDS.filter(function (f) { return c[f.k]; }).map(function (f) {
-      return '<div><div class="l">' + esc(f.label) + '</div><div class="v">' + esc(c[f.k]).replace(/\n/g, '<br>') + '</div></div>';
+    var payCols = PAYCO_FIELDS.filter(function (f) { return c[f.k]; }).map(function (f) {
+      return '<div class="k">' + esc(f.label) + '</div><div class="v">' + esc(c[f.k]).replace(/\n/g, '<br>') + '</div>';
     });
-    return cells.length ? '<div class="payco">' + cells.join('') + '</div>' : '';
+    var payCol = payCols.length ? '<div><div class="h">Coordonnées de paiement</div>' + payCols.join('') + '</div>' : '';
+
+    var name = signatureName();
+    var nameCol = name ? '<div><div class="h">Prestataire</div><div class="v strong">' + esc(name) + '</div></div>' : '';
+
+    var condCol = conditionsText ? '<div><div class="h">Conditions de règlement</div>' + conditionsHtml(conditionsText) + '</div>' : '';
+
+    var cols = [payCol, nameCol, condCol].filter(Boolean);
+    if (!cols.length) return '';
+    return '<div class="footcols cols-' + cols.length + '">' + cols.join('') + '</div>';
   }
+  function payBlockHtml() { var c = payCo(); return (c.momo || c.bank || c.holder) ? footerBlockHtml('') : ''; }
   var PAY_THANKS = 'Merci de transmettre une confirmation du paiement après chaque transaction.';
   function payThanksHtml() { return '<div class="thanks">' + esc(PAY_THANKS) + '</div>'; }
 
@@ -665,7 +676,15 @@
       '.sign .sig-img{height:54px;width:auto;max-width:100%;display:block;margin:0 auto 2px}' +
       '.sign .sig-name{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#161513;font-weight:600}' +
       '.foot{margin-top:34px;border-top:1px solid #E6E1D9;padding-top:10px;color:#6A665C;font-size:11px;white-space:pre-line}' +
-      '.payco{margin-top:28px;padding-top:12px;border-top:1px solid #E6E1D9;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}' +
+      '.footcols{margin-top:26px;padding-top:14px;border-top:1px solid #E6E1D9;display:grid;grid-template-columns:1fr 1fr 1.55fr;gap:10px 22px;align-items:start}' +
+      '.footcols.cols-2{grid-template-columns:1fr 1fr}.footcols.cols-1{grid-template-columns:1fr}' +
+      '.footcols .h{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;text-transform:uppercase;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #EDE8E0}' +
+      '.footcols .k{font-size:9.5px;letter-spacing:.08em;color:#6A665C;text-transform:uppercase;margin-top:4px}' +
+      '.footcols .v{font-size:11px;color:#161513;overflow-wrap:anywhere;line-height:1.45}' +
+      '.footcols .v.strong{font-weight:700;letter-spacing:.04em}' +
+      '.footcols .v.sub{color:#6A665C;font-size:10.5px}' +
+      '.footcols ul.terms,.footcols .terms-text{font-size:9.8px;line-height:1.45;padding-left:12px;margin:0}' +
+      '.footcols ul.terms li{margin-bottom:2px}' +
       '.payco .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:2px;text-transform:uppercase}' +
       '.payco .v{font-size:12px;color:#161513;overflow-wrap:anywhere}' +
       '.thanks{margin-top:22px;padding:9px 12px;border-left:3px solid #BF814B;background:#F7F6F4;font-size:11.5px;color:#3F3B35}' +
@@ -716,10 +735,10 @@
       (t.taxRate ? '<div><span>TVA (' + esc(t.taxRate) + ' %)</span><span>' + esc(ar(t.tax)) + '</span></div>' : '') +
       '<div class="big"><span>Total</span><span>' + esc(ar(t.total)) + '</span></div></div>' +
       (d.notes ? '<div class="sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
-      (d.conditions ? '<div class="sec"><div class="l">CONDITIONS DE RÈGLEMENT</div>' + conditionsHtml(d.conditions) + '</div>' : '') +
+      /* Conditions de règlement : imprimées dans le bandeau de bas de page (3ᵉ colonne). */
       '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div>' +
       '<div class="sig-me">' + (d.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div></div>' +
-      payBlockHtml() +
+      footerBlockHtml(d.conditions) +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') +
       payThanksHtml() + '</div></body></html>';
   }
@@ -879,7 +898,7 @@
       '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
       '<div class="sec"><div class="l">MENTION</div>Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.</div>' +
       '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div><div>Reçu par le client — nom et signature</div></div>' +
-      payBlockHtml() +
+      footerBlockHtml('') +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') +
       payThanksHtml() + '</div></body></html>';
   }
