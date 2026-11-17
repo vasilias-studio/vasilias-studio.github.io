@@ -670,12 +670,25 @@
   }
 
   function docCss() {
-    return '@page{size:A4;margin:16mm}*{box-sizing:border-box}' +
-      'body{margin:0;color:#161513;font:13px/1.55 "Josefin Sans","Helvetica Neue",Helvetica,Arial,sans-serif;background:#fff}' +
+    return '@page{size:A4;margin:0}*{box-sizing:border-box}' +
+      'body{margin:0;color:#161513;font:13px/1.55 "Josefin Sans","Helvetica Neue",Helvetica,Arial,sans-serif;background:#F2F1EE}' +
       '.bar{position:sticky;top:0;background:#161513;color:#fff;padding:.6rem 1rem;display:flex;gap:1rem;align-items:center;justify-content:space-between;font-size:13px}' +
       '.bar button{background:#BF814B;color:#fff;border:0;padding:.5rem 1rem;font:inherit;font-weight:600;cursor:pointer}' +
       '.warn{background:#FBF3DD;color:#7A5800;padding:.5rem 1rem;font-size:13px}' +
-      '.page{max-width:794px;margin:0 auto;padding:36px 40px}' +
+      '.page{margin:0 auto;padding:14px 0}' +
+      /* Une feuille = une page A4 exacte : coordonnées de l'émetteur en haut, contenu au milieu,
+         bandeau de pied (coordonnées de paiement + conditions / mention) en bas de la dernière page. */
+      '.sheet{width:210mm;height:297mm;padding:12mm;box-sizing:border-box;background:#fff;display:flex;flex-direction:column;' +
+        'margin:0 auto 16px;box-shadow:0 1px 3px rgba(22,21,19,.16);overflow:hidden}' +
+      '.sheet:last-of-type{margin-bottom:0}' +
+      '.sheet-body{flex:0 0 auto}' +
+      '.sheet-tail{flex:0 0 auto}' +
+      '.sheet-tail.pin{margin-top:auto}' +
+      '.sheet-body.twrap{padding-top:18px}.sheet-body.twrap .tot{margin-top:0}' +
+      '.cont h1{font-size:19px;letter-spacing:.14em;color:#6A665C}' +
+      '.cont .rule{margin:12px 0 16px}' +
+      '.cont .top .me{font-size:11px}' +
+      '.top .suite{text-align:right;color:#6A665C;font-size:11px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}' +
       '.top{display:flex;justify-content:space-between;gap:2rem;align-items:flex-start}' +
       '.brand{color:#BF814B;font-weight:700;letter-spacing:.28em;font-size:12px}' +
       '.me{color:#6A665C;font-size:12px;margin-top:.4rem}' +
@@ -712,7 +725,9 @@
       '.terms li{margin-bottom:3px}' +
       '.terms li::marker{color:#BF814B}' +
       '.terms-text{font-size:11.5px;line-height:1.65;white-space:pre-wrap}' +
-      '@media print{.bar,.warn{display:none}.page{padding:0}}';
+      '@media print{.bar,.warn{display:none}body{background:#fff}.page{padding:0}' +
+        '.sheet{box-shadow:none;margin:0;page-break-after:always;break-after:page}' +
+        '.sheet:last-of-type{page-break-after:auto;break-after:auto}}';
   }
 
   function pdfScript(fn) {
@@ -724,6 +739,158 @@
       'html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},' +
       'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).toPdf().get("pdf").then(function(pdf){var A=window.Android||(window.opener&&window.opener.Android);var nm="' + esc(fn) + '";if(A&&A.saveBase64){var u=pdf.output("datauristring");A.saveBase64(nm,"application/pdf",u.substring(u.indexOf(",")+1));}else{pdf.save(nm);}});' +
       '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script>';
+  }
+
+  /** En-tête répété en haut de chaque page : mêmes coordonnées, sans le numéro du document. */
+  function contTopHtml(kind) {
+    var me = issuer();
+    return '<div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
+      (me.email ? '<br>' + esc(me.email) : '') +
+      (me.phone ? '<br><span class="me-phone">' + esc(me.phone) + '</span>' : '') +
+      (me.site ? '<br><span class="me-site">' + esc(me.site) + '</span>' : '') +
+      '</div></div><div class="suite">' + esc(kind) + ' — suite</div></div><div class="rule"></div>';
+  }
+
+  /**
+   * Pagine le document en feuilles A4 (exécuté dans la fenêtre d'aperçu, avant toute impression).
+   * · l'en-tête (coordonnées, e-mail, téléphone, site) est répété en haut de chaque page ;
+   * · le bandeau de pied (coordonnées de paiement + conditions / mention + remerciement) est épinglé
+   *   en bas de la dernière page ;
+   * · le total et la signature ne sont jamais séparés des prestations : au moins une ligne les précède.
+   * Sans JavaScript, tout reste sur une seule page : aucun contenu n'est perdu.
+   */
+  function paginator(kind, contTop) {
+    var GAP = 13;
+    var page = document.getElementById('pgPage');
+    if (!page) return;
+    var first = page.querySelector('.sheet');
+    if (!first) return;
+    var padTop = parseFloat(getComputedStyle(first).paddingTop) || 0;
+    var padBottom = parseFloat(getComputedStyle(first).paddingBottom) || 0;
+    var inner = first.offsetWidth - 2 * padTop;
+    var sheetH = first.offsetHeight;
+
+    /* mesure hors écran : copie de la feuille à la même largeur utile (jamais réinsérée) */
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'position:absolute;left:-10000px;top:0;width:' + inner + 'px;visibility:hidden;';
+    var ms = first.cloneNode(true);
+    ms.style.height = 'auto'; ms.style.boxShadow = 'none'; ms.style.margin = '0';
+    wrap.appendChild(ms);
+    document.body.appendChild(wrap);
+
+    var mTable = ms.querySelector('table.ct-table');
+    var mRows = mTable ? Array.prototype.slice.call(mTable.querySelectorAll('tbody tr')) : [];
+    var rowH = mRows.map(function (tr) { return tr.offsetHeight; });
+    var headH = mTable && mTable.querySelector('thead') ? mTable.querySelector('thead').offsetHeight : 0;
+    var meas = function (sel) { var e = ms.querySelector(sel); return e ? e.offsetHeight : 0; };
+    var totH = meas('.twrap'), signH = meas('.sign'), notesH = meas('.sec'), tailH = meas('.sheet-tail');
+    var toBox = ms.querySelector('.to');
+    var sheetRect = ms.getBoundingClientRect();
+    var cTop = toBox ? (toBox.getBoundingClientRect().bottom - sheetRect.top) + GAP : padTop;
+
+    var hm = document.createElement('div');
+    hm.style.cssText = 'position:absolute;left:-10000px;top:0;width:' + inner + 'px;visibility:hidden;';
+    hm.innerHTML = contTop;
+    document.body.appendChild(hm);
+    var contH = hm.offsetHeight + GAP;
+
+    /* place réservée en bas de la dernière page : total + remarques + signature + bandeau */
+    var pinned = totH + notesH + signH + tailH + GAP;
+
+    /* --- répartition des lignes ---
+       Les pages se remplissent au maximum ; le pied (total + signature + bandeau) est réservé sur la
+       dernière page, avec au moins une ligne de prestations au-dessus. */
+    var pageTopAt = function (n) { return n === 0 ? cTop : padTop + contH; };
+    var pages = [[]], used = [0];
+    for (var r = 0; r < rowH.length; r++) {
+      var i = pages.length - 1;
+      if (pages[i].length && used[i] + rowH[r] > sheetH - padBottom - pageTopAt(i)) {
+        pages.push([]); used.push(0); i = pages.length - 1;
+      }
+      pages[i].push(r);
+      used[i] += rowH[r];
+    }
+    /* le pied doit tenir sous la dernière ligne : au besoin, la fin passe sur une nouvelle page */
+    for (var guard = 0; guard < 500; guard++) {
+      var j = pages.length - 1;
+      var free = sheetH - padBottom - pageTopAt(j) - used[j];
+      if (free >= pinned) break;
+      if (pages[j].length > 1) {
+        var moved = pages[j].pop();
+        used[j] -= rowH[moved];
+        pages.push([moved]); used.push(rowH[moved]);
+      } else if (pages.length === 1) {
+        break;                       /* une seule page : le pied suit la ligne, rien n'est perdu */
+      } else {
+        /* page à une seule ligne : on la fusionne avec la précédente */
+        var lastIdx = pages[j][0];
+        pages.pop(); used.pop();
+        pages[pages.length - 1].push(lastIdx);
+        used[used.length - 1] += rowH[lastIdx];
+        break;
+      }
+    }
+
+    /* la dernière page ne doit pas rester avec une seule ligne : on rééquilibre avec la précédente */
+    for (var g2 = 0; g2 < 500; g2++) {
+      var L = pages.length - 1, P = L - 1;
+      if (L < 1 || pages[L].length >= 3 || pages[P].length <= 1) break;
+      var cand = pages[P][pages[P].length - 1];
+      if (sheetH - padBottom - pageTopAt(L) - used[L] - rowH[cand] < pinned) break;
+      pages[P].pop(); used[P] -= rowH[cand];
+      pages[L].unshift(cand); used[L] += rowH[cand];
+    }
+
+    /* --- reconstruction de la table, une copie par page, en-tête répété --- */
+    if (mTable) {
+      var block = first.querySelector('.tblock');
+      var head = mTable.querySelector('thead');
+      var realRows = Array.prototype.slice.call(block.querySelectorAll('tbody tr'));
+      pages.forEach(function (idxs, idx) {
+        var t = document.createElement('table');
+        t.className = 'ct-table';
+        if (head) t.appendChild(head.cloneNode(true));
+        var tb = document.createElement('tbody');
+        idxs.forEach(function (i) { tb.appendChild(realRows[i].cloneNode(true)); });
+        t.appendChild(tb);
+        var box = document.createElement('div');
+        box.className = 'sheet-body tblock';
+        box.appendChild(t);
+        if (idx === 0) { first.insertBefore(box, block); }
+        else {
+          var sh = document.createElement('section');
+          sh.className = 'sheet';
+          var hb = document.createElement('div');
+          hb.className = 'sheet-body cont-h';
+          hb.innerHTML = contTop;
+          sh.appendChild(hb);
+          sh.appendChild(box);
+          page.appendChild(sh);
+        }
+      });
+      block.parentNode.removeChild(block);
+    }
+
+    /* --- total + remarques + signature + bandeau épinglés en bas de la dernière page --- */
+    var sheets = page.querySelectorAll('.sheet');
+    var last = sheets[sheets.length - 1];
+    var blocks = [['.twrap', 'sheet-body twrap'], ['.sec', 'sheet-body sec'], ['.sign', 'sheet-body sign'], ['.sheet-tail', 'sheet-tail pin']];
+    blocks.forEach(function (b) {
+      var el = first.querySelector(b[0]);
+      if (!el) return;
+      el.className = b[1];
+      if (last !== first) last.appendChild(el);
+    });
+
+    wrap.parentNode.removeChild(wrap);
+    hm.parentNode.removeChild(hm);
+  }
+
+  function paginationScript(kind) {
+    var args = JSON.stringify(kind) + ',' + JSON.stringify(contTopHtml(kind === 'devis' ? 'Devis' : 'Reçu'));
+    return '<script>(function(){var run=function(){(' + paginator.toString() + ')(' + args + ');};' +
+      'var go=function(){(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(run).catch(run);};' +
+      'if(document.readyState==="complete"){go();}else{window.addEventListener("load",go);}})();<\/script>';
   }
 
   function docHtml(d) {
@@ -745,25 +912,29 @@
       pdfScript('Devis-' + d.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
-      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
+      /* Feuille 1 : en-tête (coordonnées) + destinataire + premières lignes.
+         Les lignes suivantes, le total, la signature et le pied sont répartis par le moteur de pagination.
+         Le moteur de repli ne fait qu'un seul bloc (une seule page) si le script ne s'exécute pas. */
+      '<div class="page" id="pgPage"><section class="sheet"><div class="sheet-body top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
         (me.email ? '<br>' + esc(me.email) : '') +
         (me.phone ? '<br><span class="me-phone">' + esc(me.phone) + '</span>' : '') +
         (me.site ? '<br><span class="me-site">' + esc(me.site) + '</span>' : '') + '</div></div>' +
       '<div><h1>DEVIS</h1><div class="ref">N° ' + esc(d.number) + '<br>Émis le ' + esc(fdate(d.issued)) + '<br>Valable jusqu’au ' + esc(fdate(d.until)) + '</div></div></div>' +
-      '<div class="rule"></div>' +
-      '<div class="to"><div class="l">DESTINATAIRE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
-      '<table><thead><tr><th>Désignation</th><th class="r">Quantité</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-      '<div class="tot"><div><span>Sous-total</span><span>' + esc(ar(t.subtotal)) + '</span></div>' +
+      '<div class="sheet-body rule"></div>' +
+      '<div class="sheet-body to"><div class="l">DESTINATAIRE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
+      '<div class="sheet-body tblock"><table class="ct-table"><thead><tr><th>Désignation</th><th class="r">Quantité</th><th class="r">Prix unitaire</th><th class="r">Total</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="sheet-body twrap"><div class="tot"><div><span>Sous-total</span><span>' + esc(ar(t.subtotal)) + '</span></div>' +
       (t.discount ? '<div><span>Remise</span><span>− ' + esc(ar(t.discount)) + '</span></div>' : '') +
       (t.taxRate ? '<div><span>TVA (' + esc(t.taxRate) + ' %)</span><span>' + esc(ar(t.tax)) + '</span></div>' : '') +
-      '<div class="big"><span>Total</span><span>' + esc(ar(t.total)) + '</span></div></div>' +
-      (d.notes ? '<div class="sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
+      '<div class="big"><span>Total</span><span>' + esc(ar(t.total)) + '</span></div></div></div>' +
+      (d.notes ? '<div class="sheet-body sec"><div class="l">REMARQUES</div>' + esc(d.notes).replace(/\n/g, '<br>') + '</div>' : '') +
       /* Conditions de règlement : imprimées dans le bandeau de bas de page (3ᵉ colonne). */
-      '<div class="sign"><div>Bon pour accord — nom, date et signature du client</div>' +
+      '<div class="sheet-body sign"><div>Bon pour accord — nom, date et signature du client</div>' +
       '<div class="sig-me">' + (d.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div></div>' +
-      footerBlockHtml(d.conditions) +
+      '<div class="sheet-tail">' + footerBlockHtml(d.conditions) +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') +
-      payThanksHtml() + '</div></body></html>';
+      payThanksHtml() + '</div>' +
+      '</section></div></body></html>' + paginationScript('devis');
   }
 
 
@@ -910,23 +1081,24 @@
       '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
       pdfScript('Recu-' + r.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du reçu ' + esc(r.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le reçu (PDF)</button></div>' +
-      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
+      '<div class="page" id="pgPage"><section class="sheet"><div class="sheet-body top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
         (me.email ? '<br>' + esc(me.email) : '') +
         (me.phone ? '<br><span class="me-phone">' + esc(me.phone) + '</span>' : '') +
         (me.site ? '<br><span class="me-site">' + esc(me.site) + '</span>' : '') + '</div></div>' +
       '<div><h1>REÇU</h1><div class="ref">N° ' + esc(r.number) + '<br>Émis le ' + esc(fdate(r.issued)) + '<br>Devis N° ' + esc(r.quote) + '</div></div></div>' +
-      '<div class="rule"></div>' +
-      '<div class="to"><div class="l">REÇU DE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
-      '<div class="amt"><div><div class="tag">' + esc(r.kind) + '</div><div style="margin-top:6px;color:#6A665C;font-size:12px">Somme reçue avec nos remerciements</div></div><div class="v">' + esc(ar(r.amount)) + '</div></div>' +
-      '<table class="kv"><tbody>' + kv + '</tbody></table>' +
-      '<div class="tot"><div><span>Total du devis</span><span>' + esc(ar(r.total)) + '</span></div>' +
+      '<div class="sheet-body rule"></div>' +
+      '<div class="sheet-body to"><div class="l">REÇU DE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
+      '<div class="sheet-body amtblock"><div class="amt"><div><div class="tag">' + esc(r.kind) + '</div><div style="margin-top:6px;color:#6A665C;font-size:12px">Somme reçue avec nos remerciements</div></div><div class="v">' + esc(ar(r.amount)) + '</div></div>' +
+      '<table class="kv"><tbody>' + kv + '</tbody></table></div>' +
+      '<div class="sheet-body twrap"><div class="tot"><div><span>Total du devis</span><span>' + esc(ar(r.total)) + '</span></div>' +
       '<div><span>Total payé à ce jour</span><span>' + esc(ar(r.paidAfter)) + '</span></div>' +
-      '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
+      '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div></div>' +
       /* La mention légale est imprimée dans le bandeau de bas de page (3ᵉ colonne), comme les conditions du devis. */
-      '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div><div>Reçu par le client — nom et signature</div></div>' +
-      footerBlockHtml(RECEIPT_NOTICE, 'Mention') +
+      '<div class="sheet-body sign"><div class="sig-me">' + (r.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div><div>Reçu par le client — nom et signature</div></div>' +
+      '<div class="sheet-tail">' + footerBlockHtml(RECEIPT_NOTICE, 'Mention') +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') +
-      payThanksHtml() + '</div></body></html>';
+      payThanksHtml() + '</div>' +
+      '</section></div></body></html>' + paginationScript('recu');
   }
 
   /* ---------- Paramètres → Devis ---------- */
