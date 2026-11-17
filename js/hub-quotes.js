@@ -608,24 +608,24 @@
     return clean;
   }
   /** Bloc deux colonnes imprimé en bas des devis et des reçus. */
-  /** Bandeau de bas de page : 1) coordonnées de paiement · 2) nom · 3) conditions de règlement. */
-  function footerBlockHtml(conditionsText) {
+  /* Bandeau de bas de page : le bloc d’origine (coordonnées sur 2 colonnes, nom, « Au nom de »)
+     reste inchangé ; les conditions de règlement sont ajoutées en 3ᵉ colonne. */
+  function payBlockHtml() {
     var c = payCo();
-    var payCols = PAYCO_FIELDS.filter(function (f) { return c[f.k]; }).map(function (f) {
-      return '<div class="k">' + esc(f.label) + '</div><div class="v">' + esc(c[f.k]).replace(/\n/g, '<br>') + '</div>';
+    var cells = PAYCO_FIELDS.filter(function (f) { return c[f.k]; }).map(function (f) {
+      return '<div><div class="l">' + esc(f.label) + '</div><div class="v">' + esc(c[f.k]).replace(/\n/g, '<br>') + '</div></div>';
     });
-    var payCol = payCols.length ? '<div><div class="h">Coordonnées de paiement</div>' + payCols.join('') + '</div>' : '';
-
-    var name = signatureName();
-    var nameCol = name ? '<div><div class="h">Prestataire</div><div class="v strong">' + esc(name) + '</div></div>' : '';
-
-    var condCol = conditionsText ? '<div><div class="h">Conditions de règlement</div>' + conditionsHtml(conditionsText) + '</div>' : '';
-
-    var cols = [payCol, nameCol, condCol].filter(Boolean);
-    if (!cols.length) return '';
-    return '<div class="footcols cols-' + cols.length + '">' + cols.join('') + '</div>';
+    return cells.length ? '<div class="payco cols-' + cells.length + '">' + cells.join('') + '</div>' : '';
   }
-  function payBlockHtml() { var c = payCo(); return (c.momo || c.bank || c.holder) ? footerBlockHtml('') : ''; }
+  function footerBlockHtml(conditionsText) {
+    var pay = payBlockHtml();
+    var cond = conditionsText
+      ? '<div class="payco-terms"><div class="l">Conditions de règlement</div>' + conditionsHtml(conditionsText) + '</div>' : '';
+    if (!pay && !cond) return '';
+    if (!cond) return pay;
+    if (!pay) return '<div class="payco-row cols-1">' + cond + '</div>';
+    return '<div class="payco-row">' + pay + cond + '</div>';
+  }
   var PAY_THANKS = 'Merci de transmettre une confirmation du paiement après chaque transaction.';
   function payThanksHtml() { return '<div class="thanks">' + esc(PAY_THANKS) + '</div>'; }
 
@@ -676,17 +676,16 @@
       '.sign .sig-img{height:54px;width:auto;max-width:100%;display:block;margin:0 auto 2px}' +
       '.sign .sig-name{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#161513;font-weight:600}' +
       '.foot{margin-top:34px;border-top:1px solid #E6E1D9;padding-top:10px;color:#6A665C;font-size:11px;white-space:pre-line}' +
-      '.footcols{margin-top:26px;padding-top:14px;border-top:1px solid #E6E1D9;display:grid;grid-template-columns:1fr 1fr 1.55fr;gap:10px 22px;align-items:start}' +
-      '.footcols.cols-2{grid-template-columns:1fr 1fr}.footcols.cols-1{grid-template-columns:1fr}' +
-      '.footcols .h{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;text-transform:uppercase;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid #EDE8E0}' +
-      '.footcols .k{font-size:9.5px;letter-spacing:.08em;color:#6A665C;text-transform:uppercase;margin-top:4px}' +
-      '.footcols .v{font-size:11px;color:#161513;overflow-wrap:anywhere;line-height:1.45}' +
-      '.footcols .v.strong{font-weight:700;letter-spacing:.04em}' +
-      '.footcols .v.sub{color:#6A665C;font-size:10.5px}' +
-      '.footcols ul.terms,.footcols .terms-text{font-size:9.8px;line-height:1.45;padding-left:12px;margin:0}' +
-      '.footcols ul.terms li{margin-bottom:2px}' +
+      '.payco{margin-top:28px;padding-top:12px;border-top:1px solid #E6E1D9;display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}' +
       '.payco .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:2px;text-transform:uppercase}' +
       '.payco .v{font-size:12px;color:#161513;overflow-wrap:anywhere}' +
+      /* 3ᵉ colonne : conditions de règlement, alignée sur le bloc d’origine */
+      '.payco-row{display:grid;grid-template-columns:1fr 1.25fr;gap:0 24px;align-items:start}' +
+      '.payco-row.cols-1{grid-template-columns:1fr}' +
+      '.payco-terms{margin-top:28px;padding-top:12px;border-top:1px solid #E6E1D9}' +
+      '.payco-terms .l{font-size:10px;letter-spacing:.14em;color:#BF814B;font-weight:700;margin-bottom:2px;text-transform:uppercase}' +
+      '.payco-terms ul.terms,.payco-terms .terms-text{font-size:9.8px;line-height:1.45;padding-left:12px;margin:0}' +
+      '.payco-terms ul.terms li{margin-bottom:2px}' +
       '.thanks{margin-top:22px;padding:9px 12px;border-left:3px solid #BF814B;background:#F7F6F4;font-size:11.5px;color:#3F3B35}' +
       '.terms{margin:0;padding-left:16px;font-size:11.5px;line-height:1.65;color:#2C2924}' +
       '.terms li{margin-bottom:3px}' +
