@@ -11,6 +11,10 @@
 
   var KEY_LS = 'hub2_quote_key';
   var ISSUER_LS = 'hub2_quote_issuer';
+  var PHONE_LS = 'hub2_quote_phone';
+  var SITE_LS = 'hub2_quote_site';
+  var PHONE_DEFAULT = '+261 38 85 825 16';
+  var SITE_DEFAULT = 'vasilias-studio.github.io';
   var DEFAULT_STATUSES = ['À chiffrer', 'Brouillon', 'Envoyé', 'Accepté', 'Refusé', 'Expiré'];
   var STATUS_CLS = { 'À chiffrer': 'warn', 'Brouillon': 'neut', 'Envoyé': 'info', 'Accepté': 'ok', 'Refusé': 'err', 'Expiré': 'neut' };
   var ERRORS = {
@@ -350,11 +354,14 @@
       '<button type="button" class="btn btn-ghost btn-sm" id="qtTermsClear">Vider</button>' +
       '<span class="help" style="margin:0;align-self:center">Conditions par défaut modifiables dans Paramètres → Devis.</span></div></div></div>' +
       '<div class="card"><h2>Coordonnées de paiement</h2>' +
-      '<p class="help">Imprimées en bas des devis et des reçus, sur deux colonnes. Enregistrées sur cet appareil et appliquées à tous les devis.</p>' +
+      '<p class="help">Coordonnées de paiement imprimées en bas des devis et des reçus, sur deux colonnes. Le téléphone et le site sont imprimés en haut, sous l’e-mail. Enregistrés sur cet appareil et appliqués à tous les devis.</p>' +
       '<div class="qt-g2">' +
       '<label class="qt-f"><span>Mobile Money</span><textarea class="qt-in" id="qtPayMomo" maxlength="220" rows="2" style="min-height:54px;resize:vertical" placeholder="' + PAYCO_FIELDS[0].ph + '" value="' + esc(payCo().momo) + '"></textarea></label>' +
       '<label class="qt-f"><span>Compte bancaire</span><textarea class="qt-in" id="qtPayBank" maxlength="220" rows="2" style="min-height:54px;resize:vertical" placeholder="' + PAYCO_FIELDS[1].ph + '" value="' + esc(payCo().bank) + '"></textarea></label></div>' +
       '<label class="qt-f"><span>Au nom de</span><textarea class="qt-in" id="qtPayHolder" maxlength="220" rows="2" style="min-height:54px;resize:vertical" placeholder="' + PAYCO_FIELDS[2].ph + '" value="' + esc(payCo().holder) + '"></textarea></label>' +
+      '<div class="qt-g2" style="margin-top:.8rem">' +
+      '<label class="qt-f"><span>Téléphone (en-tête)</span><input class="qt-in" type="tel" id="qtPhone" maxlength="40" value="' + esc(issuer().phone) + '" placeholder="' + PHONE_DEFAULT + '"></label>' +
+      '<label class="qt-f"><span>Site web (en-tête)</span><input class="qt-in" type="text" id="qtSite" maxlength="60" value="' + esc(issuer().site) + '" placeholder="' + SITE_DEFAULT + '"></label></div>' +
       '<div class="qt-actions"><button type="button" class="btn btn-ghost btn-sm" id="qtPayCoSave">' + ic('check') + ' Enregistrer les coordonnées</button>' +
       '<span class="help" style="margin:0;align-self:center">Message de confirmation ajouté automatiquement en bas de page.</span></div></div>' +
       '</form>' +
@@ -398,7 +405,8 @@
         bank: $('#qtPayBank').value,
         holder: $('#qtPayHolder').value
       });
-      toast('Coordonnées de paiement enregistrées.', 'ok');
+      saveContactHeader($('#qtPhone').value, $('#qtSite').value);
+      toast('Coordonnées enregistrées.', 'ok');
     });
     var signBox = document.getElementById('qtSign');
     if (signBox) signBox.addEventListener('change', function () {
@@ -526,7 +534,11 @@
   /* ---------- aperçu imprimable / PDF ---------- */
   function issuer() {
     var d = (typeof store !== 'undefined' && store.data && store.data.contact) || {};
-    return { email: d.email || '', positioning: d.positioning || 'Graphic & Digital Designer', legal: localStorage.getItem(ISSUER_LS) || '' };
+    return {
+      email: d.email || '', positioning: d.positioning || 'Graphic & Digital Designer', legal: localStorage.getItem(ISSUER_LS) || '',
+      phone: (localStorage.getItem(PHONE_LS) || '').trim() || PHONE_DEFAULT,
+      site: (localStorage.getItem(SITE_LS) || '').trim() || SITE_DEFAULT
+    };
   }
 
   function preview(q, withSignature) {
@@ -595,6 +607,12 @@
     { k: 'bank', label: 'Compte bancaire', ph: 'Ex. : BNI 00011 00001234567 89' },
     { k: 'holder', label: 'Au nom de', ph: 'Nom du titulaire du compte' }
   ];
+  function saveContactHeader(phone, site) {
+    var ph = String(phone || '').trim(), si = String(site || '').trim();
+    if (ph) localStorage.setItem(PHONE_LS, ph); else localStorage.removeItem(PHONE_LS);
+    if (si) localStorage.setItem(SITE_LS, si); else localStorage.removeItem(SITE_LS);
+  }
+
   function payCo() {
     var out = {};
     try { out = JSON.parse(localStorage.getItem(PAYCO_LS) || '{}') || {}; } catch (e) { out = {}; }
@@ -661,6 +679,8 @@
       '.top{display:flex;justify-content:space-between;gap:2rem;align-items:flex-start}' +
       '.brand{color:#BF814B;font-weight:700;letter-spacing:.28em;font-size:12px}' +
       '.me{color:#6A665C;font-size:12px;margin-top:.4rem}' +
+      '.me-phone{color:#161513;letter-spacing:.02em}' +
+      '.me-site{color:#BF814B}' +
       'h1{font-weight:300;font-size:34px;letter-spacing:.12em;margin:0;text-align:right}' +
       '.ref{text-align:right;color:#6A665C;font-size:12px;margin-top:.4rem}' +
       '.rule{width:44px;height:2px;background:#BF814B;margin:22px 0}' +
@@ -725,7 +745,10 @@
       pdfScript('Devis-' + d.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
-      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) + (me.email ? '<br>' + esc(me.email) : '') + '</div></div>' +
+      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
+        (me.email ? '<br>' + esc(me.email) : '') +
+        (me.phone ? '<br><span class="me-phone">' + esc(me.phone) + '</span>' : '') +
+        (me.site ? '<br><span class="me-site">' + esc(me.site) + '</span>' : '') + '</div></div>' +
       '<div><h1>DEVIS</h1><div class="ref">N° ' + esc(d.number) + '<br>Émis le ' + esc(fdate(d.issued)) + '<br>Valable jusqu’au ' + esc(fdate(d.until)) + '</div></div></div>' +
       '<div class="rule"></div>' +
       '<div class="to"><div class="l">DESTINATAIRE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
@@ -887,7 +910,10 @@
       '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
       pdfScript('Recu-' + r.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du reçu ' + esc(r.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le reçu (PDF)</button></div>' +
-      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) + (me.email ? '<br>' + esc(me.email) : '') + '</div></div>' +
+      '<div class="page"><div class="top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
+        (me.email ? '<br>' + esc(me.email) : '') +
+        (me.phone ? '<br><span class="me-phone">' + esc(me.phone) + '</span>' : '') +
+        (me.site ? '<br><span class="me-site">' + esc(me.site) + '</span>' : '') + '</div></div>' +
       '<div><h1>REÇU</h1><div class="ref">N° ' + esc(r.number) + '<br>Émis le ' + esc(fdate(r.issued)) + '<br>Devis N° ' + esc(r.quote) + '</div></div></div>' +
       '<div class="rule"></div>' +
       '<div class="to"><div class="l">REÇU DE</div><strong>' + esc(c.name) + '</strong>' + (c.company ? '<br>' + esc(c.company) : '') + (c.email ? '<br>' + esc(c.email) : '') + (c.whatsapp ? '<br>' + esc(c.whatsapp) : '') + '</div>' +
@@ -916,6 +942,12 @@
       '<label class="qt-f"><span>' + (has ? 'Remplacer la clé d’accès' : 'Clé d’accès aux devis') + '</span><input class="qt-in" type="password" id="qsKey" autocomplete="off" spellcheck="false"></label>' +
       '<div class="qt-actions"><button class="btn btn-primary btn-sm" id="qsSave">Enregistrer la clé et tester</button>' +
       (has ? '<button class="btn btn-danger btn-sm" id="qsRemove">Oublier la clé</button>' : '') + '</div>' +
+      '<h3 style="margin:1.4rem 0 .2rem;font-size:.95rem">Coordonnées en haut des devis et reçus</h3>' +
+      '<p class="help">Imprimées sous l’e-mail, dans l’en-tête du document.</p>' +
+      '<div class="qt-g2">' +
+      '<label class="qt-f"><span>Téléphone</span><input class="qt-in" type="tel" id="qsPhone" maxlength="40" value="' + esc(issuer().phone) + '" placeholder="' + PHONE_DEFAULT + '"></label>' +
+      '<label class="qt-f"><span>Site web</span><input class="qt-in" type="text" id="qsSite" maxlength="60" value="' + esc(issuer().site) + '" placeholder="' + SITE_DEFAULT + '"></label></div>' +
+      '<button class="btn btn-ghost btn-sm" id="qsContactSave">Enregistrer le téléphone et le site</button>' +
       '<label class="qt-f" style="margin-top:1.2rem"><span>Mentions affichées en bas des devis (téléphone, NIF, STAT, coordonnées bancaires…)</span>' +
       '<textarea class="qt-in" id="qsIssuer" maxlength="1000" placeholder="Une information par ligne">' + esc(localStorage.getItem(ISSUER_LS) || '') + '</textarea></label>' +
       '<button class="btn btn-ghost btn-sm" id="qsIssuerSave">Enregistrer les mentions</button>' +
@@ -950,6 +982,11 @@
     var rm = $('#qsRemove');
     if (rm) rm.addEventListener('click', function () { localStorage.removeItem(KEY_LS); st.quotes = null; refreshBadge(); window.quotesSettingsMount(); toast('Clé oubliée sur cet appareil.'); });
     $('#qsIssuerSave').addEventListener('click', function () { localStorage.setItem(ISSUER_LS, $('#qsIssuer').value); toast('Mentions enregistrées.', 'ok'); });
+    $('#qsContactSave').addEventListener('click', function () {
+      saveContactHeader($('#qsPhone').value, $('#qsSite').value);
+      toast('Téléphone et site enregistrés.', 'ok');
+      if (st.open && findQuote(st.open)) render();
+    });
     $('#qsTermsSave').addEventListener('click', function () {
       saveTermsDefault(document.getElementById('qsTerms').value);
       toast('Conditions par défaut enregistrées.', 'ok');
