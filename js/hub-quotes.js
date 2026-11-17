@@ -730,15 +730,39 @@
         '.sheet:last-of-type{page-break-after:auto;break-after:auto}}';
   }
 
+  /**
+   * Génération du PDF : chaque feuille A4 déjà paginée est capturée puis collée sur une page A4,
+   * une feuille = une page. Aucune re-mise en page par la librairie (c'est ce qui coupait les
+   * devis longs : marges ajoutées, texte rogné, pied détaché sur une page vide).
+   */
   function pdfScript(fn) {
-    return '<script>function dlPdf(){var b=document.getElementById("dl"),el=document.querySelector(".page");' +
-      'if(!window.html2pdf){window.print();return;}' +
-      'var t=b.textContent;b.disabled=true;b.textContent="Génération du PDF…";' +
-      '(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){' +
-      'return html2pdf().set({margin:[12,12,12,12],filename:"' + esc(fn) + '",image:{type:"jpeg",quality:0.98},' +
-      'html2canvas:{scale:2,useCORS:true,backgroundColor:"#ffffff"},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"},' +
-      'pagebreak:{mode:["css","legacy"],avoid:["tr",".sign",".sec"]}}).from(el).toPdf().get("pdf").then(function(pdf){var A=window.Android||(window.opener&&window.opener.Android);var nm="' + esc(fn) + '";if(A&&A.saveBase64){var u=pdf.output("datauristring");A.saveBase64(nm,"application/pdf",u.substring(u.indexOf(",")+1));}else{pdf.save(nm);}});' +
-      '}).catch(function(){window.print();}).then(function(){b.disabled=false;b.textContent=t;});}<\/script>';
+    return '<script>function dlPdf(){' +
+      'var btn=document.getElementById("dl"),sheets=[].slice.call(document.querySelectorAll(".sheet"));' +
+      'function done(){btn.disabled=false;btn.textContent=btn.getAttribute("data-t")||"Télécharger";}' +
+      'if(!sheets.length){window.print();return;}' +
+      'var scale=2,per=Math.ceil(sheets.length/8);' +
+      'sheets.forEach(function(s,i){s.setAttribute("data-n",i+1);});' +
+      'function bar(t){btn.textContent=t;}' +
+      'var C=window.html2canvas,J=window.jspdf&&window.jspdf.jsPDF;' +
+      'if(!C||!J){window.print();return;}' +
+      'btn.setAttribute("data-t",btn.textContent);btn.disabled=true;bar("Préparation…");' +
+      'function next(i,pdf){' +
+        'if(i>=sheets.length){' +
+          'var A=window.Android||(window.opener&&window.opener.Android),nm="' + esc(fn) + '";' +
+          'if(A&&A.saveBase64){A.saveBase64(nm,"application/pdf",pdf.output("datauristring").split(",")[1]);}' +
+          'else{pdf.save(nm);}' +
+          'done();return;' +
+        '}' +
+        'bar("Page "+(i+1)+" / "+sheets.length+"…");' +
+        'C(sheets[i],{scale:scale,useCORS:true,backgroundColor:"#ffffff",logging:false,windowWidth:sheets[i].scrollWidth,windowHeight:sheets[i].scrollHeight})' +
+        '.then(function(canvas){' +
+          'if(!pdf){pdf=new J({unit:"mm",format:"a4",orientation:"portrait",compress:true});}else{pdf.addPage();}' +
+          'pdf.addImage(canvas.toDataURL("image/jpeg",0.94),"JPEG",0,0,210,297);' +
+          'next(i+1,pdf);' +
+        '}).catch(function(){window.print();done();});' +
+      '}' +
+      '(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){next(0,null);});' +
+    '}<\/script>';
   }
 
   /** En-tête répété en haut de chaque page : mêmes coordonnées, sans le numéro du document. */
@@ -908,7 +932,9 @@
     var css = docCss();
     return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Devis ' + esc(d.number) + ' — Vasilías Studio</title>' +
       '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
-      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+      '<style>' + css + '</style>' +
+      '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>' +
+      '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>' +
       pdfScript('Devis-' + d.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du devis ' + esc(d.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le devis (PDF)</button></div>' +
       (t.unpricedCount ? '<div class="warn">Attention : ' + t.unpricedCount + ' ligne(s) sont encore « à définir ». Chiffrez-les avant d’envoyer ce devis.</div>' : '') +
@@ -1078,7 +1104,9 @@
     var kv = rows.map(function (x) { return '<tr><td>' + x[0] + '</td><td><strong>' + x[1] + '</strong></td></tr>'; }).join('');
     return '<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Reçu ' + esc(r.number) + ' — Vasilías Studio</title>' +
       '<meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">' +
-      '<style>' + css + '</style><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"><\/script>' +
+      '<style>' + css + '</style>' +
+      '<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script>' +
+      '<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script>' +
       pdfScript('Recu-' + r.number + '.pdf') + '</head><body>' +
       '<div class="bar"><span>Aperçu du reçu ' + esc(r.number) + '</span><button id="dl" type="button" onclick="dlPdf()">Télécharger le reçu (PDF)</button></div>' +
       '<div class="page" id="pgPage"><section class="sheet"><div class="sheet-body top"><div><div class="brand">VASILÍAS STUDIO</div><div class="me">' + esc(me.positioning) +
