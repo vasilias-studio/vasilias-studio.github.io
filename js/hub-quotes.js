@@ -617,15 +617,16 @@
     });
     return cells.length ? '<div class="payco cols-' + cells.length + '">' + cells.join('') + '</div>' : '';
   }
-  function footerBlockHtml(conditionsText) {
+  function footerBlockHtml(conditionsText, colTitle) {
     var pay = payBlockHtml();
     var cond = conditionsText
-      ? '<div class="payco-terms"><div class="l">Conditions de règlement</div>' + conditionsHtml(conditionsText) + '</div>' : '';
+      ? '<div class="payco-terms"><div class="l">' + esc(colTitle || 'Conditions de règlement') + '</div>' + conditionsHtml(conditionsText) + '</div>' : '';
     if (!pay && !cond) return '';
     if (!cond) return pay;
     if (!pay) return '<div class="payco-row cols-1">' + cond + '</div>';
     return '<div class="payco-row">' + pay + cond + '</div>';
   }
+  var RECEIPT_NOTICE = 'Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.';
   var PAY_THANKS = 'Merci de transmettre une confirmation du paiement après chaque transaction.';
   function payThanksHtml() { return '<div class="thanks">' + esc(PAY_THANKS) + '</div>'; }
 
@@ -895,9 +896,9 @@
       '<div class="tot"><div><span>Total du devis</span><span>' + esc(ar(r.total)) + '</span></div>' +
       '<div><span>Total payé à ce jour</span><span>' + esc(ar(r.paidAfter)) + '</span></div>' +
       '<div class="big"><span>' + (r.total > 0 && r.remaining === 0 ? 'Devis soldé' : 'Reste à payer') + '</span><span' + (r.total > 0 && r.remaining === 0 ? ' class="paid"' : '') + '>' + esc(ar(r.remaining)) + '</span></div></div>' +
-      '<div class="sec"><div class="l">MENTION</div>Le présent reçu atteste du paiement de la somme indiquée ci-dessus et vaut justificatif de règlement.</div>' +
+      /* La mention légale est imprimée dans le bandeau de bas de page (3ᵉ colonne), comme les conditions du devis. */
       '<div class="sign"><div class="sig-me">' + (r.signature ? signatureImg() + signatureNameHtml() : 'Vasilías Studio') + '</div><div>Reçu par le client — nom et signature</div></div>' +
-      footerBlockHtml('') +
+      footerBlockHtml(RECEIPT_NOTICE, 'Mention') +
       (me.legal ? '<div class="foot">' + esc(me.legal) + '</div>' : '') +
       payThanksHtml() + '</div></body></html>';
   }
