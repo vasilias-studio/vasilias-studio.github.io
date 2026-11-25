@@ -1,0 +1,48 @@
+/* ============================================================
+   Vasilías : couche de scrolling immersif
+   Aucune règle visuelle ici n'est active tant que js/immersive.js
+   n'a pas ajouté la classe .imm-on sur <html>.
+   ============================================================ */
+
+/* Lenis : neutralise le smooth natif pour éviter le double lissage */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: clip; }
+
+/* Les révélations sont désormais pilotées par le scroll (GSAP) :
+   on coupe les transitions CSS pour qu'elles ne se battent pas avec les styles inline */
+html.imm-on .reveal { transition: none; will-change: transform, opacity; }
+html.imm-on .reveal-line > * { transition: none; will-change: transform; }
+
+/* Hero : profondeur pilotée par --hp (0 à 1) via ScrollTrigger */
+html.imm-on .h2-word { translate: 0 calc(var(--hp, 0) * -7vh); }
+html.imm-on .h2-statue img {
+  transform: translate3d(0, calc(var(--hp, 0) * -2.5%), 0) scale(calc(1 + var(--hp, 0) * 0.09));
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+
+/* Cartes projets : léger glissement de l'image selon la position du carrousel dans l'écran */
+html.imm-on .h2-card-media img {
+  transform: scale(1.1) translate3d(calc((var(--mp, 0.5) - 0.5) * -5%), 0, 0);
+  will-change: transform;
+}
+
+/* Processus : trait d'accent de chaque étape tracé par le scroll (--on de 0 à 1) */
+html.imm-on .h2-step::before { transform: scaleX(var(--on, 0)); transition: none; }
+html.imm-on .h2-step:hover::before { transform: scaleX(1); }
+@media (max-width: 900px) {
+  html.imm-on .h2-step::before { transform: scaleY(var(--on, 0)); }
+  html.imm-on .h2-step:hover::before { transform: scaleY(1); }
+}
+
+/* Section épinglée (desktop uniquement, ajoutée par le JS) :
+   occupe l'écran pour que le hero fixe ne transparaisse pas pendant l'épinglage */
+html.imm-on .h2-process.imm-pinned {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
